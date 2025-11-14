@@ -51,7 +51,11 @@
       "messagePlaceholder": "Message ToolSense AI...",
       "footerText": "ToolSense AI can analyze tools and provide security assessments. Enter a product name, vendor, or URL.",
       "cachedResponse": "Cached response",
-      "downloadReport": "Download report as Markdown file"
+      "downloadReport": "Download report as Markdown file",
+      "share": "Share",
+      "edit": "Edit",
+      "add": "Add",
+      "copiedToClipboard": "Copied to clipboard!"
     },
     "navbar": {
       "searchLanguages": "Search languages...",
@@ -110,7 +114,11 @@
       "messagePlaceholder": "向ToolSense AI发送消息...",
       "footerText": "ToolSense AI可以分析工具并提供安全评估。输入产品名称、供应商或URL。",
       "cachedResponse": "缓存响应",
-      "downloadReport": "下载Markdown格式的报告"
+      "downloadReport": "下载Markdown格式的报告",
+      "share": "分享",
+      "edit": "编辑",
+      "add": "添加",
+      "copiedToClipboard": "已复制到剪贴板！"
     },
     "navbar": {
       "searchLanguages": "搜索语言...",
@@ -169,7 +177,11 @@
       "messagePlaceholder": "Mensaje a ToolSense AI...",
       "footerText": "ToolSense AI puede analizar herramientas y proporcionar evaluaciones de seguridad. Ingresa un nombre de producto, proveedor o URL.",
       "cachedResponse": "Respuesta en caché",
-      "downloadReport": "Descargar informe como archivo Markdown"
+      "downloadReport": "Descargar informe como archivo Markdown",
+      "share": "Compartir",
+      "edit": "Editar",
+      "add": "Añadir",
+      "copiedToClipboard": "¡Copiado al portapapeles!"
     },
     "navbar": {
       "searchLanguages": "Buscar idiomas...",
@@ -228,7 +240,11 @@
       "messagePlaceholder": "Viesti ToolSense AI:lle...",
       "footerText": "ToolSense AI voi analysoida työkaluja ja tarjota tietoturva-arvioita. Syötä tuotteen nimi, toimittaja tai URL.",
       "cachedResponse": "Välimuistissa oleva vastaus",
-      "downloadReport": "Lataa raportti Markdown-tiedostona"
+      "downloadReport": "Lataa raportti Markdown-tiedostona",
+      "share": "Jaa",
+      "edit": "Muokkaa",
+      "add": "Lisää",
+      "copiedToClipboard": "Kopioitu leikepöydälle!"
     },
     "navbar": {
       "searchLanguages": "Etsi kieliä...",
@@ -287,7 +303,11 @@
       "messagePlaceholder": "Nachricht an ToolSense AI...",
       "footerText": "ToolSense AI kann Tools analysieren und Sicherheitsbewertungen bereitstellen. Geben Sie einen Produktnamen, Anbieter oder URL ein.",
       "cachedResponse": "Zwischengespeicherte Antwort",
-      "downloadReport": "Bericht als Markdown-Datei herunterladen"
+      "downloadReport": "Bericht als Markdown-Datei herunterladen",
+      "share": "Teilen",
+      "edit": "Bearbeiten",
+      "add": "Hinzufügen",
+      "copiedToClipboard": "In die Zwischenablage kopiert!"
     },
     "navbar": {
       "searchLanguages": "Sprachen suchen...",
@@ -346,7 +366,11 @@
       "messagePlaceholder": "Message à ToolSense AI...",
       "footerText": "ToolSense AI peut analyser les outils et fournir des évaluations de sécurité. Entrez un nom de produit, un fournisseur ou une URL.",
       "cachedResponse": "Réponse mise en cache",
-      "downloadReport": "Télécharger le rapport au format Markdown"
+      "downloadReport": "Télécharger le rapport au format Markdown",
+      "share": "Partager",
+      "edit": "Modifier",
+      "add": "Ajouter",
+      "copiedToClipboard": "Copié dans le presse-papiers !"
     },
     "navbar": {
       "searchLanguages": "Rechercher des langues...",
@@ -405,7 +429,11 @@
       "messagePlaceholder": "Сообщение ToolSense AI...",
       "footerText": "ToolSense AI может анализировать инструменты и предоставлять оценки безопасности. Введите название продукта, поставщика или URL.",
       "cachedResponse": "Кэшированный ответ",
-      "downloadReport": "Скачать отчет в формате Markdown"
+      "downloadReport": "Скачать отчет в формате Markdown",
+      "share": "Поделиться",
+      "edit": "Редактировать",
+      "add": "Добавить",
+      "copiedToClipboard": "Скопировано в буфер обмена!"
     },
     "navbar": {
       "searchLanguages": "Поиск языков...",

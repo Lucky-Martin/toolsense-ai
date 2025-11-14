@@ -4,12 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 import Navbar from "./Navbar";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-  cached?: boolean;
-}
+import Sidebar from "./Sidebar";
+import { conversationService, Message } from "../services/conversations";
+import { clientCacheService } from "../services/clientCache";
 
 const LOADING_MESSAGES = [
   "Analyzing company security posture...",
@@ -55,6 +52,8 @@ export default function Chatbot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [currentLoadingMessage, setCurrentLoadingMessage] = useState("");
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -70,7 +69,37 @@ export default function Chatbot() {
   useEffect(() => {
     // Focus input on mount
     inputRef.current?.focus();
+
+    // Clean up expired cache entries on mount and periodically
+    const cleanupCache = async () => {
+      await clientCacheService.clearExpired();
+    };
+
+    cleanupCache();
+    // Clean up expired entries every hour
+    const interval = setInterval(cleanupCache, 60 * 60 * 1000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  // Create new conversation
+  const handleNewConversation = () => {
+    setMessages([]);
+    setCurrentConversationId(null);
+    setSidebarOpen(false);
+    inputRef.current?.focus();
+  };
+
+  // Load conversation
+  const handleLoadConversation = (conversationId: string) => {
+    const conversation = conversationService.getConversation(conversationId);
+    if (conversation) {
+      setMessages(conversation.messages);
+      setCurrentConversationId(conversationId);
+      setSidebarOpen(false);
+      inputRef.current?.focus();
+    }
+  };
 
   useEffect(() => {
     if (isLoading) {
@@ -119,6 +148,17 @@ export default function Chatbot() {
       content: input.trim(),
     };
 
+    // Create new conversation if this is the first message
+    let conversationId = currentConversationId;
+    if (!conversationId) {
+      const newConversation = conversationService.createConversation(
+        input.trim().substring(0, 50) || "New Conversation",
+        userMessage
+      );
+      conversationId = newConversation.id;
+      setCurrentConversationId(conversationId);
+    }
+
     // Add user message to chat
     setMessages((prev) => [...prev, userMessage]);
     const currentInput = input.trim();
@@ -137,48 +177,84 @@ export default function Chatbot() {
         ? localStorage.getItem("languageId") || "en"
         : "en";
 
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: currentInput,
-          history: history,
-          languageId: languageId,
-        }),
-      });
+      // Check cache first (only for new queries, not follow-up questions)
+      const isNewQuery = history.length === 0;
+      let cachedResponse: string | null = null;
+      let fromCache = false;
 
-      const data = await response.json();
+      if (isNewQuery) {
+        cachedResponse = await clientCacheService.get(currentInput, languageId);
+        if (cachedResponse) {
+          fromCache = true;
+        }
+      }
 
-      if (!response.ok) {
-        const errorMessage = data.details
-          ? `${data.error || "Failed to get response"}: ${data.details}`
-          : data.error || "Failed to get response";
-        throw new Error(errorMessage);
+      let responseData: { message: string; cached?: boolean; error?: string; details?: string };
+
+      if (fromCache && cachedResponse) {
+        // Use cached response
+        responseData = {
+          message: cachedResponse,
+          cached: true,
+        };
+      } else {
+        // Make API call
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: currentInput,
+            history: history,
+            languageId: languageId,
+          }),
+        });
+
+        responseData = await response.json();
+
+        if (!response.ok) {
+          const errorMessage = responseData.details
+            ? `${responseData.error || "Failed to get response"}: ${responseData.details}`
+            : responseData.error || "Failed to get response";
+          throw new Error(errorMessage);
+        }
+
+        // Cache the response if it's a new query
+        if (isNewQuery && responseData.message) {
+          await clientCacheService.set(currentInput, responseData.message, "gemini-2.5-pro", languageId);
+        }
       }
 
       // Add assistant response to chat
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: data.message,
-          cached: data.cached || false,
-        },
-      ]);
+      const assistantMessage: Message = {
+        role: "assistant",
+        content: responseData.message,
+        cached: fromCache || responseData.cached || false,
+      };
+      const updatedMessages = [...messages, userMessage, assistantMessage];
+      setMessages(updatedMessages);
+
+      // Update conversation with new messages
+      if (conversationId) {
+        conversationService.updateConversation(conversationId, updatedMessages);
+      }
     } catch (error) {
       console.error("Error sending message:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content:
-            error instanceof Error
-              ? `Sorry, I encountered an error: ${error.message}`
-              : "Sorry, I encountered an error. Please try again.",
-        },
-      ]);
+      const errorMessage: Message = {
+        role: "assistant",
+        content:
+          error instanceof Error
+            ? `Sorry, I encountered an error: ${error.message}`
+            : "Sorry, I encountered an error. Please try again.",
+      };
+      const updatedMessages = [...messages, userMessage, errorMessage];
+      setMessages(updatedMessages);
+
+      // Save error message to conversation too
+      if (conversationId) {
+        conversationService.updateConversation(conversationId, updatedMessages);
+      }
     } finally {
       setIsLoading(false);
       inputRef.current?.focus();
@@ -244,12 +320,46 @@ ${lastAssistantMessage.content}
   const hasAssistantResponse = messages.some(msg => msg.role === "assistant");
 
   return (
-    <div className="flex flex-col h-screen w-full bg-white fixed inset-0 overflow-hidden">
-      {/* Navbar */}
-      <Navbar />
+    <div className="flex h-screen w-full bg-white fixed inset-0 overflow-hidden">
+      {/* Sidebar */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        currentConversationId={currentConversationId}
+        onNewConversation={handleNewConversation}
+        onLoadConversation={handleLoadConversation}
+      />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 min-h-0 overflow-hidden pb-0">
+      {/* Main Content Wrapper */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Navbar */}
+        <Navbar />
+
+        {/* Sidebar Toggle Button */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className={`fixed top-16 z-30 p-2 bg-white rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-all duration-300 ${
+            sidebarOpen ? "left-[21rem] lg:left-[21rem]" : "left-4"
+          }`}
+          aria-label="Toggle sidebar"
+        >
+          <svg
+            className="w-6 h-6 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 min-h-0 overflow-hidden pb-0">
         {!hasMessages ? (
           <div className="w-full max-w-3xl text-center">
             <h1 className="text-4xl font-bold text-black mb-4">
@@ -446,6 +556,7 @@ ${lastAssistantMessage.content}
             {t("chatbot.footerText")}
           </p>
         </div>
+      </div>
       </div>
     </div>
   );

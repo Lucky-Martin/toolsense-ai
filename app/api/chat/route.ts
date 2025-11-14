@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { geminiService, ChatMessage } from "../../services/gemini";
-import { cacheService } from "../../services/cache";
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,42 +22,18 @@ export async function POST(request: NextRequest) {
     // Normalize language code (default to "en" if not provided)
     const language = languageId || "en";
 
-    // Check cache first (only for new queries, not follow-up questions)
-    // If there's no history, it's likely a new assessment request
-    const isNewQuery = history.length === 0;
-    let response: string;
-    let fromCache = false;
-
-    if (isNewQuery) {
-      // Check cache for this specific language
-      const cachedResponse = cacheService.get(message, language);
-      if (cachedResponse) {
-        response = cachedResponse;
-        fromCache = true;
-      } else {
-        // Use the Gemini service to send the message with language
-        response = await geminiService.sendMessage(
-          message,
-          history as ChatMessage[],
-          language
-        );
-
-        // Cache the response with language
-        cacheService.set(message, response, "gemini-2.5-pro", language);
-      }
-    } else {
-      // For follow-up questions, don't use cache but still use language
-      response = await geminiService.sendMessage(
-        message,
-        history as ChatMessage[],
-        language
-      );
-    }
+    // Use the Gemini service to send the message with language
+    // Caching is now handled client-side using IndexedDB
+    const response = await geminiService.sendMessage(
+      message,
+      history as ChatMessage[],
+      language
+    );
 
     return NextResponse.json({
       message: response,
       success: true,
-      cached: fromCache,
+      cached: false, // Cache is handled client-side, so API always returns false
     });
   } catch (error) {
     console.error("Error calling Gemini API:", error);

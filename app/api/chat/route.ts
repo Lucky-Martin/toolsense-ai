@@ -1,10 +1,6 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
-
-// Initialize the Gemini API
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY || ""
-);
+import { geminiService, ChatMessage } from "../../services/gemini";
+import { cacheService } from "../../services/cache";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,33 +15,44 @@ export async function POST(request: NextRequest) {
 
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json(
-        { error: "GEMINI_API_KEY is not configured" },
+        { error: "GEMINI_API_KEY is not configured. Please set it in your .env.local file." },
         { status: 500 }
       );
     }
 
-    // Get the generative model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Check cache first (only for new queries, not follow-up questions)
+    // If there's no history, it's likely a new assessment request
+    const isNewQuery = history.length === 0;
+    let response: string;
+    let fromCache = false;
 
-    // Build conversation history
-    const chatHistory = history.map((msg: { role: string; content: string }) => ({
-      role: msg.role === "user" ? "user" : "model",
-      parts: [{ text: msg.content }],
-    }));
+    if (isNewQuery) {
+      const cachedResponse = cacheService.get(message);
+      if (cachedResponse) {
+        response = cachedResponse;
+        fromCache = true;
+      } else {
+        // Use the Gemini service to send the message
+        response = await geminiService.sendMessage(
+          message,
+          history as ChatMessage[]
+        );
 
-    // Start a chat session with history
-    const chat = model.startChat({
-      history: chatHistory,
-    });
-
-    // Send the message and get response
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const text = response.text();
+        // Cache the response
+        cacheService.set(message, response, "gemini-2.5-pro");
+      }
+    } else {
+      // For follow-up questions, don't use cache
+      response = await geminiService.sendMessage(
+        message,
+        history as ChatMessage[]
+      );
+    }
 
     return NextResponse.json({
-      message: text,
+      message: response,
       success: true,
+      cached: fromCache,
     });
   } catch (error) {
     console.error("Error calling Gemini API:", error);

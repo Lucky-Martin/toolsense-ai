@@ -1,22 +1,20 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
+  cached?: boolean;
 }
 
 export default function Chatbot() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "Hello! I'm your AI assistant powered by Gemini. How can I help you today?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -25,6 +23,11 @@ export default function Chatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    // Focus input on mount
+    inputRef.current?.focus();
+  }, []);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,23 +40,16 @@ export default function Chatbot() {
 
     // Add user message to chat
     setMessages((prev) => [...prev, userMessage]);
+    const currentInput = input.trim();
     setInput("");
     setIsLoading(true);
 
     try {
-      // Prepare conversation history (excluding the initial greeting)
-      const history = messages
-        .slice(1) // Skip the initial greeting
-        .map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        }));
-
-      // Add the current user message to history
-      history.push({
-        role: "user",
-        content: userMessage.content,
-      });
+      // Prepare conversation history
+      const history = messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      }));
 
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -61,15 +57,18 @@ export default function Chatbot() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: userMessage.content,
-          history: history.slice(0, -1), // Send history without current message
+          message: currentInput,
+          history: history,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to get response");
+        const errorMessage = data.details
+          ? `${data.error || "Failed to get response"}: ${data.details}`
+          : data.error || "Failed to get response";
+        throw new Error(errorMessage);
       }
 
       // Add assistant response to chat
@@ -78,6 +77,7 @@ export default function Chatbot() {
         {
           role: "assistant",
           content: data.message,
+          cached: data.cached || false,
         },
       ]);
     } catch (error) {
@@ -94,111 +94,266 @@ export default function Chatbot() {
       ]);
     } finally {
       setIsLoading(false);
+      inputRef.current?.focus();
     }
   };
 
-  return (
-    <div className="flex flex-col h-screen max-h-[800px] w-full max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-            />
-          </svg>
-        </div>
-        <div>
-          <h2 className="text-lg font-semibold">AI Chatbot</h2>
-          <p className="text-sm text-white/80">Powered by Gemini</p>
-        </div>
-      </div>
+  const hasMessages = messages.length > 0;
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex ${
-              message.role === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                message.role === "user"
-                  ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                  : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700"
-              }`}
-            >
-              <p className="text-sm whitespace-pre-wrap break-words">
-                {message.content}
-              </p>
-            </div>
+  const handleDownload = () => {
+    // Find the last assistant message and its corresponding user query
+    let lastAssistantIndex = -1;
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].role === "assistant") {
+        lastAssistantIndex = i;
+        break;
+      }
+    }
+
+    if (lastAssistantIndex === -1) return;
+
+    const lastAssistantMessage = messages[lastAssistantIndex];
+
+    // Find the user query that prompted this response (the user message before this assistant message)
+    let userQuery = "security-assessment";
+    for (let i = lastAssistantIndex - 1; i >= 0; i--) {
+      if (messages[i].role === "user") {
+        userQuery = messages[i].content;
+        break;
+      }
+    }
+
+    // Create a safe filename from the user query
+    const safeFilename = userQuery
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .substring(0, 50) || "security-assessment";
+
+    // Create the file content with metadata
+    const fileContent = `# Security Assessment Report
+
+**Tool:** ${userQuery}
+**Generated by:** ToolSense AI
+**Date:** ${new Date().toLocaleString()}
+
+---
+
+${lastAssistantMessage.content}
+`;
+
+    // Create a blob and download
+    const blob = new Blob([fileContent], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${safeFilename}-${Date.now()}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const hasAssistantResponse = messages.some(msg => msg.role === "assistant");
+
+  return (
+    <div className="flex flex-col h-screen w-full bg-white fixed inset-0 overflow-hidden">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 min-h-0 overflow-hidden pb-0">
+        {!hasMessages ? (
+          <div className="w-full max-w-3xl text-center">
+            <h1 className="text-4xl font-bold text-black mb-4">
+              What can I help with?
+            </h1>
+            <p className="text-lg text-gray-600 font-normal">
+              Turn any app or URL into CISO-ready trust briefs in seconds.
+            </p>
           </div>
-        ))}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl px-4 py-3 border border-gray-200 dark:border-gray-700">
-              <div className="flex gap-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+        ) : (
+          <div className="w-full max-w-3xl h-full overflow-y-auto py-8 pb-32 space-y-6">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`flex ${
+                  message.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
                 <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.2s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.4s" }}
-                ></div>
+                  className={`max-w-[85%] rounded-lg px-4 py-3 ${
+                    message.role === "user"
+                      ? "bg-gray-100 text-black"
+                      : "bg-gray-50 text-gray-800 border border-gray-200"
+                  }`}
+                >
+                  {message.role === "assistant" ? (
+                    <div className="markdown-content">
+                      {message.cached && (
+                        <div className="mb-2 text-xs text-gray-500 italic flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Cached response
+                        </div>
+                      )}
+                      <ReactMarkdown
+                        components={{
+                          h1: (props) => (
+                            <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2" {...props} />
+                          ),
+                          h2: (props) => (
+                            <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900" {...props} />
+                          ),
+                          h3: (props) => (
+                            <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800" {...props} />
+                          ),
+                          h4: (props) => (
+                            <h4 className="text-base font-semibold mt-3 mb-2 text-gray-800" {...props} />
+                          ),
+                          p: (props) => (
+                            <p className="mb-3 leading-7 text-gray-700" {...props} />
+                          ),
+                          ul: (props) => (
+                            <ul className="list-disc list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
+                          ),
+                          ol: (props) => (
+                            <ol className="list-decimal list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
+                          ),
+                          li: (props) => (
+                            <li className="pl-2 leading-7" {...props} />
+                          ),
+                          strong: (props) => (
+                            <strong className="font-semibold text-gray-900" {...props} />
+                          ),
+                          em: (props) => (
+                            <em className="italic text-gray-700" {...props} />
+                          ),
+                          code: (props) => (
+                            <code className="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />
+                          ),
+                          pre: (props) => (
+                            <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto mb-3 text-sm" {...props} />
+                          ),
+                          hr: (props) => (
+                            <hr className="my-6 border-gray-300" {...props} />
+                          ),
+                          a: (props) => (
+                            <a className="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank" rel="noopener noreferrer" {...props} />
+                          ),
+                          blockquote: (props) => (
+                            <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3 text-gray-600" {...props} />
+                          ),
+                          table: (props) => (
+                            <div className="overflow-x-auto my-4">
+                              <table className="min-w-full border-collapse border border-gray-300" {...props} />
+                            </div>
+                          ),
+                          thead: (props) => (
+                            <thead className="bg-gray-100" {...props} />
+                          ),
+                          th: (props) => (
+                            <th className="border border-gray-300 px-4 py-2 text-left font-semibold" {...props} />
+                          ),
+                          td: (props) => (
+                            <td className="border border-gray-300 px-4 py-2" {...props} />
+                          ),
+                        }}
+                      >
+                        {message.content}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <div className="whitespace-pre-wrap break-words leading-relaxed">
+                      {message.content}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="text-gray-500">
+                  <div className="flex gap-1">
+                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div
+                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0.2s" }}
+                    ></div>
+                    <div
+                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0.4s" }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <form
-        onSubmit={handleSend}
-        className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800"
-      >
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            disabled={isLoading}
-            className="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !input.trim()}
-            className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+      {/* Input Area - Fixed at Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]" style={{ borderTop: '1px solid white' }}>
+        <div className="max-w-3xl mx-auto px-4 py-4">
+          <form onSubmit={handleSend} className="relative">
+            <div className="relative flex items-center">
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Message ToolSense AI..."
+                disabled={isLoading}
+                className="flex-1 px-4 py-3 pr-12 bg-gray-100 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:bg-white focus:border-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               />
-            </svg>
-          </button>
+              {hasAssistantResponse ? (
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  className="absolute right-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
+                  title="Download report as Markdown file"
+                >
+                  <svg
+                    className="w-5 h-5 text-gray-700"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
+                  </svg>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={isLoading || !input.trim()}
+                  className="absolute right-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <svg
+                    className="w-5 h-5 text-gray-700"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                    />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </form>
+          <p className="text-xs text-gray-400 text-center mt-2">
+            ToolSense AI can analyze tools and provide security assessments. Enter a product name, vendor, or URL.
+          </p>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

@@ -51,7 +51,11 @@
       "messagePlaceholder": "Message ToolSense AI...",
       "footerText": "ToolSense AI can analyze tools and provide security assessments. Enter a product name, vendor, or URL.",
       "cachedResponse": "Cached response",
-      "downloadReport": "Download report as Markdown file"
+      "downloadReport": "Download report as Markdown file",
+      "share": "Share",
+      "edit": "Edit",
+      "add": "Add",
+      "copiedToClipboard": "Copied to clipboard!"
     },
     "navbar": {
       "searchLanguages": "Search languages...",
@@ -125,7 +129,11 @@
       "messagePlaceholder": "向ToolSense AI发送消息...",
       "footerText": "ToolSense AI可以分析工具并提供安全评估。输入产品名称、供应商或URL。",
       "cachedResponse": "缓存响应",
-      "downloadReport": "下载Markdown格式的报告"
+      "downloadReport": "下载Markdown格式的报告",
+      "share": "分享",
+      "edit": "编辑",
+      "add": "添加",
+      "copiedToClipboard": "已复制到剪贴板！"
     },
     "navbar": {
       "searchLanguages": "搜索语言...",
@@ -199,7 +207,11 @@
       "messagePlaceholder": "Mensaje a ToolSense AI...",
       "footerText": "ToolSense AI puede analizar herramientas y proporcionar evaluaciones de seguridad. Ingresa un nombre de producto, proveedor o URL.",
       "cachedResponse": "Respuesta en caché",
-      "downloadReport": "Descargar informe como archivo Markdown"
+      "downloadReport": "Descargar informe como archivo Markdown",
+      "share": "Compartir",
+      "edit": "Editar",
+      "add": "Añadir",
+      "copiedToClipboard": "¡Copiado al portapapeles!"
     },
     "navbar": {
       "searchLanguages": "Buscar idiomas...",
@@ -273,7 +285,11 @@
       "messagePlaceholder": "Viesti ToolSense AI:lle...",
       "footerText": "ToolSense AI voi analysoida työkaluja ja tarjota tietoturva-arvioita. Syötä tuotteen nimi, toimittaja tai URL.",
       "cachedResponse": "Välimuistissa oleva vastaus",
-      "downloadReport": "Lataa raportti Markdown-tiedostona"
+      "downloadReport": "Lataa raportti Markdown-tiedostona",
+      "share": "Jaa",
+      "edit": "Muokkaa",
+      "add": "Lisää",
+      "copiedToClipboard": "Kopioitu leikepöydälle!"
     },
     "navbar": {
       "searchLanguages": "Etsi kieliä...",
@@ -347,7 +363,11 @@
       "messagePlaceholder": "Nachricht an ToolSense AI...",
       "footerText": "ToolSense AI kann Tools analysieren und Sicherheitsbewertungen bereitstellen. Geben Sie einen Produktnamen, Anbieter oder URL ein.",
       "cachedResponse": "Zwischengespeicherte Antwort",
-      "downloadReport": "Bericht als Markdown-Datei herunterladen"
+      "downloadReport": "Bericht als Markdown-Datei herunterladen",
+      "share": "Teilen",
+      "edit": "Bearbeiten",
+      "add": "Hinzufügen",
+      "copiedToClipboard": "In die Zwischenablage kopiert!"
     },
     "navbar": {
       "searchLanguages": "Sprachen suchen...",
@@ -421,7 +441,11 @@
       "messagePlaceholder": "Message à ToolSense AI...",
       "footerText": "ToolSense AI peut analyser les outils et fournir des évaluations de sécurité. Entrez un nom de produit, un fournisseur ou une URL.",
       "cachedResponse": "Réponse mise en cache",
-      "downloadReport": "Télécharger le rapport au format Markdown"
+      "downloadReport": "Télécharger le rapport au format Markdown",
+      "share": "Partager",
+      "edit": "Modifier",
+      "add": "Ajouter",
+      "copiedToClipboard": "Copié dans le presse-papiers !"
     },
     "navbar": {
       "searchLanguages": "Rechercher des langues...",
@@ -495,7 +519,11 @@
       "messagePlaceholder": "Сообщение ToolSense AI...",
       "footerText": "ToolSense AI может анализировать инструменты и предоставлять оценки безопасности. Введите название продукта, поставщика или URL.",
       "cachedResponse": "Кэшированный ответ",
-      "downloadReport": "Скачать отчет в формате Markdown"
+      "downloadReport": "Скачать отчет в формате Markdown",
+      "share": "Поделиться",
+      "edit": "Редактировать",
+      "add": "Добавить",
+      "copiedToClipboard": "Скопировано в буфер обмена!"
     },
     "navbar": {
       "searchLanguages": "Поиск языков...",
@@ -569,7 +597,11 @@
       "messagePlaceholder": "ToolSense AI को संदेश...",
       "footerText": "ToolSense AI उपकरणों का विश्लेषण कर सकता है और सुरक्षा आकलन प्रदान कर सकता है। एक उत्पाद नाम, विक्रेता, या URL दर्ज करें।",
       "cachedResponse": "कैश किया गया उत्तर",
-      "downloadReport": "Markdown फ़ाइल के रूप में रिपोर्ट डाउनलोड करें"
+      "downloadReport": "Markdown फ़ाइल के रूप में रिपोर्ट डाउनलोड करें",
+      "share": "साझा करें",
+      "edit": "संपादित करें",
+      "add": "जोड़ें",
+      "copiedToClipboard": "क्लिपबोर्ड पर कॉपी किया गया!"
     },
     "navbar": {
       "searchLanguages": "भाषाएं खोजें...",
@@ -643,7 +675,11 @@
       "messagePlaceholder": "رسالة إلى ToolSense AI...",
       "footerText": "يمكن لـ ToolSense AI تحليل الأدوات وتقديم تقييمات الأمان. أدخل اسم المنتج أو البائع أو الرابط.",
       "cachedResponse": "استجابة مخزنة",
-      "downloadReport": "تنزيل التقرير كملف Markdown"
+      "downloadReport": "تنزيل التقرير كملف Markdown",
+      "share": "مشاركة",
+      "edit": "تعديل",
+      "add": "إضافة",
+      "copiedToClipboard": "تم النسخ إلى الحافظة!"
     },
     "navbar": {
       "searchLanguages": "البحث عن اللغات...",
@@ -717,7 +753,11 @@
       "messagePlaceholder": "Mensagem para ToolSense AI...",
       "footerText": "ToolSense AI pode analisar ferramentas e fornecer avaliações de segurança. Digite um nome de produto, fornecedor ou URL.",
       "cachedResponse": "Resposta em cache",
-      "downloadReport": "Baixar relatório como arquivo Markdown"
+      "downloadReport": "Baixar relatório como arquivo Markdown",
+      "share": "Compartilhar",
+      "edit": "Editar",
+      "add": "Adicionar",
+      "copiedToClipboard": "Copiado para a área de transferência!"
     },
     "navbar": {
       "searchLanguages": "Pesquisar idiomas...",
@@ -791,7 +831,11 @@
       "messagePlaceholder": "ToolSense AI-কে বার্তা...",
       "footerText": "ToolSense AI সরঞ্জাম বিশ্লেষণ করতে পারে এবং নিরাপত্তা মূল্যায়ন প্রদান করতে পারে। একটি পণ্যের নাম, বিক্রেতা বা URL লিখুন।",
       "cachedResponse": "ক্যাশ করা প্রতিক্রিয়া",
-      "downloadReport": "Markdown ফাইল হিসাবে রিপোর্ট ডাউনলোড করুন"
+      "downloadReport": "Markdown ফাইল হিসাবে রিপোর্ট ডাউনলোড করুন",
+      "share": "শেয়ার করুন",
+      "edit": "সম্পাদনা করুন",
+      "add": "যোগ করুন",
+      "copiedToClipboard": "ক্লিপবোর্ডে কপি করা হয়েছে!"
     },
     "navbar": {
       "searchLanguages": "ভাষা অনুসন্ধান করুন...",
@@ -865,7 +909,11 @@
       "messagePlaceholder": "ToolSense AIにメッセージ...",
       "footerText": "ToolSense AIはツールを分析し、セキュリティ評価を提供できます。製品名、ベンダー、またはURLを入力してください。",
       "cachedResponse": "キャッシュされた応答",
-      "downloadReport": "Markdownファイルとしてレポートをダウンロード"
+      "downloadReport": "Markdownファイルとしてレポートをダウンロード",
+      "share": "共有",
+      "edit": "編集",
+      "add": "追加",
+      "copiedToClipboard": "クリップボードにコピーしました！"
     },
     "navbar": {
       "searchLanguages": "言語を検索...",
@@ -939,7 +987,11 @@
       "messagePlaceholder": "ToolSense AI ਨੂੰ ਸੁਨੇਹਾ...",
       "footerText": "ToolSense AI ਸਾਧਨਾਂ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰ ਸਕਦਾ ਹੈ ਅਤੇ ਸੁਰੱਖਿਆ ਮੁਲਾਂਕਣ ਪ੍ਰਦਾਨ ਕਰ ਸਕਦਾ ਹੈ। ਇੱਕ ਉਤਪਾਦ ਨਾਮ, ਵਿਕਰੇਤਾ, ਜਾਂ URL ਦਰਜ ਕਰੋ।",
       "cachedResponse": "ਕੈਸ਼ ਕੀਤਾ ਗਿਆ ਜਵਾਬ",
-      "downloadReport": "Markdown ਫਾਈਲ ਵਜੋਂ ਰਿਪੋਰਟ ਡਾਉਨਲੋਡ ਕਰੋ"
+      "downloadReport": "Markdown ਫਾਈਲ ਵਜੋਂ ਰਿਪੋਰਟ ਡਾਉਨਲੋਡ ਕਰੋ",
+      "share": "ਸਾਂਝਾ ਕਰੋ",
+      "edit": "ਸੰਪਾਦਨ ਕਰੋ",
+      "add": "ਜੋੜੋ",
+      "copiedToClipboard": "ਕਲਿਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕੀਤਾ ਗਿਆ!"
     },
     "navbar": {
       "searchLanguages": "ਭਾਸ਼ਾਵਾਂ ਖੋਜੋ...",
@@ -1013,7 +1065,11 @@
       "messagePlaceholder": "Pesen menyang ToolSense AI...",
       "footerText": "ToolSense AI bisa nganalisa piranti lan nyedhiakake penilaian keamanan. Ketik jeneng produk, vendor, utawa URL.",
       "cachedResponse": "Tanggapan sing disimpen",
-      "downloadReport": "Undhuh laporan minangka file Markdown"
+      "downloadReport": "Undhuh laporan minangka file Markdown",
+      "share": "Bagikake",
+      "edit": "Sunting",
+      "add": "Tambah",
+      "copiedToClipboard": "Disalin menyang clipboard!"
     },
     "navbar": {
       "searchLanguages": "Goleki basa...",
@@ -1087,7 +1143,11 @@
       "messagePlaceholder": "ToolSense AI에게 메시지...",
       "footerText": "ToolSense AI는 도구를 분석하고 보안 평가를 제공할 수 있습니다. 제품 이름, 공급업체 또는 URL을 입력하세요.",
       "cachedResponse": "캐시된 응답",
-      "downloadReport": "Markdown 파일로 보고서 다운로드"
+      "downloadReport": "Markdown 파일로 보고서 다운로드",
+      "share": "공유",
+      "edit": "편집",
+      "add": "추가",
+      "copiedToClipboard": "클립보드에 복사되었습니다!"
     },
     "navbar": {
       "searchLanguages": "언어 검색...",
@@ -1161,7 +1221,11 @@
       "messagePlaceholder": "ToolSense AI కు సందేశం...",
       "footerText": "ToolSense AI సాధనాలను విశ్లేషించగలదు మరియు భద్రతా అంచనాలను అందించగలదు. ఉత్పత్తి పేరు, విక్రేత లేదా URL నమోదు చేయండి.",
       "cachedResponse": "క్యాచ్ చేయబడిన ప్రతిస్పందన",
-      "downloadReport": "Markdown ఫైల్‌గా నివేదికను డౌన్‌లోడ్ చేయండి"
+      "downloadReport": "Markdown ఫైల్‌గా నివేదికను డౌన్‌లోడ్ చేయండి",
+      "share": "షేర్ చేయండి",
+      "edit": "సవరించండి",
+      "add": "జోడించండి",
+      "copiedToClipboard": "క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది!"
     },
     "navbar": {
       "searchLanguages": "భాషలను శోధించండి...",
@@ -1235,7 +1299,11 @@
       "messagePlaceholder": "Tin nhắn cho ToolSense AI...",
       "footerText": "ToolSense AI có thể phân tích công cụ và cung cấp đánh giá bảo mật. Nhập tên sản phẩm, nhà cung cấp hoặc URL.",
       "cachedResponse": "Phản hồi đã lưu",
-      "downloadReport": "Tải xuống báo cáo dưới dạng tệp Markdown"
+      "downloadReport": "Tải xuống báo cáo dưới dạng tệp Markdown",
+      "share": "Chia sẻ",
+      "edit": "Chỉnh sửa",
+      "add": "Thêm",
+      "copiedToClipboard": "Đã sao chép vào clipboard!"
     },
     "navbar": {
       "searchLanguages": "Tìm kiếm ngôn ngữ...",
@@ -1309,7 +1377,11 @@
       "messagePlaceholder": "Messaggio a ToolSense AI...",
       "footerText": "ToolSense AI può analizzare strumenti e fornire valutazioni di sicurezza. Inserisci un nome prodotto, fornitore o URL.",
       "cachedResponse": "Risposta in cache",
-      "downloadReport": "Scarica il rapporto come file Markdown"
+      "downloadReport": "Scarica il rapporto come file Markdown",
+      "share": "Condividi",
+      "edit": "Modifica",
+      "add": "Aggiungi",
+      "copiedToClipboard": "Copiato negli appunti!"
     },
     "navbar": {
       "searchLanguages": "Cerca lingue...",
@@ -1383,7 +1455,11 @@
       "messagePlaceholder": "ToolSense AI'ye mesaj...",
       "footerText": "ToolSense AI araçları analiz edebilir ve güvenlik değerlendirmeleri sağlayabilir. Bir ürün adı, satıcı veya URL girin.",
       "cachedResponse": "Önbelleğe alınmış yanıt",
-      "downloadReport": "Raporu Markdown dosyası olarak indir"
+      "downloadReport": "Raporu Markdown dosyası olarak indir",
+      "share": "Paylaş",
+      "edit": "Düzenle",
+      "add": "Ekle",
+      "copiedToClipboard": "Panoya kopyalandı!"
     },
     "navbar": {
       "searchLanguages": "Dilleri ara...",
@@ -1457,7 +1533,11 @@
       "messagePlaceholder": "Wiadomość do ToolSense AI...",
       "footerText": "ToolSense AI może analizować narzędzia i dostarczać oceny bezpieczeństwa. Wprowadź nazwę produktu, dostawcę lub URL.",
       "cachedResponse": "Zbuforowana odpowiedź",
-      "downloadReport": "Pobierz raport jako plik Markdown"
+      "downloadReport": "Pobierz raport jako plik Markdown",
+      "share": "Udostępnij",
+      "edit": "Edytuj",
+      "add": "Dodaj",
+      "copiedToClipboard": "Skopiowano do schowka!"
     },
     "navbar": {
       "searchLanguages": "Szukaj języków...",
@@ -1531,7 +1611,11 @@
       "messagePlaceholder": "Повідомлення ToolSense AI...",
       "footerText": "ToolSense AI може аналізувати інструменти та надавати оцінки безпеки. Введіть назву продукту, постачальника або URL.",
       "cachedResponse": "Кешована відповідь",
-      "downloadReport": "Завантажити звіт у форматі Markdown"
+      "downloadReport": "Завантажити звіт у форматі Markdown",
+      "share": "Поділитися",
+      "edit": "Редагувати",
+      "add": "Додати",
+      "copiedToClipboard": "Скопійовано в буфер обміну!"
     },
     "navbar": {
       "searchLanguages": "Пошук мов...",
@@ -1605,7 +1689,11 @@
       "messagePlaceholder": "ข้อความถึง ToolSense AI...",
       "footerText": "ToolSense AI สามารถวิเคราะห์เครื่องมือและให้การประเมินความปลอดภัย ป้อนชื่อผลิตภัณฑ์ ผู้ขาย หรือ URL",
       "cachedResponse": "คำตอบที่แคชไว้",
-      "downloadReport": "ดาวน์โหลดรายงานเป็นไฟล์ Markdown"
+      "downloadReport": "ดาวน์โหลดรายงานเป็นไฟล์ Markdown",
+      "share": "แชร์",
+      "edit": "แก้ไข",
+      "add": "เพิ่ม",
+      "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว!"
     },
     "navbar": {
       "searchLanguages": "ค้นหาภาษา...",
@@ -1679,7 +1767,11 @@
       "messagePlaceholder": "Bericht aan ToolSense AI...",
       "footerText": "ToolSense AI kan tools analyseren en beveiligingsbeoordelingen bieden. Voer een productnaam, leverancier of URL in.",
       "cachedResponse": "Gecachte reactie",
-      "downloadReport": "Download rapport als Markdown bestand"
+      "downloadReport": "Download rapport als Markdown bestand",
+      "share": "Delen",
+      "edit": "Bewerken",
+      "add": "Toevoegen",
+      "copiedToClipboard": "Gekopieerd naar klembord!"
     },
     "navbar": {
       "searchLanguages": "Zoek talen...",
@@ -1753,7 +1845,11 @@
       "messagePlaceholder": "Μήνυμα στο ToolSense AI...",
       "footerText": "Το ToolSense AI μπορεί να αναλύσει εργαλεία και να παρέχει αξιολογήσεις ασφαλείας. Εισάγετε όνομα προϊόντος, προμηθευτή ή URL.",
       "cachedResponse": "Αποθηκευμένη απάντηση",
-      "downloadReport": "Λήψη αναφοράς ως αρχείο Markdown"
+      "downloadReport": "Λήψη αναφοράς ως αρχείο Markdown",
+      "share": "Κοινοποίηση",
+      "edit": "Επεξεργασία",
+      "add": "Προσθήκη",
+      "copiedToClipboard": "Αντιγράφηκε στο πρόχειρο!"
     },
     "navbar": {
       "searchLanguages": "Αναζήτηση γλωσσών...",
@@ -1827,7 +1923,11 @@
       "messagePlaceholder": "Zpráva pro ToolSense AI...",
       "footerText": "ToolSense AI může analyzovat nástroje a poskytovat hodnocení bezpečnosti. Zadejte název produktu, dodavatele nebo URL.",
       "cachedResponse": "Cachovaná odpověď",
-      "downloadReport": "Stáhnout zprávu jako soubor Markdown"
+      "downloadReport": "Stáhnout zprávu jako soubor Markdown",
+      "share": "Sdílet",
+      "edit": "Upravit",
+      "add": "Přidat",
+      "copiedToClipboard": "Zkopírováno do schránky!"
     },
     "navbar": {
       "searchLanguages": "Hledat jazyky...",
@@ -1901,7 +2001,11 @@
       "messagePlaceholder": "Meddelande till ToolSense AI...",
       "footerText": "ToolSense AI kan analysera verktyg och ge säkerhetsbedömningar. Ange ett produktnamn, leverantör eller URL.",
       "cachedResponse": "Cachad svar",
-      "downloadReport": "Ladda ner rapport som Markdown-fil"
+      "downloadReport": "Ladda ner rapport som Markdown-fil",
+      "share": "Dela",
+      "edit": "Redigera",
+      "add": "Lägg till",
+      "copiedToClipboard": "Kopierat till urklipp!"
     },
     "navbar": {
       "searchLanguages": "Sök språk...",
@@ -1975,7 +2079,11 @@
       "messagePlaceholder": "Mesaj către ToolSense AI...",
       "footerText": "ToolSense AI poate analiza instrumente și oferi evaluări de securitate. Introduceți un nume de produs, furnizor sau URL.",
       "cachedResponse": "Răspuns în cache",
-      "downloadReport": "Descarcă raportul ca fișier Markdown"
+      "downloadReport": "Descarcă raportul ca fișier Markdown",
+      "share": "Distribuie",
+      "edit": "Editează",
+      "add": "Adaugă",
+      "copiedToClipboard": "Copiat în clipboard!"
     },
     "navbar": {
       "searchLanguages": "Caută limbi...",
@@ -2049,7 +2157,11 @@
       "messagePlaceholder": "Üzenet a ToolSense AI-nak...",
       "footerText": "A ToolSense AI elemezheti az eszközöket és biztonsági értékeléseket nyújthat. Adj meg egy terméknevet, szállítót vagy URL-t.",
       "cachedResponse": "Gyorsítótárazott válasz",
-      "downloadReport": "Jelentés letöltése Markdown fájlként"
+      "downloadReport": "Jelentés letöltése Markdown fájlként",
+      "share": "Megosztás",
+      "edit": "Szerkesztés",
+      "add": "Hozzáadás",
+      "copiedToClipboard": "Vágólapra másolva!"
     },
     "navbar": {
       "searchLanguages": "Nyelvek keresése...",
@@ -2123,7 +2235,11 @@
       "messagePlaceholder": "Pesan ke ToolSense AI...",
       "footerText": "ToolSense AI dapat menganalisis alat dan memberikan penilaian keamanan. Masukkan nama produk, vendor, atau URL.",
       "cachedResponse": "Respons yang di-cache",
-      "downloadReport": "Unduh laporan sebagai file Markdown"
+      "downloadReport": "Unduh laporan sebagai file Markdown",
+      "share": "Bagikan",
+      "edit": "Edit",
+      "add": "Tambah",
+      "copiedToClipboard": "Disalin ke clipboard!"
     },
     "navbar": {
       "searchLanguages": "Cari bahasa...",
@@ -2197,7 +2313,11 @@
       "messagePlaceholder": "Mesej kepada ToolSense AI...",
       "footerText": "ToolSense AI boleh menganalisis alat dan memberikan penilaian keselamatan. Masukkan nama produk, vendor, atau URL.",
       "cachedResponse": "Respons yang di-cache",
-      "downloadReport": "Muat turun laporan sebagai fail Markdown"
+      "downloadReport": "Muat turun laporan sebagai fail Markdown",
+      "share": "Kongsi",
+      "edit": "Edit",
+      "add": "Tambah",
+      "copiedToClipboard": "Disalin ke papan keratan!"
     },
     "navbar": {
       "searchLanguages": "Cari bahasa...",

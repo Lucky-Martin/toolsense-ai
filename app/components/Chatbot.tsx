@@ -54,6 +54,8 @@ export default function Chatbot() {
   const [currentLoadingMessage, setCurrentLoadingMessage] = useState("");
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [hasUserMessage, setHasUserMessage] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -86,6 +88,8 @@ export default function Chatbot() {
   const handleNewConversation = () => {
     setMessages([]);
     setCurrentConversationId(null);
+    setHasUserMessage(false);
+    setIsEditing(false);
     setSidebarOpen(false);
     inputRef.current?.focus();
   };
@@ -96,6 +100,8 @@ export default function Chatbot() {
     if (conversation) {
       setMessages(conversation.messages);
       setCurrentConversationId(conversationId);
+      setHasUserMessage(conversation.messages.some(msg => msg.role === "user"));
+      setIsEditing(false);
       setSidebarOpen(false);
       inputRef.current?.focus();
     }
@@ -141,7 +147,7 @@ export default function Chatbot() {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || hasUserMessage) return;
 
     const userMessage: Message = {
       role: "user",
@@ -161,6 +167,7 @@ export default function Chatbot() {
 
     // Add user message to chat
     setMessages((prev) => [...prev, userMessage]);
+    setHasUserMessage(true);
     const currentInput = input.trim();
     setInput("");
     setIsLoading(true);
@@ -318,6 +325,111 @@ ${lastAssistantMessage.content}
   };
 
   const hasAssistantResponse = messages.some(msg => msg.role === "assistant");
+
+  const handleShare = async () => {
+    // Get the conversation content
+    const conversationText = messages
+      .map((msg) => `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`)
+      .join("\n\n");
+
+    try {
+      // Try to use the Web Share API if available
+      if (navigator.share) {
+        await navigator.share({
+          title: "ToolSense AI Conversation",
+          text: conversationText,
+        });
+        return; // Successfully shared, exit early
+      }
+    } catch (error: any) {
+      // If sharing is cancelled (user cancelled), don't try clipboard
+      if (error.name === "AbortError") {
+        console.log("Share cancelled by user");
+        return;
+      }
+      // For other errors, fall through to clipboard fallback
+      console.log("Web Share API failed, trying clipboard fallback:", error.message);
+    }
+
+    // Fallback: copy to clipboard
+    try {
+      // Ensure the document is focused before attempting clipboard operation
+      if (document.hasFocus && !document.hasFocus()) {
+        window.focus();
+        // Wait a bit for focus to be established
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      // Check if clipboard API is available
+      if (!navigator.clipboard || !navigator.clipboard.writeText) {
+        throw new Error("Clipboard API not available");
+      }
+
+      await navigator.clipboard.writeText(conversationText);
+      alert(t("chatbot.copiedToClipboard"));
+    } catch (clipboardError: any) {
+      // Log the error but don't crash the app
+      console.error("Failed to copy to clipboard:", clipboardError);
+
+      // Try fallback method using execCommand (deprecated but more compatible)
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = conversationText;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textArea);
+
+        if (successful) {
+          alert(t("chatbot.copiedToClipboard"));
+        } else {
+          console.error("execCommand copy failed");
+          // Last resort: show the text in a prompt so user can manually copy
+          prompt("Copy this text:", conversationText);
+        }
+      } catch (fallbackError) {
+        console.error("Fallback copy method also failed:", fallbackError);
+        // Last resort: show the text in a prompt so user can manually copy
+        prompt("Copy this text:", conversationText);
+      }
+    }
+  };
+
+  const handleEdit = () => {
+    // Find the last user message
+    let lastUserIndex = -1;
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].role === "user") {
+        lastUserIndex = i;
+        break;
+      }
+    }
+
+    if (lastUserIndex !== -1) {
+      const lastUserMessage = messages[lastUserIndex];
+      setInput(lastUserMessage.content);
+      setIsEditing(true);
+      // Remove the last user message and assistant response
+      const newMessages = messages.slice(0, lastUserIndex);
+      setMessages(newMessages);
+      setHasUserMessage(false);
+      // Update conversation
+      if (currentConversationId) {
+        conversationService.updateConversation(currentConversationId, newMessages);
+      }
+      inputRef.current?.focus();
+    }
+  };
+
+  const handleAdd = () => {
+    // Start a new conversation
+    handleNewConversation();
+  };
 
   return (
     <div className="flex h-screen w-full bg-white fixed inset-0 overflow-hidden">
@@ -497,42 +609,89 @@ ${lastAssistantMessage.content}
       {/* Input Area - Fixed at Bottom */}
       <div className="fixed bottom-0 left-0 right-0 bg-white z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]" style={{ borderTop: '1px solid white' }}>
         <div className="max-w-3xl mx-auto px-4 py-4">
-          <form onSubmit={handleSend} className="relative">
-            <div className="relative flex items-center">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={t("chatbot.messagePlaceholder")}
-                disabled={isLoading}
-                className="flex-1 px-4 py-3 pr-12 bg-gray-100 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:bg-white focus:border-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-              {hasAssistantResponse ? (
-                <button
-                  type="button"
-                  onClick={handleDownload}
-                  className="absolute right-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
-                  title={t("chatbot.downloadReport")}
+          {hasAssistantResponse ? (
+            // Show buttons when there's an assistant response
+            <div className="flex items-center justify-center gap-4">
+              <button
+                type="button"
+                onClick={handleShare}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                title={t("chatbot.share")}
+              >
+                <span className="text-sm font-medium">{t("chatbot.share")}</span>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    className="w-5 h-5 text-gray-700"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                    />
-                  </svg>
-                </button>
-              ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                  />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={handleEdit}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                title={t("chatbot.edit")}
+              >
+                <span className="text-sm font-medium">{t("chatbot.edit")}</span>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={handleAdd}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                title={t("chatbot.add")}
+              >
+                <span className="text-sm font-medium">{t("chatbot.add")}</span>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            // Show input when there's no assistant response
+            <form onSubmit={handleSend} className="relative">
+              <div className="relative flex items-center">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={t("chatbot.messagePlaceholder")}
+                  disabled={isLoading || hasUserMessage}
+                  className="flex-1 px-4 py-3 pr-12 bg-gray-100 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:bg-white focus:border-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                />
                 <button
                   type="submit"
-                  disabled={isLoading || !input.trim()}
+                  disabled={isLoading || !input.trim() || hasUserMessage}
                   className="absolute right-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
@@ -549,12 +708,14 @@ ${lastAssistantMessage.content}
                     />
                   </svg>
                 </button>
-              )}
-            </div>
-          </form>
-          <p className="text-xs text-gray-400 text-center mt-2">
-            {t("chatbot.footerText")}
-          </p>
+              </div>
+            </form>
+          )}
+          {!hasAssistantResponse && (
+            <p className="text-xs text-gray-400 text-center mt-2">
+              {t("chatbot.footerText")}
+            </p>
+          )}
         </div>
       </div>
       </div>

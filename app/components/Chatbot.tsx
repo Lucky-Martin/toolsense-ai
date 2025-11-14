@@ -336,13 +336,12 @@ ${lastAssistantMessage.content}
         <Navbar />
 
         {/* Sidebar Toggle Button */}
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className={`fixed top-16 z-30 p-2 bg-white rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-all duration-300 ${
-            sidebarOpen ? "left-[21rem] lg:left-[21rem]" : "left-4"
-          }`}
-          aria-label="Toggle sidebar"
-        >
+        {!sidebarOpen && (
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="fixed top-16 left-4 z-30 p-2 bg-white rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-all duration-300"
+            aria-label={t("sidebar.toggleSidebar")}
+          >
           <svg
             className="w-6 h-6 text-gray-700"
             fill="none"
@@ -357,6 +356,7 @@ ${lastAssistantMessage.content}
             />
           </svg>
         </button>
+        )}
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col items-center justify-center px-4 min-h-0 overflow-hidden pb-0">

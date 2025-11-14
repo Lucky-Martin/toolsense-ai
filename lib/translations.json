@@ -56,6 +56,21 @@
     "navbar": {
       "searchLanguages": "Search languages...",
       "noLanguagesFound": "No languages found"
+    },
+    "sidebar": {
+      "conversations": "Conversations",
+      "newConversation": "New Conversation",
+      "noConversations": "No conversations yet. Start a new one!",
+      "justNow": "Just now",
+      "minutesAgo": "m ago",
+      "hoursAgo": "h ago",
+      "daysAgo": "d ago",
+      "message": "message",
+      "messages": "messages",
+      "deleteConfirm": "Are you sure you want to delete this conversation?",
+      "closeSidebar": "Close sidebar",
+      "toggleSidebar": "Toggle sidebar",
+      "deleteConversation": "Delete conversation"
     }
   },
   "zh": {
@@ -115,6 +130,21 @@
     "navbar": {
       "searchLanguages": "搜索语言...",
       "noLanguagesFound": "未找到语言"
+    },
+    "sidebar": {
+      "conversations": "对话",
+      "newConversation": "新对话",
+      "noConversations": "还没有对话。开始一个新的吧！",
+      "justNow": "刚刚",
+      "minutesAgo": "分钟前",
+      "hoursAgo": "小时前",
+      "daysAgo": "天前",
+      "message": "条消息",
+      "messages": "条消息",
+      "deleteConfirm": "您确定要删除此对话吗？",
+      "closeSidebar": "关闭侧边栏",
+      "toggleSidebar": "切换侧边栏",
+      "deleteConversation": "删除对话"
     }
   },
   "es": {
@@ -174,6 +204,21 @@
     "navbar": {
       "searchLanguages": "Buscar idiomas...",
       "noLanguagesFound": "No se encontraron idiomas"
+    },
+    "sidebar": {
+      "conversations": "Conversaciones",
+      "newConversation": "Nueva conversación",
+      "noConversations": "Aún no hay conversaciones. ¡Comienza una nueva!",
+      "justNow": "Ahora mismo",
+      "minutesAgo": "m hace",
+      "hoursAgo": "h hace",
+      "daysAgo": "d hace",
+      "message": "mensaje",
+      "messages": "mensajes",
+      "deleteConfirm": "¿Estás seguro de que quieres eliminar esta conversación?",
+      "closeSidebar": "Cerrar barra lateral",
+      "toggleSidebar": "Alternar barra lateral",
+      "deleteConversation": "Eliminar conversación"
     }
   },
   "fi": {
@@ -233,6 +278,21 @@
     "navbar": {
       "searchLanguages": "Etsi kieliä...",
       "noLanguagesFound": "Kieliä ei löytynyt"
+    },
+    "sidebar": {
+      "conversations": "Keskustelut",
+      "newConversation": "Uusi keskustelu",
+      "noConversations": "Ei keskusteluja vielä. Aloita uusi!",
+      "justNow": "Juuri nyt",
+      "minutesAgo": "min sitten",
+      "hoursAgo": "t sitten",
+      "daysAgo": "pv sitten",
+      "message": "viesti",
+      "messages": "viestiä",
+      "deleteConfirm": "Haluatko varmasti poistaa tämän keskustelun?",
+      "closeSidebar": "Sulje sivupalkki",
+      "toggleSidebar": "Vaihda sivupalkki",
+      "deleteConversation": "Poista keskustelu"
     }
   },
   "de": {
@@ -292,6 +352,21 @@
     "navbar": {
       "searchLanguages": "Sprachen suchen...",
       "noLanguagesFound": "Keine Sprachen gefunden"
+    },
+    "sidebar": {
+      "conversations": "Unterhaltungen",
+      "newConversation": "Neue Unterhaltung",
+      "noConversations": "Noch keine Unterhaltungen. Starten Sie eine neue!",
+      "justNow": "Gerade eben",
+      "minutesAgo": "Min. vor",
+      "hoursAgo": "Std. vor",
+      "daysAgo": "T. vor",
+      "message": "Nachricht",
+      "messages": "Nachrichten",
+      "deleteConfirm": "Möchten Sie diese Unterhaltung wirklich löschen?",
+      "closeSidebar": "Seitenleiste schließen",
+      "toggleSidebar": "Seitenleiste umschalten",
+      "deleteConversation": "Unterhaltung löschen"
     }
   },
   "fr": {
@@ -351,6 +426,21 @@
     "navbar": {
       "searchLanguages": "Rechercher des langues...",
       "noLanguagesFound": "Aucune langue trouvée"
+    },
+    "sidebar": {
+      "conversations": "Conversations",
+      "newConversation": "Nouvelle conversation",
+      "noConversations": "Aucune conversation pour le moment. Commencez-en une nouvelle !",
+      "justNow": "À l'instant",
+      "minutesAgo": "min",
+      "hoursAgo": "h",
+      "daysAgo": "j",
+      "message": "message",
+      "messages": "messages",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette conversation ?",
+      "closeSidebar": "Fermer la barre latérale",
+      "toggleSidebar": "Basculer la barre latérale",
+      "deleteConversation": "Supprimer la conversation"
     }
   },
   "ru": {
@@ -410,6 +500,21 @@
     "navbar": {
       "searchLanguages": "Поиск языков...",
       "noLanguagesFound": "Языки не найдены"
+    },
+    "sidebar": {
+      "conversations": "Разговоры",
+      "newConversation": "Новый разговор",
+      "noConversations": "Пока нет разговоров. Начните новый!",
+      "justNow": "Только что",
+      "minutesAgo": "мин назад",
+      "hoursAgo": "ч назад",
+      "daysAgo": "дн назад",
+      "message": "сообщение",
+      "messages": "сообщений",
+      "deleteConfirm": "Вы уверены, что хотите удалить этот разговор?",
+      "closeSidebar": "Закрыть боковую панель",
+      "toggleSidebar": "Переключить боковую панель",
+      "deleteConversation": "Удалить разговор"
     }
   }
 }

@@ -1,0 +1,415 @@
+{
+  "en": {
+    "auth": {
+      "welcomeBack": "Welcome Back",
+      "createAccount": "Create Account",
+      "signInToContinue": "Sign in to your account to continue",
+      "signUpToGetStarted": "Sign up to get started",
+      "login": "Login",
+      "signUp": "Sign Up",
+      "fullName": "Full Name",
+      "emailAddress": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "signIn": "Sign In",
+      "orContinueWith": "Or continue with",
+      "testChatbot": "Test Chatbot",
+      "errors": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Email is invalid",
+        "passwordRequired": "Password is required",
+        "passwordMinLength": "Password must be at least 6 characters",
+        "passwordRequirements": "Password does not meet requirements",
+        "nameRequired": "Name is required",
+        "confirmPasswordRequired": "Please confirm your password",
+        "passwordsDoNotMatch": "Passwords do not match",
+        "authenticationFailed": "Authentication failed"
+      },
+      "passwordRequirements": {
+        "minLength": "At least 6 characters",
+        "hasUpperCase": "One uppercase letter",
+        "hasLowerCase": "One lowercase letter",
+        "hasNumber": "One number"
+      },
+      "forgotPasswordPage": {
+        "title": "Forgot Password",
+        "description": "Enter your email address and we'll send you a link to reset your password",
+        "emailSent": "Password reset email sent!",
+        "checkInbox": "Check your inbox at",
+        "backToLogin": "Back to Login",
+        "sendAnotherEmail": "Send Another Email",
+        "sending": "Sending...",
+        "sendResetLink": "Send Reset Link",
+        "failedToSend": "Failed to send reset email. Please try again."
+      }
+    },
+    "chatbot": {
+      "whatCanIHelp": "What can I help with?",
+      "subtitle": "Turn any app or URL into CISO-ready trust briefs in seconds.",
+      "messagePlaceholder": "Message ToolSense AI...",
+      "footerText": "ToolSense AI can analyze tools and provide security assessments. Enter a product name, vendor, or URL.",
+      "cachedResponse": "Cached response",
+      "downloadReport": "Download report as Markdown file"
+    },
+    "navbar": {
+      "searchLanguages": "Search languages...",
+      "noLanguagesFound": "No languages found"
+    }
+  },
+  "zh": {
+    "auth": {
+      "welcomeBack": "欢迎回来",
+      "createAccount": "创建账户",
+      "signInToContinue": "登录您的账户以继续",
+      "signUpToGetStarted": "注册以开始使用",
+      "login": "登录",
+      "signUp": "注册",
+      "fullName": "全名",
+      "emailAddress": "电子邮件地址",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "rememberMe": "记住我",
+      "forgotPassword": "忘记密码？",
+      "signIn": "登录",
+      "orContinueWith": "或继续使用",
+      "testChatbot": "测试聊天机器人",
+      "errors": {
+        "emailRequired": "需要电子邮件",
+        "emailInvalid": "电子邮件无效",
+        "passwordRequired": "需要密码",
+        "passwordMinLength": "密码至少需要6个字符",
+        "passwordRequirements": "密码不符合要求",
+        "nameRequired": "需要姓名",
+        "confirmPasswordRequired": "请确认您的密码",
+        "passwordsDoNotMatch": "密码不匹配",
+        "authenticationFailed": "身份验证失败"
+      },
+      "passwordRequirements": {
+        "minLength": "至少6个字符",
+        "hasUpperCase": "一个大写字母",
+        "hasLowerCase": "一个小写字母",
+        "hasNumber": "一个数字"
+      },
+      "forgotPasswordPage": {
+        "title": "忘记密码",
+        "description": "输入您的电子邮件地址，我们将向您发送重置密码的链接",
+        "emailSent": "密码重置电子邮件已发送！",
+        "checkInbox": "检查您的收件箱",
+        "backToLogin": "返回登录",
+        "sendAnotherEmail": "发送另一封电子邮件",
+        "sending": "发送中...",
+        "sendResetLink": "发送重置链接",
+        "failedToSend": "发送重置电子邮件失败。请重试。"
+      }
+    },
+    "chatbot": {
+      "whatCanIHelp": "我能帮您什么？",
+      "subtitle": "在几秒钟内将任何应用程序或URL转换为CISO就绪的信任简报。",
+      "messagePlaceholder": "向ToolSense AI发送消息...",
+      "footerText": "ToolSense AI可以分析工具并提供安全评估。输入产品名称、供应商或URL。",
+      "cachedResponse": "缓存响应",
+      "downloadReport": "下载Markdown格式的报告"
+    },
+    "navbar": {
+      "searchLanguages": "搜索语言...",
+      "noLanguagesFound": "未找到语言"
+    }
+  },
+  "es": {
+    "auth": {
+      "welcomeBack": "Bienvenido de nuevo",
+      "createAccount": "Crear cuenta",
+      "signInToContinue": "Inicia sesión en tu cuenta para continuar",
+      "signUpToGetStarted": "Regístrate para comenzar",
+      "login": "Iniciar sesión",
+      "signUp": "Registrarse",
+      "fullName": "Nombre completo",
+      "emailAddress": "Dirección de correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "rememberMe": "Recuérdame",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "signIn": "Iniciar sesión",
+      "orContinueWith": "O continúa con",
+      "testChatbot": "Probar Chatbot",
+      "errors": {
+        "emailRequired": "El correo electrónico es obligatorio",
+        "emailInvalid": "El correo electrónico no es válido",
+        "passwordRequired": "La contraseña es obligatoria",
+        "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+        "passwordRequirements": "La contraseña no cumple con los requisitos",
+        "nameRequired": "El nombre es obligatorio",
+        "confirmPasswordRequired": "Por favor confirma tu contraseña",
+        "passwordsDoNotMatch": "Las contraseñas no coinciden",
+        "authenticationFailed": "Error de autenticación"
+      },
+      "passwordRequirements": {
+        "minLength": "Al menos 6 caracteres",
+        "hasUpperCase": "Una letra mayúscula",
+        "hasLowerCase": "Una letra minúscula",
+        "hasNumber": "Un número"
+      },
+      "forgotPasswordPage": {
+        "title": "Olvidé mi contraseña",
+        "description": "Ingresa tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña",
+        "emailSent": "¡Correo de restablecimiento de contraseña enviado!",
+        "checkInbox": "Revisa tu bandeja de entrada en",
+        "backToLogin": "Volver al inicio de sesión",
+        "sendAnotherEmail": "Enviar otro correo",
+        "sending": "Enviando...",
+        "sendResetLink": "Enviar enlace de restablecimiento",
+        "failedToSend": "Error al enviar el correo de restablecimiento. Por favor, inténtalo de nuevo."
+      }
+    },
+    "chatbot": {
+      "whatCanIHelp": "¿En qué puedo ayudarte?",
+      "subtitle": "Convierte cualquier aplicación o URL en informes de confianza listos para CISO en segundos.",
+      "messagePlaceholder": "Mensaje a ToolSense AI...",
+      "footerText": "ToolSense AI puede analizar herramientas y proporcionar evaluaciones de seguridad. Ingresa un nombre de producto, proveedor o URL.",
+      "cachedResponse": "Respuesta en caché",
+      "downloadReport": "Descargar informe como archivo Markdown"
+    },
+    "navbar": {
+      "searchLanguages": "Buscar idiomas...",
+      "noLanguagesFound": "No se encontraron idiomas"
+    }
+  },
+  "fi": {
+    "auth": {
+      "welcomeBack": "Tervetuloa takaisin",
+      "createAccount": "Luo tili",
+      "signInToContinue": "Kirjaudu tilillesi jatkaaksesi",
+      "signUpToGetStarted": "Rekisteröidy aloittaaksesi",
+      "login": "Kirjaudu",
+      "signUp": "Rekisteröidy",
+      "fullName": "Koko nimi",
+      "emailAddress": "Sähköpostiosoite",
+      "password": "Salasana",
+      "confirmPassword": "Vahvista salasana",
+      "rememberMe": "Muista minut",
+      "forgotPassword": "Unohditko salasanan?",
+      "signIn": "Kirjaudu sisään",
+      "orContinueWith": "Tai jatka",
+      "testChatbot": "Testaa Chatbot",
+      "errors": {
+        "emailRequired": "Sähköposti on pakollinen",
+        "emailInvalid": "Sähköposti on virheellinen",
+        "passwordRequired": "Salasana on pakollinen",
+        "passwordMinLength": "Salasanan on oltava vähintään 6 merkkiä",
+        "passwordRequirements": "Salasana ei täytä vaatimuksia",
+        "nameRequired": "Nimi on pakollinen",
+        "confirmPasswordRequired": "Vahvista salasanasi",
+        "passwordsDoNotMatch": "Salasanat eivät täsmää",
+        "authenticationFailed": "Tunnistautuminen epäonnistui"
+      },
+      "passwordRequirements": {
+        "minLength": "Vähintään 6 merkkiä",
+        "hasUpperCase": "Yksi iso kirjain",
+        "hasLowerCase": "Yksi pieni kirjain",
+        "hasNumber": "Yksi numero"
+      },
+      "forgotPasswordPage": {
+        "title": "Unohditko salasanan",
+        "description": "Anna sähköpostiosoitteesi ja lähetämme sinulle linkin salasanan vaihtamiseen",
+        "emailSent": "Salasanan vaihtolinkki lähetetty!",
+        "checkInbox": "Tarkista postilaatikkosi osoitteessa",
+        "backToLogin": "Takaisin kirjautumiseen",
+        "sendAnotherEmail": "Lähetä toinen sähköposti",
+        "sending": "Lähetetään...",
+        "sendResetLink": "Lähetä vaihtolinkki",
+        "failedToSend": "Sähköpostin lähetys epäonnistui. Yritä uudelleen."
+      }
+    },
+    "chatbot": {
+      "whatCanIHelp": "Miten voin auttaa?",
+      "subtitle": "Muunna mikä tahansa sovellus tai URL CISO-valmiiksi luottamusraportiksi sekunneissa.",
+      "messagePlaceholder": "Viesti ToolSense AI:lle...",
+      "footerText": "ToolSense AI voi analysoida työkaluja ja tarjota tietoturva-arvioita. Syötä tuotteen nimi, toimittaja tai URL.",
+      "cachedResponse": "Välimuistissa oleva vastaus",
+      "downloadReport": "Lataa raportti Markdown-tiedostona"
+    },
+    "navbar": {
+      "searchLanguages": "Etsi kieliä...",
+      "noLanguagesFound": "Kieliä ei löytynyt"
+    }
+  },
+  "de": {
+    "auth": {
+      "welcomeBack": "Willkommen zurück",
+      "createAccount": "Konto erstellen",
+      "signInToContinue": "Melden Sie sich in Ihrem Konto an, um fortzufahren",
+      "signUpToGetStarted": "Registrieren Sie sich, um zu beginnen",
+      "login": "Anmelden",
+      "signUp": "Registrieren",
+      "fullName": "Vollständiger Name",
+      "emailAddress": "E-Mail-Adresse",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "rememberMe": "Angemeldet bleiben",
+      "forgotPassword": "Passwort vergessen?",
+      "signIn": "Anmelden",
+      "orContinueWith": "Oder fortfahren mit",
+      "testChatbot": "Chatbot testen",
+      "errors": {
+        "emailRequired": "E-Mail ist erforderlich",
+        "emailInvalid": "E-Mail ist ungültig",
+        "passwordRequired": "Passwort ist erforderlich",
+        "passwordMinLength": "Passwort muss mindestens 6 Zeichen lang sein",
+        "passwordRequirements": "Passwort erfüllt nicht die Anforderungen",
+        "nameRequired": "Name ist erforderlich",
+        "confirmPasswordRequired": "Bitte bestätigen Sie Ihr Passwort",
+        "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
+        "authenticationFailed": "Authentifizierung fehlgeschlagen"
+      },
+      "passwordRequirements": {
+        "minLength": "Mindestens 6 Zeichen",
+        "hasUpperCase": "Ein Großbuchstabe",
+        "hasLowerCase": "Ein Kleinbuchstabe",
+        "hasNumber": "Eine Zahl"
+      },
+      "forgotPasswordPage": {
+        "title": "Passwort vergessen",
+        "description": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts",
+        "emailSent": "E-Mail zum Zurücksetzen des Passworts gesendet!",
+        "checkInbox": "Überprüfen Sie Ihren Posteingang unter",
+        "backToLogin": "Zurück zur Anmeldung",
+        "sendAnotherEmail": "Weitere E-Mail senden",
+        "sending": "Wird gesendet...",
+        "sendResetLink": "Zurücksetzungslink senden",
+        "failedToSend": "E-Mail zum Zurücksetzen konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+      }
+    },
+    "chatbot": {
+      "whatCanIHelp": "Womit kann ich helfen?",
+      "subtitle": "Verwandeln Sie jede App oder URL in sekundenschnelle in CISO-bereite Vertrauensberichte.",
+      "messagePlaceholder": "Nachricht an ToolSense AI...",
+      "footerText": "ToolSense AI kann Tools analysieren und Sicherheitsbewertungen bereitstellen. Geben Sie einen Produktnamen, Anbieter oder URL ein.",
+      "cachedResponse": "Zwischengespeicherte Antwort",
+      "downloadReport": "Bericht als Markdown-Datei herunterladen"
+    },
+    "navbar": {
+      "searchLanguages": "Sprachen suchen...",
+      "noLanguagesFound": "Keine Sprachen gefunden"
+    }
+  },
+  "fr": {
+    "auth": {
+      "welcomeBack": "Bon retour",
+      "createAccount": "Créer un compte",
+      "signInToContinue": "Connectez-vous à votre compte pour continuer",
+      "signUpToGetStarted": "Inscrivez-vous pour commencer",
+      "login": "Connexion",
+      "signUp": "S'inscrire",
+      "fullName": "Nom complet",
+      "emailAddress": "Adresse e-mail",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié ?",
+      "signIn": "Se connecter",
+      "orContinueWith": "Ou continuer avec",
+      "testChatbot": "Tester le Chatbot",
+      "errors": {
+        "emailRequired": "L'e-mail est requis",
+        "emailInvalid": "L'e-mail est invalide",
+        "passwordRequired": "Le mot de passe est requis",
+        "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+        "passwordRequirements": "Le mot de passe ne répond pas aux exigences",
+        "nameRequired": "Le nom est requis",
+        "confirmPasswordRequired": "Veuillez confirmer votre mot de passe",
+        "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+        "authenticationFailed": "Échec de l'authentification"
+      },
+      "passwordRequirements": {
+        "minLength": "Au moins 6 caractères",
+        "hasUpperCase": "Une lettre majuscule",
+        "hasLowerCase": "Une lettre minuscule",
+        "hasNumber": "Un chiffre"
+      },
+      "forgotPasswordPage": {
+        "title": "Mot de passe oublié",
+        "description": "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe",
+        "emailSent": "E-mail de réinitialisation du mot de passe envoyé !",
+        "checkInbox": "Vérifiez votre boîte de réception à",
+        "backToLogin": "Retour à la connexion",
+        "sendAnotherEmail": "Envoyer un autre e-mail",
+        "sending": "Envoi en cours...",
+        "sendResetLink": "Envoyer le lien de réinitialisation",
+        "failedToSend": "Échec de l'envoi de l'e-mail de réinitialisation. Veuillez réessayer."
+      }
+    },
+    "chatbot": {
+      "whatCanIHelp": "Comment puis-je vous aider ?",
+      "subtitle": "Transformez n'importe quelle application ou URL en rapports de confiance prêts pour CISO en quelques secondes.",
+      "messagePlaceholder": "Message à ToolSense AI...",
+      "footerText": "ToolSense AI peut analyser les outils et fournir des évaluations de sécurité. Entrez un nom de produit, un fournisseur ou une URL.",
+      "cachedResponse": "Réponse mise en cache",
+      "downloadReport": "Télécharger le rapport au format Markdown"
+    },
+    "navbar": {
+      "searchLanguages": "Rechercher des langues...",
+      "noLanguagesFound": "Aucune langue trouvée"
+    }
+  },
+  "ru": {
+    "auth": {
+      "welcomeBack": "Добро пожаловать",
+      "createAccount": "Создать аккаунт",
+      "signInToContinue": "Войдите в свой аккаунт, чтобы продолжить",
+      "signUpToGetStarted": "Зарегистрируйтесь, чтобы начать",
+      "login": "Вход",
+      "signUp": "Регистрация",
+      "fullName": "Полное имя",
+      "emailAddress": "Адрес электронной почты",
+      "password": "Пароль",
+      "confirmPassword": "Подтвердите пароль",
+      "rememberMe": "Запомнить меня",
+      "forgotPassword": "Забыли пароль?",
+      "signIn": "Войти",
+      "orContinueWith": "Или продолжить с",
+      "testChatbot": "Тест Чатбота",
+      "errors": {
+        "emailRequired": "Требуется электронная почта",
+        "emailInvalid": "Неверный адрес электронной почты",
+        "passwordRequired": "Требуется пароль",
+        "passwordMinLength": "Пароль должен содержать не менее 6 символов",
+        "passwordRequirements": "Пароль не соответствует требованиям",
+        "nameRequired": "Требуется имя",
+        "confirmPasswordRequired": "Пожалуйста, подтвердите ваш пароль",
+        "passwordsDoNotMatch": "Пароли не совпадают",
+        "authenticationFailed": "Ошибка аутентификации"
+      },
+      "passwordRequirements": {
+        "minLength": "Не менее 6 символов",
+        "hasUpperCase": "Одна заглавная буква",
+        "hasLowerCase": "Одна строчная буква",
+        "hasNumber": "Одна цифра"
+      },
+      "forgotPasswordPage": {
+        "title": "Забыли пароль",
+        "description": "Введите ваш адрес электронной почты, и мы отправим вам ссылку для сброса пароля",
+        "emailSent": "Письмо для сброса пароля отправлено!",
+        "checkInbox": "Проверьте вашу почту",
+        "backToLogin": "Вернуться к входу",
+        "sendAnotherEmail": "Отправить другое письмо",
+        "sending": "Отправка...",
+        "sendResetLink": "Отправить ссылку для сброса",
+        "failedToSend": "Не удалось отправить письмо для сброса. Пожалуйста, попробуйте снова."
+      }
+    },
+    "chatbot": {
+      "whatCanIHelp": "Чем я могу помочь?",
+      "subtitle": "Превратите любое приложение или URL в готовые для CISO отчеты о доверии за секунды.",
+      "messagePlaceholder": "Сообщение ToolSense AI...",
+      "footerText": "ToolSense AI может анализировать инструменты и предоставлять оценки безопасности. Введите название продукта, поставщика или URL.",
+      "cachedResponse": "Кэшированный ответ",
+      "downloadReport": "Скачать отчет в формате Markdown"
+    },
+    "navbar": {
+      "searchLanguages": "Поиск языков...",
+      "noLanguagesFound": "Языки не найдены"
+    }
+  }
+}

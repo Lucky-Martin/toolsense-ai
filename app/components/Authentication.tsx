@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signInWithPopup, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
+import { useTranslation } from "@/app/contexts/TranslationContext";
 import { auth } from "@/lib/firebase";
+import Navbar from "./Navbar";
 
 export default function Authentication() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
@@ -31,7 +34,7 @@ export default function Authentication() {
       })
       .catch((error) => {
         console.error("Redirect sign-in error:", error);
-        setErrors({ general: "Authentication failed" });
+        setErrors({ general: t("auth.errors.authenticationFailed") });
       });
 
     // Check for any URL error parameters
@@ -64,30 +67,30 @@ export default function Authentication() {
     const newErrors: Record<string, string> = {};
 
     if (!formData.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = t("auth.errors.emailRequired");
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = t("auth.errors.emailInvalid");
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = t("auth.errors.passwordRequired");
     } else if (!isLogin) {
       const requirements = checkPasswordRequirements();
       if (!requirements.minLength || !requirements.hasUpperCase || !requirements.hasLowerCase || !requirements.hasNumber) {
-        newErrors.password = "Password does not meet requirements";
+        newErrors.password = t("auth.errors.passwordRequirements");
       }
     } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+      newErrors.password = t("auth.errors.passwordMinLength");
     }
 
     if (!isLogin) {
       if (!formData.name) {
-        newErrors.name = "Name is required";
+        newErrors.name = t("auth.errors.nameRequired");
       }
       if (!formData.confirmPassword) {
-        newErrors.confirmPassword = "Please confirm your password";
+        newErrors.confirmPassword = t("auth.errors.confirmPasswordRequired");
       } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = "Passwords do not match";
+        newErrors.confirmPassword = t("auth.errors.passwordsDoNotMatch");
       }
     }
 
@@ -110,7 +113,7 @@ export default function Authentication() {
 
     try {
       const provider = new GoogleAuthProvider();
-      
+
       // Try popup first, fallback to redirect if blocked
       try {
         const result = await signInWithPopup(auth, provider);
@@ -129,7 +132,7 @@ export default function Authentication() {
     } catch (error: any) {
       console.error("Google sign-in error:", error);
       setIsLoading(false);
-      
+
       if (error.code === "auth/popup-closed-by-user") {
         setErrors({ general: "Sign-in was cancelled" });
       } else if (error.code === "auth/popup-blocked") {
@@ -143,18 +146,19 @@ export default function Authentication() {
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center px-4 py-12">
+      <Navbar />
       <div className="w-full max-w-md">
         {/* Card */}
         <div className="rounded-3xl bg-white p-8 border border-gray-200 shadow-lg shadow-gray-200/50">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-2xl font-light text-gray-700 mb-2 tracking-wide">
-              {isLogin ? "Welcome Back" : "Create Account"}
+              {isLogin ? t("auth.welcomeBack") : t("auth.createAccount")}
             </h1>
             <p className="text-gray-500 text-sm font-light">
               {isLogin
-                ? "Sign in to your account to continue"
-                : "Sign up to get started"}
+                ? t("auth.signInToContinue")
+                : t("auth.signUpToGetStarted")}
             </p>
           </div>
 
@@ -176,10 +180,9 @@ export default function Authentication() {
               style={{ outline: 'none', WebkitTapHighlightColor: 'transparent' }}
               onMouseDown={(e) => e.preventDefault()}
             >
-              <span className={`relative z-10 transition-colors duration-200 ${
-                isLogin ? "text-gray-700" : "text-gray-500"
-              }`}>
-                Login
+              <span className={`relative z-10 transition-colors duration-200 ${isLogin ? "text-gray-700" : "text-gray-500"
+                }`}>
+                {t("auth.login")}
               </span>
             </button>
             <button
@@ -198,10 +201,9 @@ export default function Authentication() {
               style={{ outline: 'none', WebkitTapHighlightColor: 'transparent' }}
               onMouseDown={(e) => e.preventDefault()}
             >
-              <span className={`relative z-10 transition-colors duration-200 ${
-                !isLogin ? "text-gray-700" : "text-gray-500"
-              }`}>
-                Sign Up
+              <span className={`relative z-10 transition-colors duration-200 ${!isLogin ? "text-gray-700" : "text-gray-500"
+                }`}>
+                {t("auth.signUp")}
               </span>
             </button>
             <div
@@ -227,7 +229,7 @@ export default function Authentication() {
                   htmlFor="name"
                   className="block text-xs font-light text-gray-500 mb-2 uppercase tracking-wider"
                 >
-                  Full Name
+                  {t("auth.fullName")}
                 </label>
                 <input
                   type="text"
@@ -235,11 +237,10 @@ export default function Authentication() {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 rounded-2xl bg-white border ${
-                    errors.name
-                      ? "border-red-400 focus:border-red-500"
-                      : "border-gray-200 focus:border-gray-300"
-                  } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
+                  className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.name
+                    ? "border-red-400 focus:border-red-500"
+                    : "border-gray-200 focus:border-gray-300"
+                    } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
                   placeholder="John Doe"
                 />
                 <div className="h-4 relative">
@@ -257,7 +258,7 @@ export default function Authentication() {
                 htmlFor="email"
                 className="block text-xs font-light text-gray-500 mb-2 uppercase tracking-wider"
               >
-                Email Address
+                {t("auth.emailAddress")}
               </label>
               <input
                 type="email"
@@ -265,11 +266,10 @@ export default function Authentication() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 rounded-2xl bg-white border ${
-                  errors.email
-                    ? "border-red-400 focus:border-red-500"
-                    : "border-gray-200 focus:border-gray-300"
-                } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
+                className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.email
+                  ? "border-red-400 focus:border-red-500"
+                  : "border-gray-200 focus:border-gray-300"
+                  } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
                 placeholder="you@example.com"
               />
               <div className="h-4 relative">
@@ -286,7 +286,7 @@ export default function Authentication() {
                 htmlFor="password"
                 className="block text-xs font-light text-gray-500 mb-2 uppercase tracking-wider"
               >
-                Password
+                {t("auth.password")}
               </label>
               <input
                 type="password"
@@ -294,11 +294,10 @@ export default function Authentication() {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 rounded-2xl bg-white border ${
-                  errors.password
-                    ? "border-red-400 focus:border-red-500"
-                    : "border-gray-200 focus:border-gray-300"
-                } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
+                className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.password
+                  ? "border-red-400 focus:border-red-500"
+                  : "border-gray-200 focus:border-gray-300"
+                  } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
                 placeholder="••••••••"
               />
               <div className="h-4 relative">
@@ -316,75 +315,67 @@ export default function Authentication() {
                     return (
                       <>
                         <div className="flex items-center gap-2">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${
-                            requirements.minLength
-                              ? "bg-gray-500 border-gray-500"
-                              : "border-gray-300"
-                          }`}>
+                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${requirements.minLength
+                            ? "bg-gray-500 border-gray-500"
+                            : "border-gray-300"
+                            }`}>
                             {requirements.minLength && (
                               <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
                             )}
                           </div>
-                          <span className={`text-xs font-light transition-colors duration-200 ${
-                            requirements.minLength ? "text-gray-600" : "text-gray-400"
-                          }`}>
-                            At least 6 characters
+                          <span className={`text-xs font-light transition-colors duration-200 ${requirements.minLength ? "text-gray-600" : "text-gray-400"
+                            }`}>
+                            {t("auth.passwordRequirements.minLength")}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${
-                            requirements.hasUpperCase
-                              ? "bg-gray-500 border-gray-500"
-                              : "border-gray-300"
-                          }`}>
+                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${requirements.hasUpperCase
+                            ? "bg-gray-500 border-gray-500"
+                            : "border-gray-300"
+                            }`}>
                             {requirements.hasUpperCase && (
                               <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
                             )}
                           </div>
-                          <span className={`text-xs font-light transition-colors duration-200 ${
-                            requirements.hasUpperCase ? "text-gray-600" : "text-gray-400"
-                          }`}>
-                            One uppercase letter
+                          <span className={`text-xs font-light transition-colors duration-200 ${requirements.hasUpperCase ? "text-gray-600" : "text-gray-400"
+                            }`}>
+                            {t("auth.passwordRequirements.hasUpperCase")}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${
-                            requirements.hasLowerCase
-                              ? "bg-gray-500 border-gray-500"
-                              : "border-gray-300"
-                          }`}>
+                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${requirements.hasLowerCase
+                            ? "bg-gray-500 border-gray-500"
+                            : "border-gray-300"
+                            }`}>
                             {requirements.hasLowerCase && (
                               <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
                             )}
                           </div>
-                          <span className={`text-xs font-light transition-colors duration-200 ${
-                            requirements.hasLowerCase ? "text-gray-600" : "text-gray-400"
-                          }`}>
-                            One lowercase letter
+                          <span className={`text-xs font-light transition-colors duration-200 ${requirements.hasLowerCase ? "text-gray-600" : "text-gray-400"
+                            }`}>
+                            {t("auth.passwordRequirements.hasLowerCase")}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${
-                            requirements.hasNumber
-                              ? "bg-gray-500 border-gray-500"
-                              : "border-gray-300"
-                          }`}>
+                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${requirements.hasNumber
+                            ? "bg-gray-500 border-gray-500"
+                            : "border-gray-300"
+                            }`}>
                             {requirements.hasNumber && (
                               <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
                             )}
                           </div>
-                          <span className={`text-xs font-light transition-colors duration-200 ${
-                            requirements.hasNumber ? "text-gray-600" : "text-gray-400"
-                          }`}>
-                            One number
+                          <span className={`text-xs font-light transition-colors duration-200 ${requirements.hasNumber ? "text-gray-600" : "text-gray-400"
+                            }`}>
+                            {t("auth.passwordRequirements.hasNumber")}
                           </span>
                         </div>
                       </>
@@ -400,7 +391,7 @@ export default function Authentication() {
                   htmlFor="confirmPassword"
                   className="block text-xs font-light text-gray-500 mb-2 uppercase tracking-wider"
                 >
-                  Confirm Password
+                  {t("auth.confirmPassword")}
                 </label>
                 <input
                   type="password"
@@ -408,11 +399,10 @@ export default function Authentication() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 rounded-2xl bg-white border ${
-                    errors.confirmPassword
-                      ? "border-red-400 focus:border-red-500"
-                      : "border-gray-200 focus:border-gray-300"
-                  } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
+                  className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.confirmPassword
+                    ? "border-red-400 focus:border-red-500"
+                    : "border-gray-200 focus:border-gray-300"
+                    } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
                   placeholder="••••••••"
                 />
                 <div className="h-4 relative">
@@ -436,11 +426,10 @@ export default function Authentication() {
                       className="sr-only"
                     />
                     <div
-                      className={`w-5 h-5 rounded-md border-2 transition-all duration-200 flex items-center justify-center ${
-                        rememberMe
-                          ? "bg-gray-500 border-gray-500 shadow-sm"
-                          : "bg-white border-gray-300 group-hover:border-gray-400 shadow-sm"
-                      }`}
+                      className={`w-5 h-5 rounded-md border-2 transition-all duration-200 flex items-center justify-center ${rememberMe
+                        ? "bg-gray-500 border-gray-500 shadow-sm"
+                        : "bg-white border-gray-300 group-hover:border-gray-400 shadow-sm"
+                        }`}
                     >
                       {rememberMe && (
                         <svg
@@ -460,14 +449,14 @@ export default function Authentication() {
                     </div>
                   </div>
                   <span className="ml-2 text-xs text-gray-600 font-light group-hover:text-gray-700 transition-colors">
-                    Remember me
+                    {t("auth.rememberMe")}
                   </span>
                 </label>
                 <Link
                   href="/forgot-password"
                   className="text-xs font-light text-gray-500 hover:text-gray-700 transition-colors"
                 >
-                  Forgot password?
+                  {t("auth.forgotPassword")}
                 </Link>
               </div>
             )}
@@ -476,7 +465,7 @@ export default function Authentication() {
               type="submit"
               className="w-full py-3 px-4 rounded-2xl bg-gray-100 text-gray-700 font-light hover:bg-gray-200 transition-all duration-200 uppercase tracking-wider text-sm border border-gray-200 shadow-sm hover:shadow-md cursor-pointer focus:outline-none"
             >
-              {isLogin ? "Sign In" : "Create Account"}
+              {isLogin ? t("auth.signIn") : t("auth.createAccount")}
             </button>
           </form>
 
@@ -488,7 +477,7 @@ export default function Authentication() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white text-gray-400 text-xs font-light">
-                  Or continue with
+                  {t("auth.orContinueWith")}
                 </span>
               </div>
             </div>
@@ -559,7 +548,7 @@ export default function Authentication() {
                   d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
                 />
               </svg>
-              Test Chatbot
+              {t("auth.testChatbot")}
             </Link>
           </div>
         </div>

@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { useTranslation } from "@/app/contexts/TranslationContext";
+import Navbar from "./Navbar";
 
 interface Message {
   role: "user" | "assistant";
@@ -10,6 +12,7 @@ interface Message {
 }
 
 export default function Chatbot() {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -158,15 +161,18 @@ ${lastAssistantMessage.content}
 
   return (
     <div className="flex flex-col h-screen w-full bg-white fixed inset-0 overflow-hidden">
+      {/* Navbar */}
+      <Navbar />
+      
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 min-h-0 overflow-hidden pb-0">
         {!hasMessages ? (
           <div className="w-full max-w-3xl text-center">
             <h1 className="text-4xl font-bold text-black mb-4">
-              What can I help with?
+              {t("chatbot.whatCanIHelp")}
             </h1>
             <p className="text-lg text-gray-600 font-normal">
-              Turn any app or URL into CISO-ready trust briefs in seconds.
+              {t("chatbot.subtitle")}
             </p>
           </div>
         ) : (
@@ -192,7 +198,7 @@ ${lastAssistantMessage.content}
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
-                          Cached response
+                          {t("chatbot.cachedResponse")}
                         </div>
                       )}
                       <ReactMarkdown
@@ -301,7 +307,7 @@ ${lastAssistantMessage.content}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Message ToolSense AI..."
+                placeholder={t("chatbot.messagePlaceholder")}
                 disabled={isLoading}
                 className="flex-1 px-4 py-3 pr-12 bg-gray-100 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:bg-white focus:border-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -310,7 +316,7 @@ ${lastAssistantMessage.content}
                   type="button"
                   onClick={handleDownload}
                   className="absolute right-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
-                  title="Download report as Markdown file"
+                  title={t("chatbot.downloadReport")}
                 >
                   <svg
                     className="w-5 h-5 text-gray-700"
@@ -350,7 +356,7 @@ ${lastAssistantMessage.content}
             </div>
           </form>
           <p className="text-xs text-gray-400 text-center mt-2">
-            ToolSense AI can analyze tools and provide security assessments. Enter a product name, vendor, or URL.
+            {t("chatbot.footerText")}
           </p>
         </div>
       </div>

@@ -157,8 +157,10 @@ export default function Chatbot() {
     // Create new conversation if this is the first message
     let conversationId = currentConversationId;
     if (!conversationId) {
+      const queryName = input.trim().substring(0, 50) || "New Conversation";
+      const title = `${t("chatbot.reportFor")} ${queryName}`;
       const newConversation = conversationService.createConversation(
-        input.trim().substring(0, 50) || "New Conversation",
+        title,
         userMessage
       );
       conversationId = newConversation.id;
@@ -244,7 +246,9 @@ export default function Chatbot() {
 
       // Update conversation with new messages
       if (conversationId) {
-        conversationService.updateConversation(conversationId, updatedMessages);
+        const conversation = conversationService.getConversation(conversationId);
+        const title = conversation?.title || `${t("chatbot.reportFor")} ${userMessage.content.substring(0, 50).trim()}`;
+        conversationService.updateConversation(conversationId, updatedMessages, title);
       }
     } catch (error) {
       console.error("Error sending message:", error);
@@ -260,7 +264,9 @@ export default function Chatbot() {
 
       // Save error message to conversation too
       if (conversationId) {
-        conversationService.updateConversation(conversationId, updatedMessages);
+        const conversation = conversationService.getConversation(conversationId);
+        const title = conversation?.title || `${t("chatbot.reportFor")} ${userMessage.content.substring(0, 50).trim()}`;
+        conversationService.updateConversation(conversationId, updatedMessages, title);
       }
     } finally {
       setIsLoading(false);
@@ -420,7 +426,9 @@ ${lastAssistantMessage.content}
       setHasUserMessage(false);
       // Update conversation
       if (currentConversationId) {
-        conversationService.updateConversation(currentConversationId, newMessages);
+        const conversation = conversationService.getConversation(currentConversationId);
+        const title = conversation?.title || `${t("chatbot.reportFor")} ${lastUserMessage.content.substring(0, 50).trim()}`;
+        conversationService.updateConversation(currentConversationId, newMessages, title);
       }
       inputRef.current?.focus();
     }
@@ -486,14 +494,12 @@ ${lastAssistantMessage.content}
         {messages.map((message, index) => (
           <div
             key={index}
-            className={`flex ${
-              message.role === "user" ? "justify-end" : "justify-start"
-            }`}
+            className="w-full"
           >
             <div
-                  className={`max-w-[85%] rounded-lg px-4 py-3 ${
+                  className={`w-full rounded-lg px-4 py-3 ${
                 message.role === "user"
-                      ? "bg-gray-100 text-black"
+                      ? "bg-gray-100 text-black mb-4"
                       : "bg-gray-50 text-gray-800 border border-gray-200"
                   }`}
                 >
@@ -575,15 +581,15 @@ ${lastAssistantMessage.content}
                     </div>
                   ) : (
                     <div className="whitespace-pre-wrap break-words leading-relaxed">
-                {message.content}
+                {`${t("chatbot.reportFor")} ${message.content}`}
                     </div>
                   )}
             </div>
           </div>
         ))}
         {isLoading && (
-          <div className="flex justify-start">
-                <div className="bg-gray-50 text-gray-800 border border-gray-200 rounded-lg px-4 py-3 max-w-[85%]">
+          <div className="w-full">
+                <div className="bg-gray-50 text-gray-800 border border-gray-200 rounded-lg px-4 py-3 w-full">
                   <div className="flex items-center gap-3">
                     <div className="flex gap-1 flex-shrink-0">
                       <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>

@@ -55,7 +55,8 @@
       "share": "Share",
       "edit": "Edit",
       "add": "Add",
-      "copiedToClipboard": "Copied to clipboard!"
+      "copiedToClipboard": "Copied to clipboard!",
+      "reportFor": "Report for"
     },
     "navbar": {
       "searchLanguages": "Search languages...",
@@ -133,7 +134,8 @@
       "share": "分享",
       "edit": "编辑",
       "add": "添加",
-      "copiedToClipboard": "已复制到剪贴板！"
+      "copiedToClipboard": "已复制到剪贴板！",
+      "reportFor": "报告："
     },
     "navbar": {
       "searchLanguages": "搜索语言...",
@@ -211,7 +213,8 @@
       "share": "Compartir",
       "edit": "Editar",
       "add": "Añadir",
-      "copiedToClipboard": "¡Copiado al portapapeles!"
+      "copiedToClipboard": "¡Copiado al portapapeles!",
+      "reportFor": "Informe para"
     },
     "navbar": {
       "searchLanguages": "Buscar idiomas...",
@@ -289,7 +292,8 @@
       "share": "Jaa",
       "edit": "Muokkaa",
       "add": "Lisää",
-      "copiedToClipboard": "Kopioitu leikepöydälle!"
+      "copiedToClipboard": "Kopioitu leikepöydälle!",
+      "reportFor": "Raportti:"
     },
     "navbar": {
       "searchLanguages": "Etsi kieliä...",
@@ -367,7 +371,8 @@
       "share": "Teilen",
       "edit": "Bearbeiten",
       "add": "Hinzufügen",
-      "copiedToClipboard": "In die Zwischenablage kopiert!"
+      "copiedToClipboard": "In die Zwischenablage kopiert!",
+      "reportFor": "Bericht für"
     },
     "navbar": {
       "searchLanguages": "Sprachen suchen...",
@@ -445,7 +450,8 @@
       "share": "Partager",
       "edit": "Modifier",
       "add": "Ajouter",
-      "copiedToClipboard": "Copié dans le presse-papiers !"
+      "copiedToClipboard": "Copié dans le presse-papiers !",
+      "reportFor": "Rapport pour"
     },
     "navbar": {
       "searchLanguages": "Rechercher des langues...",
@@ -523,7 +529,8 @@
       "share": "Поделиться",
       "edit": "Редактировать",
       "add": "Добавить",
-      "copiedToClipboard": "Скопировано в буфер обмена!"
+      "copiedToClipboard": "Скопировано в буфер обмена!",
+      "reportFor": "Отчет для"
     },
     "navbar": {
       "searchLanguages": "Поиск языков...",
@@ -601,7 +608,8 @@
       "share": "साझा करें",
       "edit": "संपादित करें",
       "add": "जोड़ें",
-      "copiedToClipboard": "क्लिपबोर्ड पर कॉपी किया गया!"
+      "copiedToClipboard": "क्लिपबोर्ड पर कॉपी किया गया!",
+      "reportFor": "रिपोर्ट:"
     },
     "navbar": {
       "searchLanguages": "भाषाएं खोजें...",
@@ -679,7 +687,8 @@
       "share": "مشاركة",
       "edit": "تعديل",
       "add": "إضافة",
-      "copiedToClipboard": "تم النسخ إلى الحافظة!"
+      "copiedToClipboard": "تم النسخ إلى الحافظة!",
+      "reportFor": "تقرير لـ"
     },
     "navbar": {
       "searchLanguages": "البحث عن اللغات...",
@@ -757,7 +766,8 @@
       "share": "Compartilhar",
       "edit": "Editar",
       "add": "Adicionar",
-      "copiedToClipboard": "Copiado para a área de transferência!"
+      "copiedToClipboard": "Copiado para a área de transferência!",
+      "reportFor": "Relatório para"
     },
     "navbar": {
       "searchLanguages": "Pesquisar idiomas...",
@@ -835,7 +845,8 @@
       "share": "শেয়ার করুন",
       "edit": "সম্পাদনা করুন",
       "add": "যোগ করুন",
-      "copiedToClipboard": "ক্লিপবোর্ডে কপি করা হয়েছে!"
+      "copiedToClipboard": "ক্লিপবোর্ডে কপি করা হয়েছে!",
+      "reportFor": "রিপোর্ট:"
     },
     "navbar": {
       "searchLanguages": "ভাষা অনুসন্ধান করুন...",
@@ -913,7 +924,8 @@
       "share": "共有",
       "edit": "編集",
       "add": "追加",
-      "copiedToClipboard": "クリップボードにコピーしました！"
+      "copiedToClipboard": "クリップボードにコピーしました！",
+      "reportFor": "レポート："
     },
     "navbar": {
       "searchLanguages": "言語を検索...",
@@ -991,7 +1003,8 @@
       "share": "ਸਾਂਝਾ ਕਰੋ",
       "edit": "ਸੰਪਾਦਨ ਕਰੋ",
       "add": "ਜੋੜੋ",
-      "copiedToClipboard": "ਕਲਿਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕੀਤਾ ਗਿਆ!"
+      "copiedToClipboard": "ਕਲਿਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕੀਤਾ ਗਿਆ!",
+      "reportFor": "ਰਿਪੋਰਟ:"
     },
     "navbar": {
       "searchLanguages": "ਭਾਸ਼ਾਵਾਂ ਖੋਜੋ...",
@@ -1069,7 +1082,8 @@
       "share": "Bagikake",
       "edit": "Sunting",
       "add": "Tambah",
-      "copiedToClipboard": "Disalin menyang clipboard!"
+      "copiedToClipboard": "Disalin menyang clipboard!",
+      "reportFor": "Laporan kanggo"
     },
     "navbar": {
       "searchLanguages": "Goleki basa...",
@@ -1147,7 +1161,8 @@
       "share": "공유",
       "edit": "편집",
       "add": "추가",
-      "copiedToClipboard": "클립보드에 복사되었습니다!"
+      "copiedToClipboard": "클립보드에 복사되었습니다!",
+      "reportFor": "보고서:"
     },
     "navbar": {
       "searchLanguages": "언어 검색...",
@@ -1225,7 +1240,8 @@
       "share": "షేర్ చేయండి",
       "edit": "సవరించండి",
       "add": "జోడించండి",
-      "copiedToClipboard": "క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది!"
+      "copiedToClipboard": "క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది!",
+      "reportFor": "రిపోర్ట్:"
     },
     "navbar": {
       "searchLanguages": "భాషలను శోధించండి...",
@@ -1303,7 +1319,8 @@
       "share": "Chia sẻ",
       "edit": "Chỉnh sửa",
       "add": "Thêm",
-      "copiedToClipboard": "Đã sao chép vào clipboard!"
+      "copiedToClipboard": "Đã sao chép vào clipboard!",
+      "reportFor": "Báo cáo cho"
     },
     "navbar": {
       "searchLanguages": "Tìm kiếm ngôn ngữ...",
@@ -1381,7 +1398,8 @@
       "share": "Condividi",
       "edit": "Modifica",
       "add": "Aggiungi",
-      "copiedToClipboard": "Copiato negli appunti!"
+      "copiedToClipboard": "Copiato negli appunti!",
+      "reportFor": "Rapporto per"
     },
     "navbar": {
       "searchLanguages": "Cerca lingue...",
@@ -1459,7 +1477,8 @@
       "share": "Paylaş",
       "edit": "Düzenle",
       "add": "Ekle",
-      "copiedToClipboard": "Panoya kopyalandı!"
+      "copiedToClipboard": "Panoya kopyalandı!",
+      "reportFor": "Rapor:"
     },
     "navbar": {
       "searchLanguages": "Dilleri ara...",
@@ -1537,7 +1556,8 @@
       "share": "Udostępnij",
       "edit": "Edytuj",
       "add": "Dodaj",
-      "copiedToClipboard": "Skopiowano do schowka!"
+      "copiedToClipboard": "Skopiowano do schowka!",
+      "reportFor": "Raport dla"
     },
     "navbar": {
       "searchLanguages": "Szukaj języków...",
@@ -1615,7 +1635,8 @@
       "share": "Поділитися",
       "edit": "Редагувати",
       "add": "Додати",
-      "copiedToClipboard": "Скопійовано в буфер обміну!"
+      "copiedToClipboard": "Скопійовано в буфер обміну!",
+      "reportFor": "Звіт для"
     },
     "navbar": {
       "searchLanguages": "Пошук мов...",
@@ -1693,7 +1714,8 @@
       "share": "แชร์",
       "edit": "แก้ไข",
       "add": "เพิ่ม",
-      "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว!"
+      "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว!",
+      "reportFor": "รายงานสำหรับ"
     },
     "navbar": {
       "searchLanguages": "ค้นหาภาษา...",
@@ -1771,7 +1793,8 @@
       "share": "Delen",
       "edit": "Bewerken",
       "add": "Toevoegen",
-      "copiedToClipboard": "Gekopieerd naar klembord!"
+      "copiedToClipboard": "Gekopieerd naar klembord!",
+      "reportFor": "Rapport voor"
     },
     "navbar": {
       "searchLanguages": "Zoek talen...",
@@ -1849,7 +1872,8 @@
       "share": "Κοινοποίηση",
       "edit": "Επεξεργασία",
       "add": "Προσθήκη",
-      "copiedToClipboard": "Αντιγράφηκε στο πρόχειρο!"
+      "copiedToClipboard": "Αντιγράφηκε στο πρόχειρο!",
+      "reportFor": "Αναφορά για"
     },
     "navbar": {
       "searchLanguages": "Αναζήτηση γλωσσών...",
@@ -1927,7 +1951,8 @@
       "share": "Sdílet",
       "edit": "Upravit",
       "add": "Přidat",
-      "copiedToClipboard": "Zkopírováno do schránky!"
+      "copiedToClipboard": "Zkopírováno do schránky!",
+      "reportFor": "Zpráva pro"
     },
     "navbar": {
       "searchLanguages": "Hledat jazyky...",
@@ -2005,7 +2030,8 @@
       "share": "Dela",
       "edit": "Redigera",
       "add": "Lägg till",
-      "copiedToClipboard": "Kopierat till urklipp!"
+      "copiedToClipboard": "Kopierat till urklipp!",
+      "reportFor": "Rapport för"
     },
     "navbar": {
       "searchLanguages": "Sök språk...",
@@ -2083,7 +2109,8 @@
       "share": "Distribuie",
       "edit": "Editează",
       "add": "Adaugă",
-      "copiedToClipboard": "Copiat în clipboard!"
+      "copiedToClipboard": "Copiat în clipboard!",
+      "reportFor": "Raport pentru"
     },
     "navbar": {
       "searchLanguages": "Caută limbi...",
@@ -2161,7 +2188,8 @@
       "share": "Megosztás",
       "edit": "Szerkesztés",
       "add": "Hozzáadás",
-      "copiedToClipboard": "Vágólapra másolva!"
+      "copiedToClipboard": "Vágólapra másolva!",
+      "reportFor": "Jelentés:"
     },
     "navbar": {
       "searchLanguages": "Nyelvek keresése...",
@@ -2239,7 +2267,8 @@
       "share": "Bagikan",
       "edit": "Edit",
       "add": "Tambah",
-      "copiedToClipboard": "Disalin ke clipboard!"
+      "copiedToClipboard": "Disalin ke clipboard!",
+      "reportFor": "Laporan untuk"
     },
     "navbar": {
       "searchLanguages": "Cari bahasa...",
@@ -2317,7 +2346,8 @@
       "share": "Kongsi",
       "edit": "Edit",
       "add": "Tambah",
-      "copiedToClipboard": "Disalin ke papan keratan!"
+      "copiedToClipboard": "Disalin ke papan keratan!",
+      "reportFor": "Laporan untuk"
     },
     "navbar": {
       "searchLanguages": "Cari bahasa...",

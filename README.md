@@ -2,7 +2,58 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ installed
+- Firebase project (for authentication)
+- Gemini API key (for chatbot)
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### Environment Variables Setup
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```env
+# Gemini API Key
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+**Note:** Firebase configuration is already set up in `lib/firebase.ts`. If you need to use your own Firebase project, update the configuration in that file.
+
+### Firebase Authentication Setup
+
+This project uses Firebase Authentication for Google sign-in. The Firebase configuration is already set up in `lib/firebase.ts` with the following credentials:
+
+- **Project ID**: `gen-lang-client-0685314272`
+- **Auth Domain**: `gen-lang-client-0685314272.firebaseapp.com`
+
+#### To use your own Firebase project:
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project or select an existing one
+3. Enable Authentication:
+   - Navigate to "Authentication" > "Sign-in method"
+   - Enable "Google" as a sign-in provider
+   - Add your domain to authorized domains if needed
+4. Get your Firebase config:
+   - Go to Project Settings > General
+   - Scroll down to "Your apps" and click the web icon (`</>`)
+   - Copy the Firebase configuration object
+5. Update `lib/firebase.ts` with your Firebase configuration
+
+### Running the Development Server
 
 ```bash
 npm run dev

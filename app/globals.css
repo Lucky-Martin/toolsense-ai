@@ -20,7 +20,73 @@
 }
 
 body {
-  background: var(--background);
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      #ffffff 0px,
+      #ffffff 30px,
+      #f9fafb 30px,
+      #f9fafb 60px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      #f3f4f6 0px,
+      #f3f4f6 30px,
+      #ffffff 30px,
+      #ffffff 60px
+    ),
+    linear-gradient(135deg, #ffffff 0%, #f9fafb 50%, #f3f4f6 100%);
+  background-size: 60px 60px, 60px 60px, 100% 100%;
+  background-blend-mode: overlay, overlay, normal;
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom animations for error popups */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTopSmall {
+  from {
+    transform: translateY(-4px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.slide-in-from-top-1 {
+  animation: slideInFromTopSmall 0.2s ease-out;
+}
+
+.slide-in-from-top-2 {
+  animation: slideInFromTop 0.2s ease-out;
 }

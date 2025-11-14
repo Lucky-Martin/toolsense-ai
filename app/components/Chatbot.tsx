@@ -11,13 +11,53 @@ interface Message {
   cached?: boolean;
 }
 
+const LOADING_MESSAGES = [
+  "Analyzing company security posture...",
+  "Researching vendor reputation...",
+  "Scanning CVE databases...",
+  "Reviewing compliance certifications...",
+  "Assessing data handling practices...",
+  "Evaluating security incidents...",
+  "Checking CISA KEV catalog...",
+  "Reviewing SOC 2 reports...",
+  "Analyzing ISO certifications...",
+  "Examining vendor PSIRT pages...",
+  "Reviewing Terms of Service...",
+  "Assessing deployment controls...",
+  "Evaluating authentication methods...",
+  "Reviewing security advisories...",
+  "Analyzing trust factors...",
+  "Calculating risk score...",
+  "Researching safer alternatives...",
+  "Reviewing incident response history...",
+  "Checking bug bounty programs...",
+  "Analyzing API security...",
+  "Reviewing data encryption practices...",
+  "Evaluating access controls...",
+  "Researching market position...",
+  "Analyzing financial stability...",
+  "Reviewing customer testimonials...",
+  "Checking third-party audits...",
+  "Evaluating patch responsiveness...",
+  "Researching abuse signals...",
+  "Analyzing data residency...",
+  "Reviewing privacy policies...",
+  "Checking GDPR compliance...",
+  "Evaluating administrative controls...",
+  "Researching security best practices...",
+  "Analyzing integration capabilities...",
+  "Reviewing audit logging features...",
+];
+
 export default function Chatbot() {
   const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [currentLoadingMessage, setCurrentLoadingMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,6 +71,44 @@ export default function Chatbot() {
     // Focus input on mount
     inputRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      // Set initial loading message
+      const randomIndex = Math.floor(Math.random() * LOADING_MESSAGES.length);
+      setCurrentLoadingMessage(LOADING_MESSAGES[randomIndex]);
+
+      // Rotate through loading messages every 2 seconds
+      loadingIntervalRef.current = setInterval(() => {
+        setCurrentLoadingMessage((current) => {
+          // Get a random message that's different from current
+          const availableMessages = LOADING_MESSAGES.filter(
+            (msg) => msg !== current
+          );
+
+          if (availableMessages.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableMessages.length);
+            return availableMessages[randomIndex];
+          }
+          return current;
+        });
+      }, 2000);
+    } else {
+      // Clear interval when loading stops
+      if (loadingIntervalRef.current) {
+        clearInterval(loadingIntervalRef.current);
+        loadingIntervalRef.current = null;
+      }
+      setCurrentLoadingMessage("");
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (loadingIntervalRef.current) {
+        clearInterval(loadingIntervalRef.current);
+      }
+    };
+  }, [isLoading]);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,9 +128,14 @@ export default function Chatbot() {
     try {
       // Prepare conversation history
       const history = messages.map((msg) => ({
-        role: msg.role,
-        content: msg.content,
-      }));
+          role: msg.role,
+          content: msg.content,
+        }));
+
+      // Get language from localStorage (default to "en")
+      const languageId = typeof window !== "undefined"
+        ? localStorage.getItem("languageId") || "en"
+        : "en";
 
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -62,6 +145,7 @@ export default function Chatbot() {
         body: JSON.stringify({
           message: currentInput,
           history: history,
+          languageId: languageId,
         }),
       });
 
@@ -163,7 +247,7 @@ ${lastAssistantMessage.content}
     <div className="flex flex-col h-screen w-full bg-white fixed inset-0 overflow-hidden">
       {/* Navbar */}
       <Navbar />
-      
+
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 min-h-0 overflow-hidden pb-0">
         {!hasMessages ? (
@@ -174,19 +258,19 @@ ${lastAssistantMessage.content}
             <p className="text-lg text-gray-600 font-normal">
               {t("chatbot.subtitle")}
             </p>
-          </div>
+        </div>
         ) : (
           <div className="w-full max-w-3xl h-full overflow-y-auto py-8 pb-32 space-y-6">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`flex ${
+              message.role === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
+            <div
                   className={`max-w-[85%] rounded-lg px-4 py-3 ${
-                    message.role === "user"
+                message.role === "user"
                       ? "bg-gray-100 text-black"
                       : "bg-gray-50 text-gray-800 border border-gray-200"
                   }`}
@@ -269,30 +353,33 @@ ${lastAssistantMessage.content}
                     </div>
                   ) : (
                     <div className="whitespace-pre-wrap break-words leading-relaxed">
-                      {message.content}
+                {message.content}
                     </div>
                   )}
-                </div>
+            </div>
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex justify-start">
+                <div className="bg-gray-50 text-gray-800 border border-gray-200 rounded-lg px-4 py-3 max-w-[85%]">
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1 flex-shrink-0">
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div
+                        className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+                <div
+                        className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.4s" }}
+                ></div>
+                    </div>
+                    <span className="text-sm text-gray-600">{currentLoadingMessage}</span>
               </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="text-gray-500">
-                  <div className="flex gap-1">
-                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div
-                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "0.2s" }}
-                    ></div>
-                    <div
-                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "0.4s" }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
           </div>
         )}
       </div>

@@ -4,7 +4,7 @@ import { cacheService } from "../../services/cache";
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, history = [] } = await request.json();
+    const { message, history = [], languageId = "en" } = await request.json();
 
     if (!message) {
       return NextResponse.json(
@@ -20,6 +20,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Normalize language code (default to "en" if not provided)
+    const language = languageId || "en";
+
     // Check cache first (only for new queries, not follow-up questions)
     // If there's no history, it's likely a new assessment request
     const isNewQuery = history.length === 0;
@@ -27,25 +30,28 @@ export async function POST(request: NextRequest) {
     let fromCache = false;
 
     if (isNewQuery) {
-      const cachedResponse = cacheService.get(message);
+      // Check cache for this specific language
+      const cachedResponse = cacheService.get(message, language);
       if (cachedResponse) {
         response = cachedResponse;
         fromCache = true;
       } else {
-        // Use the Gemini service to send the message
+        // Use the Gemini service to send the message with language
         response = await geminiService.sendMessage(
           message,
-          history as ChatMessage[]
+          history as ChatMessage[],
+          language
         );
 
-        // Cache the response
-        cacheService.set(message, response, "gemini-2.5-pro");
+        // Cache the response with language
+        cacheService.set(message, response, "gemini-2.5-pro", language);
       }
     } else {
-      // For follow-up questions, don't use cache
+      // For follow-up questions, don't use cache but still use language
       response = await geminiService.sendMessage(
         message,
-        history as ChatMessage[]
+        history as ChatMessage[],
+        language
       );
     }
 

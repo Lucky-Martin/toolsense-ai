@@ -170,14 +170,23 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
    * Send a message to Gemini and get a response
    * @param message - The user's message
    * @param history - Optional conversation history
+   * @param language - Language code (e.g., "en", "fr", "es") - defaults to "en"
    * @returns The assistant's response
    */
   async sendMessage(
     message: string,
-    history: ChatMessage[] = []
+    history: ChatMessage[] = [],
+    language: string = "en"
   ): Promise<string> {
     try {
       const genAI = this.initializeGenAI();
+
+      // Build language-specific system instruction
+      const languageInstruction = language !== "en"
+        ? `\n\n**LANGUAGE REQUIREMENT**: Generate the entire report in ${language} language. All sections, headings, and content must be in ${language}.`
+        : "";
+
+      const fullSystemInstruction = this.systemInstruction + languageInstruction;
 
       // Build conversation history for Gemini
       const chatHistory = history.map((msg) => ({
@@ -193,7 +202,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
         // Use gemini-2.5-pro with systemInstruction (best for research)
         model = genAI.getGenerativeModel({
           model: this.modelName,
-          systemInstruction: this.systemInstruction,
+          systemInstruction: fullSystemInstruction,
         });
       } catch (error) {
         // If gemini-2.5-pro is overloaded/unavailable, try gemini-2.5-flash
@@ -203,7 +212,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
           try {
             model = genAI.getGenerativeModel({
               model: "gemini-2.5-flash",
-              systemInstruction: this.systemInstruction,
+              systemInstruction: fullSystemInstruction,
             });
           } catch (flashError) {
             // Fallback to gemini-1.5-pro if gemini-2.5-flash is not available
@@ -211,7 +220,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
             try {
               model = genAI.getGenerativeModel({
                 model: "gemini-1.5-pro",
-                systemInstruction: this.systemInstruction,
+                systemInstruction: fullSystemInstruction,
               });
             } catch (fallbackError) {
               // Last resort: use gemini-pro
@@ -219,7 +228,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
               try {
                 model = genAI.getGenerativeModel({
                   model: "gemini-pro",
-                  systemInstruction: this.systemInstruction,
+                  systemInstruction: fullSystemInstruction,
                 });
               } catch (finalError) {
                 // Final fallback: use gemini-pro without systemInstruction
@@ -227,10 +236,10 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
                 model = genAI.getGenerativeModel({
                   model: "gemini-pro",
                 });
-                // Prepend system instruction to message if model doesn't support it
-                if (chatHistory.length === 0) {
-                  message = `${this.systemInstruction}\n\nUser query: ${message}`;
-                }
+              // Prepend system instruction to message if model doesn't support it
+              if (chatHistory.length === 0) {
+                message = `${fullSystemInstruction}\n\nUser query: ${message}`;
+              }
               }
             }
           }
@@ -240,7 +249,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
           try {
             model = genAI.getGenerativeModel({
               model: "gemini-1.5-pro",
-              systemInstruction: this.systemInstruction,
+              systemInstruction: fullSystemInstruction,
             });
           } catch (fallbackError) {
             // Last resort: use gemini-pro
@@ -248,7 +257,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
             try {
               model = genAI.getGenerativeModel({
                 model: "gemini-pro",
-                systemInstruction: this.systemInstruction,
+                systemInstruction: fullSystemInstruction,
               });
             } catch (finalError) {
               // Final fallback: use gemini-pro without systemInstruction
@@ -258,7 +267,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
               });
               // Prepend system instruction to message if model doesn't support it
               if (chatHistory.length === 0) {
-                message = `${this.systemInstruction}\n\nUser query: ${message}`;
+                message = `${fullSystemInstruction}\n\nUser query: ${message}`;
               }
             }
           }
@@ -295,10 +304,18 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
    */
   async* streamMessage(
     message: string,
-    history: ChatMessage[] = []
+    history: ChatMessage[] = [],
+    language: string = "en"
   ): AsyncGenerator<string, void, unknown> {
     try {
       const genAI = this.initializeGenAI();
+
+      // Build language-specific system instruction
+      const languageInstruction = language !== "en"
+        ? `\n\n**LANGUAGE REQUIREMENT**: Generate the entire report in ${language} language. All sections, headings, and content must be in ${language}.`
+        : "";
+
+      const fullSystemInstruction = this.systemInstruction + languageInstruction;
 
       const chatHistory = history.map((msg) => ({
         role: msg.role === "user" ? "user" : "model",
@@ -310,7 +327,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
       try {
         model = genAI.getGenerativeModel({
           model: this.modelName,
-          systemInstruction: this.systemInstruction,
+          systemInstruction: fullSystemInstruction,
         });
       } catch (error) {
         // If gemini-2.5-pro is overloaded/unavailable, try gemini-2.5-flash
@@ -320,7 +337,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
           try {
             model = genAI.getGenerativeModel({
               model: "gemini-2.5-flash",
-              systemInstruction: this.systemInstruction,
+              systemInstruction: fullSystemInstruction,
             });
           } catch (flashError) {
             // Fallback to gemini-1.5-pro if gemini-2.5-flash is not available
@@ -328,7 +345,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
             try {
               model = genAI.getGenerativeModel({
                 model: "gemini-1.5-pro",
-                systemInstruction: this.systemInstruction,
+                systemInstruction: fullSystemInstruction,
               });
             } catch (fallbackError) {
               // Last resort: use gemini-pro
@@ -336,7 +353,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
               try {
                 model = genAI.getGenerativeModel({
                   model: "gemini-pro",
-                  systemInstruction: this.systemInstruction,
+                  systemInstruction: fullSystemInstruction,
                 });
               } catch (finalError) {
                 model = genAI.getGenerativeModel({
@@ -354,7 +371,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
           try {
             model = genAI.getGenerativeModel({
               model: "gemini-1.5-pro",
-              systemInstruction: this.systemInstruction,
+              systemInstruction: fullSystemInstruction,
             });
           } catch (fallbackError) {
             // Last resort: use gemini-pro
@@ -362,7 +379,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
             try {
               model = genAI.getGenerativeModel({
                 model: "gemini-pro",
-                systemInstruction: this.systemInstruction,
+                systemInstruction: fullSystemInstruction,
               });
             } catch (finalError) {
               model = genAI.getGenerativeModel({

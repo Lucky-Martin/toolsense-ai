@@ -11,6 +11,7 @@ import path from "path";
 interface CacheEntry {
   query: string;
   normalizedQuery: string;
+  language: string;
   response: string;
   timestamp: string;
   model: string;
@@ -69,10 +70,11 @@ class CacheService {
   }
 
   /**
-   * Generate a cache key from the query
+   * Generate a cache key from the query and language
    */
-  private getCacheKey(query: string): string {
-    return this.normalizeQuery(query);
+  private getCacheKey(query: string, language: string = "en"): string {
+    const normalizedQuery = this.normalizeQuery(query);
+    return `${normalizedQuery}:${language}`;
   }
 
   /**
@@ -113,37 +115,41 @@ class CacheService {
   /**
    * Get cached response if available and not expired
    */
-  get(query: string): string | null {
-    const cacheKey = this.getCacheKey(query);
+  get(query: string, language: string = "en"): string | null {
+    const cacheKey = this.getCacheKey(query, language);
     const cache = this.loadCache();
 
+    const normalizedQuery = this.normalizeQuery(query);
     const entry = cache.entries.find(
-      (e) => e.normalizedQuery === cacheKey && !this.isExpired(e)
+      (e) => e.normalizedQuery === normalizedQuery && e.language === language && !this.isExpired(e)
     );
 
     if (entry) {
-      console.log(`Cache hit for: ${query} (normalized: ${cacheKey})`);
+      console.log(`Cache hit for: ${query} (language: ${language}, normalized: ${cacheKey})`);
       return entry.response;
     }
 
-    console.log(`Cache miss for: ${query} (normalized: ${cacheKey})`);
+    console.log(`Cache miss for: ${query} (language: ${language}, normalized: ${cacheKey})`);
     return null;
   }
 
   /**
    * Store response in cache
    */
-  set(query: string, response: string, model: string = "gemini-1.5-pro"): void {
-    const cacheKey = this.normalizeQuery(query);
+  set(query: string, response: string, model: string = "gemini-2.5-pro", language: string = "en"): void {
+    const cacheKey = this.getCacheKey(query, language);
     const cache = this.loadCache();
 
-    // Remove old entry if exists
-    cache.entries = cache.entries.filter((e) => e.normalizedQuery !== cacheKey);
+    // Remove old entry if exists (same query and language)
+    cache.entries = cache.entries.filter(
+      (e) => !(e.normalizedQuery === this.normalizeQuery(query) && e.language === language)
+    );
 
     // Add new entry
     const entry: CacheEntry = {
       query: query.trim(),
-      normalizedQuery: cacheKey,
+      normalizedQuery: this.normalizeQuery(query),
+      language,
       response,
       timestamp: new Date().toISOString(),
       model,
@@ -159,7 +165,7 @@ class CacheService {
     }
 
     this.saveCache(cache);
-    console.log(`Cached response for: ${query} (normalized: ${cacheKey})`);
+    console.log(`Cached response for: ${query} (language: ${language}, normalized: ${cacheKey})`);
   }
 
   /**

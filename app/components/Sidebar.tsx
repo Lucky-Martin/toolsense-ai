@@ -22,6 +22,55 @@ export default function Sidebar({
   const { t } = useTranslation();
   const [conversations, setConversations] = useState<Conversation[]>([]);
 
+  // Helper function to format conversation title
+  const formatTitle = (title: string, conversation: Conversation): string => {
+    // Check if title already has "Report for" prefix (in various languages)
+    const hasPrefix = title.includes("Report for") ||
+                     title.includes("报告：") ||
+                     title.includes("Informe para") ||
+                     title.includes("Rapport pour") ||
+                     title.includes("Rapport per") ||
+                     title.includes("Rapport voor") ||
+                     title.includes("Rapport för") ||
+                     title.includes("Rapport pentru") ||
+                     title.includes("Bericht für") ||
+                     title.includes("Отчет для") ||
+                     title.includes("Звіт для") ||
+                     title.includes("レポート：") ||
+                     title.includes("보고서:") ||
+                     title.includes("Rapporto per") ||
+                     title.includes("Raport dla") ||
+                     title.includes("Raport:") ||
+                     title.includes("รายงานสำหรับ") ||
+                     title.includes("Laporan untuk") ||
+                     title.includes("Laporan kanggo") ||
+                     title.includes("Báo cáo cho") ||
+                     title.includes("रिपोर्ट:") ||
+                     title.includes("রিপোর্ট:") ||
+                     title.includes("ਰਿਪੋਰਟ:") ||
+                     title.includes("రిపోర్ట్:") ||
+                     title.includes("Raportti:") ||
+                     title.includes("Jelentés:") ||
+                     title.includes("Zpráva pro") ||
+                     title.includes("Αναφορά για");
+
+    if (hasPrefix) {
+      return title;
+    }
+
+    // If no prefix, add it
+    // Try to extract the query name from the title or use the first user message
+    let queryName = title;
+    if (conversation.messages.length > 0) {
+      const firstUserMessage = conversation.messages.find((msg) => msg.role === "user");
+      if (firstUserMessage) {
+        queryName = firstUserMessage.content.substring(0, 50).trim() || title;
+      }
+    }
+
+    return `${t("chatbot.reportFor")} ${queryName}`;
+  };
+
   // Load conversations from storage
   useEffect(() => {
     const loadConversations = () => {
@@ -165,7 +214,7 @@ export default function Sidebar({
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-medium text-gray-900 truncate">
-                        {conversation.title}
+                        {formatTitle(conversation.title, conversation)}
                       </h3>
                       <p className="text-xs text-gray-500 mt-1">
                         {formatDate(conversation.updatedAt)}

@@ -114,7 +114,24 @@ class ConversationService {
       const firstUserMessage = messages.find((msg) => msg.role === "user");
       if (firstUserMessage) {
         // Use first 50 characters of first user message as title
-        conversation.title = firstUserMessage.content.substring(0, 50).trim() || "New Conversation";
+        // Check if title already has "Report for" prefix (in various languages)
+        const existingTitle = conversation.title || "";
+        const queryName = firstUserMessage.content.substring(0, 50).trim() || "New Conversation";
+
+        // If title already has a report prefix, preserve it, otherwise use just the query name
+        // (The component will add the prefix when creating/updating)
+        conversation.title = existingTitle.includes("Report for") ||
+                            existingTitle.includes("报告：") ||
+                            existingTitle.includes("Informe para") ||
+                            existingTitle.includes("Rapport") ||
+                            existingTitle.includes("Bericht") ||
+                            existingTitle.includes("Отчет") ||
+                            existingTitle.includes("レポート") ||
+                            existingTitle.includes("보고서") ||
+                            existingTitle.includes("Rapporto") ||
+                            existingTitle.includes("Raport")
+          ? existingTitle
+          : queryName;
       }
     }
 

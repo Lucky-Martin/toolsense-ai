@@ -23,26 +23,29 @@ export default function Sidebar({
 }: SidebarProps) {
   const { t } = useTranslation();
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
-      return saved === "true";
-    }
-    return false;
-  });
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
-  // Load conversations from storage
+  // Load conversations from storage and restore collapsed state
   useEffect(() => {
     const loadConversations = () => {
       const loaded = conversationService.getAllConversations();
       setConversations(loaded);
     };
 
+    // Restore collapsed state from localStorage (client-side only)
+    const saved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
+    if (saved === "true") {
+      setIsCollapsed(true);
+    }
+
     loadConversations();
 
     // Listen for storage changes (for cross-tab sync)
     const handleStorageChange = () => {
       loadConversations();
+      // Also sync collapsed state
+      const newSaved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
+      setIsCollapsed(newSaved === "true");
     };
 
     window.addEventListener("storage", handleStorageChange);

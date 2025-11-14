@@ -53,7 +53,6 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentLoadingMessage, setCurrentLoadingMessage] = useState("");
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [hasUserMessage, setHasUserMessage] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -90,7 +89,6 @@ export default function Chatbot() {
     setCurrentConversationId(null);
     setHasUserMessage(false);
     setIsEditing(false);
-    setSidebarOpen(false);
     inputRef.current?.focus();
   };
 
@@ -102,7 +100,6 @@ export default function Chatbot() {
       setCurrentConversationId(conversationId);
       setHasUserMessage(conversation.messages.some(msg => msg.role === "user"));
       setIsEditing(false);
-      setSidebarOpen(false);
       inputRef.current?.focus();
     }
   };
@@ -443,8 +440,6 @@ ${lastAssistantMessage.content}
     <div className="flex h-screen w-full bg-white fixed inset-0 overflow-hidden">
       {/* Sidebar */}
       <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
         currentConversationId={currentConversationId}
         onNewConversation={handleNewConversation}
         onLoadConversation={handleLoadConversation}
@@ -454,29 +449,6 @@ ${lastAssistantMessage.content}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Navbar */}
         <Navbar />
-
-        {/* Sidebar Toggle Button */}
-        {!sidebarOpen && (
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="fixed top-16 left-4 z-30 p-2 bg-white rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-all duration-300"
-            aria-label={t("sidebar.toggleSidebar")}
-          >
-          <svg
-            className="w-6 h-6 text-gray-700"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-        )}
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col items-center justify-center px-4 min-h-0 overflow-hidden pb-0">

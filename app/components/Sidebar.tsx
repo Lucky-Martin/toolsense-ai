@@ -5,8 +5,6 @@ import { useTranslation } from "@/app/contexts/TranslationContext";
 import { conversationService, Conversation } from "../services/conversations";
 
 interface SidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
   currentConversationId: string | null;
   onNewConversation: () => void;
   onLoadConversation: (conversationId: string) => void;
@@ -15,8 +13,6 @@ interface SidebarProps {
 const SIDEBAR_COLLAPSED_KEY = "sidebarCollapsed";
 
 export default function Sidebar({
-  isOpen,
-  onClose,
   currentConversationId,
   onNewConversation,
   onLoadConversation,
@@ -150,18 +146,9 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={onClose}
-        />
-      )}
-
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-white border-r border-gray-200 z-50 transform transition-all duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0 lg:static lg:z-auto flex flex-col ${isCollapsed ? "w-16" : "w-80"
+        className={`fixed top-0 left-0 h-full bg-white border-r border-gray-200 z-50 transform transition-all duration-300 ease-in-out translate-x-0 lg:static lg:z-auto flex flex-col ${isCollapsed ? "w-16" : "w-80"
           }`}
       >
         {/* Row 1: Conversations title + Burger menu button */}

@@ -14,7 +14,7 @@ interface TranslationContextType {
 
 const TranslationContext = createContext<TranslationContextType>({
     language: "en",
-    setLanguage: () => {},
+    setLanguage: () => { },
     t: () => "",
 });
 

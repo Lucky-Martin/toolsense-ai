@@ -1254,10 +1254,12 @@ ${editContent.trim()}
 
       {/* Main Content Wrapper */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Navbar */}
-        <Navbar />
+        {/* Navbar - Hidden on screens < 998px */}
+        <div className="hidden lg:block">
+          <Navbar />
+        </div>
 
-        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden pt-[50px] lg:pt-0">
           <div
             className={`flex-1 flex flex-col min-h-0 overflow-hidden pb-0 ${hasMessages ? "items-start" : "items-center justify-center"
               }`}
@@ -1273,7 +1275,7 @@ ${editContent.trim()}
               </div>
             ) : (
               <div className="w-full h-full overflow-y-auto">
-                <div className="max-w-3xl mx-auto py-8 px-4 pb-8 space-y-6">
+                <div className="max-w-3xl mx-auto px-4 pt-[30px] pb-4 lg:pb-8 space-y-6">
                   {messages.map((message, index) => (
                     <div key={index} className="w-full">
                       {message.role === "assistant" ? (
@@ -1284,7 +1286,7 @@ ${editContent.trim()}
                               isCached={message.cached}
                             />
                           ) : (
-                            <div className="rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border border-gray-200 markdown-content overflow-x-hidden break-words">
+                            <div className="rounded-lg px-4 pt-3 lg:pb-3 bg-gray-50 text-gray-800 border border-gray-200 markdown-content overflow-x-hidden break-words">
                               {message.cached && (
                                 <div className="mb-2 text-xs text-gray-500 italic flex items-center gap-1">
                                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1408,7 +1410,7 @@ ${editContent.trim()}
           </div>
 
           <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.08)] border-t border-white">
-            <div className="max-w-3xl mx-auto px-4 py-4 w-full">
+            <div className="max-w-3xl mx-auto px-4 py-2 lg:py-4 w-full">
               {hasAssistantResponse ? (
                 // Show buttons when there's an assistant response
                 <div className="flex items-center justify-center gap-4">
@@ -1495,7 +1497,7 @@ ${editContent.trim()}
                   <button
                     type="button"
                     onClick={handleShare}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
+                    className="flex items-center gap-2 lg:gap-2 gap-0 px-4 lg:px-4 px-2.5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
                     title={t("chatbot.share")}
                   >
                     <svg
@@ -1511,12 +1513,12 @@ ${editContent.trim()}
                         d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
                       />
                     </svg>
-                    <span className="text-sm font-medium">{t("chatbot.share")}</span>
+                    <span className="text-sm font-medium lg:inline hidden">{t("chatbot.share")}</span>
                   </button>
                   <button
                     type="button"
                     onClick={handleEdit}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
+                    className="flex items-center gap-2 lg:gap-2 gap-0 px-4 lg:px-4 px-2.5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
                     title={t("chatbot.edit")}
                   >
                     <svg
@@ -1532,7 +1534,7 @@ ${editContent.trim()}
                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                       />
                     </svg>
-                    <span className="text-sm font-medium">{t("chatbot.edit")}</span>
+                    <span className="text-sm font-medium lg:inline hidden">{t("chatbot.edit")}</span>
                   </button>
                 </div>
               ) : (
@@ -1570,11 +1572,6 @@ ${editContent.trim()}
                   </div>
                 </form>
               )}
-              {!hasAssistantResponse && (
-                <p className="text-xs text-gray-400 text-center mt-2">
-                  {t("chatbot.footerText")}
-                </p>
-              )}
             </div>
           </div>
         </div>
@@ -1582,8 +1579,8 @@ ${editContent.trim()}
 
       {/* Edit Dialog with Text Editor */}
       {showEditDialog && (
-        <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000 }}>
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 border border-gray-200 flex flex-col" style={{ height: '80vh' }}>
+        <div className="fixed inset-0 flex lg:items-center lg:justify-center items-start justify-start" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000 }}>
+          <div className="bg-white rounded-lg lg:rounded-lg rounded-none shadow-xl max-w-4xl w-full lg:mx-4 mx-0 border border-gray-200 flex flex-col h-screen lg:h-[80vh]">
             <div className="p-6 border-b border-gray-200 flex items-center justify-between">
               <h3 className="text-lg font-light text-gray-900">
                 {t("chatbot.edit")}
@@ -1776,7 +1773,7 @@ ${editContent.trim()}
                 <>
                   <button
                     onClick={handleShareEdited}
-                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light flex items-center gap-2"
+                    className="px-4 lg:px-4 px-2.5 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light flex items-center gap-2 lg:gap-2 gap-0"
                   >
                     <svg
                       className="w-4 h-4"
@@ -1791,7 +1788,7 @@ ${editContent.trim()}
                         d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
                       />
                     </svg>
-                    {t("chatbot.share")}
+                    <span className="lg:inline hidden">{t("chatbot.share")}</span>
                   </button>
                   <div className="relative" ref={editDownloadDropdownRef}>
                     <button
@@ -1876,9 +1873,22 @@ ${editContent.trim()}
               ) : (
                 <button
                   onClick={handleSaveEdit}
-                  className="px-4 py-2 text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer font-light"
+                  className="px-4 lg:px-4 px-2.5 py-2 text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer font-light flex items-center justify-center gap-2 lg:gap-2 gap-0"
                 >
-                  {t("sidebar.confirm")}
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span className="lg:inline hidden">{t("sidebar.confirm")}</span>
                 </button>
               )}
             </div>

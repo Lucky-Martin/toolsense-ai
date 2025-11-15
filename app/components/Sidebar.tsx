@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "@/app/contexts/TranslationContext";
+import { useAuth } from "@/app/contexts/AuthContext";
 import { conversationService, Conversation } from "../services/conversations";
 
 interface SidebarProps {
@@ -18,8 +20,13 @@ export default function Sidebar({
   onLoadConversation,
 }: SidebarProps) {
   const { t } = useTranslation();
+  const { signOut } = useAuth();
+  const router = useRouter();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -120,15 +127,22 @@ export default function Sidebar({
     conversationId: string
   ) => {
     e.stopPropagation();
-    if (confirm(t("sidebar.deleteConfirm"))) {
-      conversationService.deleteConversation(conversationId);
+    setConversationToDelete(conversationId);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDeleteConversation = () => {
+    if (conversationToDelete) {
+      conversationService.deleteConversation(conversationToDelete);
       setConversations(conversationService.getAllConversations());
 
       // If deleting current conversation, create a new one
-      if (conversationId === currentConversationId) {
+      if (conversationToDelete === currentConversationId) {
         onNewConversation();
       }
     }
+    setShowDeleteDialog(false);
+    setConversationToDelete(null);
   };
 
   const toggleCollapse = () => {
@@ -155,13 +169,17 @@ export default function Sidebar({
     return date.toLocaleDateString();
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/");
+  };
+
   return (
     <>
       {/* Sidebar */}
       <div
-        className={`h-full bg-white border-r border-gray-200 flex-shrink-0 transition-all duration-300 ease-in-out flex flex-col ${
-          isCollapsed ? "w-16" : "w-80"
-        }`}
+        className={`h-full bg-white border-r border-gray-200 flex-shrink-0 transition-all duration-300 ease-in-out flex flex-col ${isCollapsed ? "w-16" : "w-80"
+          }`}
       >
         {/* Row 1: Conversations title + Burger menu button */}
         <div className={`p-4 border-b border-gray-200 flex items-center ${isCollapsed ? "justify-center" : "justify-between"}`}>
@@ -276,7 +294,92 @@ export default function Sidebar({
             )}
           </div>
         )}
+
+        {/* Logout button at bottom */}
+        <div className="p-4 border-t border-gray-200 mt-auto">
+          <button
+            onClick={() => setShowLogoutDialog(true)}
+            className={`w-full p-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2 cursor-pointer ${isCollapsed ? "justify-center" : ""
+              }`}
+            aria-label={t("sidebar.logout")}
+            title={t("sidebar.logout")}
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            {!isCollapsed && (
+              <span className="font-medium whitespace-nowrap">{t("sidebar.logout")}</span>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Logout Confirmation Dialog */}
+      {showLogoutDialog && (
+        <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000 }}>
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 border border-gray-200">
+            <div className="p-6">
+              <h3 className="text-lg font-light text-gray-900 mb-4">
+                {t("sidebar.logoutConfirm")}
+              </h3>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setShowLogoutDialog(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light"
+                >
+                  {t("sidebar.cancel")}
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors cursor-pointer font-light"
+                >
+                  {t("sidebar.confirm")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Conversation Confirmation Dialog */}
+      {showDeleteDialog && (
+        <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000 }}>
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 border border-gray-200">
+            <div className="p-6">
+              <h3 className="text-lg font-light text-gray-900 mb-4">
+                {t("sidebar.deleteConfirm")}
+              </h3>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => {
+                    setShowDeleteDialog(false);
+                    setConversationToDelete(null);
+                  }}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light"
+                >
+                  {t("sidebar.cancel")}
+                </button>
+                <button
+                  onClick={confirmDeleteConversation}
+                  className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors cursor-pointer font-light"
+                >
+                  {t("sidebar.confirm")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

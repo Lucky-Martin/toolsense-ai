@@ -75,7 +75,13 @@
       "deleteConfirm": "Are you sure you want to delete this conversation?",
       "closeSidebar": "Close sidebar",
       "toggleSidebar": "Toggle sidebar",
-      "deleteConversation": "Delete conversation"
+      "deleteConversation": "Delete conversation",
+      "logout": "Logout",
+      "logoutConfirm": "Are you sure you want to logout?",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "expandSidebar": "Expand sidebar",
+      "collapseSidebar": "Collapse sidebar"
     }
   },
   "zh": {
@@ -154,7 +160,13 @@
       "deleteConfirm": "您确定要删除此对话吗？",
       "closeSidebar": "关闭侧边栏",
       "toggleSidebar": "切换侧边栏",
-      "deleteConversation": "删除对话"
+      "deleteConversation": "删除对话",
+      "logout": "登出",
+      "logoutConfirm": "您确定要登出吗？",
+      "cancel": "取消",
+      "confirm": "确认",
+      "expandSidebar": "展开侧边栏",
+      "collapseSidebar": "折叠侧边栏"
     }
   },
   "es": {
@@ -233,7 +245,13 @@
       "deleteConfirm": "¿Estás seguro de que quieres eliminar esta conversación?",
       "closeSidebar": "Cerrar barra lateral",
       "toggleSidebar": "Alternar barra lateral",
-      "deleteConversation": "Eliminar conversación"
+      "deleteConversation": "Eliminar conversación",
+      "logout": "Cerrar sesión",
+      "logoutConfirm": "¿Estás seguro de que quieres cerrar sesión?",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "expandSidebar": "Expandir barra lateral",
+      "collapseSidebar": "Contraer barra lateral"
     }
   },
   "fi": {
@@ -312,7 +330,13 @@
       "deleteConfirm": "Haluatko varmasti poistaa tämän keskustelun?",
       "closeSidebar": "Sulje sivupalkki",
       "toggleSidebar": "Vaihda sivupalkki",
-      "deleteConversation": "Poista keskustelu"
+      "deleteConversation": "Poista keskustelu",
+      "logout": "Kirjaudu ulos",
+      "logoutConfirm": "Haluatko varmasti kirjautua ulos?",
+      "cancel": "Peruuta",
+      "confirm": "Vahvista",
+      "expandSidebar": "Laajenna sivupalkki",
+      "collapseSidebar": "Kutista sivupalkki"
     }
   },
   "de": {
@@ -391,7 +415,13 @@
       "deleteConfirm": "Möchten Sie diese Unterhaltung wirklich löschen?",
       "closeSidebar": "Seitenleiste schließen",
       "toggleSidebar": "Seitenleiste umschalten",
-      "deleteConversation": "Unterhaltung löschen"
+      "deleteConversation": "Unterhaltung löschen",
+      "logout": "Abmelden",
+      "logoutConfirm": "Möchten Sie sich wirklich abmelden?",
+      "cancel": "Abbrechen",
+      "confirm": "Bestätigen",
+      "expandSidebar": "Seitenleiste erweitern",
+      "collapseSidebar": "Seitenleiste reduzieren"
     }
   },
   "fr": {
@@ -470,7 +500,13 @@
       "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette conversation ?",
       "closeSidebar": "Fermer la barre latérale",
       "toggleSidebar": "Basculer la barre latérale",
-      "deleteConversation": "Supprimer la conversation"
+      "deleteConversation": "Supprimer la conversation",
+      "logout": "Déconnexion",
+      "logoutConfirm": "Êtes-vous sûr de vouloir vous déconnecter ?",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "expandSidebar": "Développer la barre latérale",
+      "collapseSidebar": "Réduire la barre latérale"
     }
   },
   "ru": {
@@ -549,7 +585,13 @@
       "deleteConfirm": "Вы уверены, что хотите удалить этот разговор?",
       "closeSidebar": "Закрыть боковую панель",
       "toggleSidebar": "Переключить боковую панель",
-      "deleteConversation": "Удалить разговор"
+      "deleteConversation": "Удалить разговор",
+      "logout": "Выйти",
+      "logoutConfirm": "Вы уверены, что хотите выйти?",
+      "cancel": "Отмена",
+      "confirm": "Подтвердить",
+      "expandSidebar": "Развернуть боковую панель",
+      "collapseSidebar": "Свернуть боковую панель"
     }
   },
   "hi": {
@@ -628,7 +670,13 @@
       "deleteConfirm": "क्या आप वाकई इस बातचीत को हटाना चाहते हैं?",
       "closeSidebar": "साइडबार बंद करें",
       "toggleSidebar": "साइडबार टॉगल करें",
-      "deleteConversation": "बातचीत हटाएं"
+      "deleteConversation": "बातचीत हटाएं",
+      "logout": "लॉगआउट",
+      "logoutConfirm": "क्या आप वाकई लॉगआउट करना चाहते हैं?",
+      "cancel": "रद्द करें",
+      "confirm": "पुष्टि करें",
+      "expandSidebar": "साइडबार विस्तृत करें",
+      "collapseSidebar": "साइडबार संकुचित करें"
     }
   },
   "ar": {
@@ -707,7 +755,13 @@
       "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذه المحادثة؟",
       "closeSidebar": "إغلاق الشريط الجانبي",
       "toggleSidebar": "تبديل الشريط الجانبي",
-      "deleteConversation": "حذف المحادثة"
+      "deleteConversation": "حذف المحادثة",
+      "logout": "تسجيل الخروج",
+      "logoutConfirm": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+      "cancel": "إلغاء",
+      "confirm": "تأكيد",
+      "expandSidebar": "توسيع الشريط الجانبي",
+      "collapseSidebar": "طي الشريط الجانبي"
     }
   },
   "pt": {
@@ -786,7 +840,13 @@
       "deleteConfirm": "Tem certeza de que deseja excluir esta conversa?",
       "closeSidebar": "Fechar barra lateral",
       "toggleSidebar": "Alternar barra lateral",
-      "deleteConversation": "Excluir conversa"
+      "deleteConversation": "Excluir conversa",
+      "logout": "Sair",
+      "logoutConfirm": "Tem certeza de que deseja sair?",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "expandSidebar": "Expandir barra lateral",
+      "collapseSidebar": "Recolher barra lateral"
     }
   },
   "bn": {
@@ -865,7 +925,13 @@
       "deleteConfirm": "আপনি কি নিশ্চিত যে আপনি এই কথোপকথনটি মুছতে চান?",
       "closeSidebar": "সাইডবার বন্ধ করুন",
       "toggleSidebar": "সাইডবার টগল করুন",
-      "deleteConversation": "কথোপকথন মুছুন"
+      "deleteConversation": "কথোপকথন মুছুন",
+      "logout": "লগআউট",
+      "logoutConfirm": "আপনি কি নিশ্চিত যে আপনি লগআউট করতে চান?",
+      "cancel": "বাতিল",
+      "confirm": "নিশ্চিত করুন",
+      "expandSidebar": "সাইডবার প্রসারিত করুন",
+      "collapseSidebar": "সাইডবার সংকুচিত করুন"
     }
   },
   "ja": {
@@ -944,7 +1010,13 @@
       "deleteConfirm": "この会話を削除してもよろしいですか？",
       "closeSidebar": "サイドバーを閉じる",
       "toggleSidebar": "サイドバーを切り替える",
-      "deleteConversation": "会話を削除"
+      "deleteConversation": "会話を削除",
+      "logout": "ログアウト",
+      "logoutConfirm": "ログアウトしてもよろしいですか？",
+      "cancel": "キャンセル",
+      "confirm": "確認",
+      "expandSidebar": "サイドバーを展開",
+      "collapseSidebar": "サイドバーを折りたたむ"
     }
   },
   "pa": {

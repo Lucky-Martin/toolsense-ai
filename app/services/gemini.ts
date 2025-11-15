@@ -239,10 +239,10 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
                 model = genAI.getGenerativeModel({
                   model: "gemini-pro",
                 });
-              // Prepend system instruction to message if model doesn't support it
-              if (chatHistory.length === 0) {
-                message = `${fullSystemInstruction}\n\nUser query: ${message}`;
-              }
+                // Prepend system instruction to message if model doesn't support it
+                if (chatHistory.length === 0) {
+                  message = `${fullSystemInstruction}\n\nUser query: ${message}`;
+                }
               }
             }
           }

@@ -594,7 +594,7 @@ ${lastAssistantMessage.content}
               <button
                 type="button"
                 onClick={handleDownload}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
                 title={t("chatbot.downloadReport")}
               >
                 <span className="text-sm font-medium">{t("chatbot.downloadReport")}</span>
@@ -615,7 +615,7 @@ ${lastAssistantMessage.content}
                   <button
                     type="button"
                     onClick={handleShare}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
                     title={t("chatbot.share")}
                   >
                     <span className="text-sm font-medium">{t("chatbot.share")}</span>
@@ -636,7 +636,7 @@ ${lastAssistantMessage.content}
                   <button
                     type="button"
                     onClick={handleEdit}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
                     title={t("chatbot.edit")}
                   >
                     <span className="text-sm font-medium">{t("chatbot.edit")}</span>
@@ -657,7 +657,7 @@ ${lastAssistantMessage.content}
                   <button
                     type="button"
                     onClick={handleAdd}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
                     title={t("chatbot.add")}
                   >
                     <span className="text-sm font-medium">{t("chatbot.add")}</span>

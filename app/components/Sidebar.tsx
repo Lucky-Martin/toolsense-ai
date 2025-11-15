@@ -148,8 +148,9 @@ export default function Sidebar({
     <>
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-white border-r border-gray-200 z-50 transform transition-all duration-300 ease-in-out translate-x-0 lg:static lg:z-auto flex flex-col ${isCollapsed ? "w-16" : "w-80"
-          }`}
+        className={`h-full bg-white border-r border-gray-200 flex-shrink-0 transition-all duration-300 ease-in-out flex flex-col ${
+          isCollapsed ? "w-16" : "w-80"
+        }`}
       >
         {/* Row 1: Conversations title + Burger menu button */}
         <div className={`p-4 border-b border-gray-200 flex items-center ${isCollapsed ? "justify-center" : "justify-between"}`}>

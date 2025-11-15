@@ -10,6 +10,8 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import { conversationService, Message } from "../services/conversations";
 import { clientCacheService } from "../services/clientCache";
+import ReportSummary from "./ReportSummary";
+import { parseResponse, isSecurityAssessment } from "../utils/responseParser";
 
 const LOADING_MESSAGE_KEYS = [
   "analyzingCompanySecurityPosture",
@@ -61,6 +63,7 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentLoadingMessage, setCurrentLoadingMessage] = useState("");
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [loadingConversationId, setLoadingConversationId] = useState<string | null>(null);
   const [hasUserMessage, setHasUserMessage] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editContent, setEditContent] = useState("");
@@ -74,6 +77,8 @@ export default function Chatbot() {
   const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const downloadDropdownRef = useRef<HTMLDivElement>(null);
   const editDownloadDropdownRef = useRef<HTMLDivElement>(null);
+  const activeRequestRef = useRef<{ conversationId: string | null; userMessage: Message } | null>(null);
+  const currentConversationIdRef = useRef<string | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -138,7 +143,10 @@ export default function Chatbot() {
   const handleNewConversation = () => {
     setMessages([]);
     setCurrentConversationId(null);
+    currentConversationIdRef.current = null;
     setHasUserMessage(false);
+    // Don't clear loading state here - let the request complete
+    // But hide loading UI for this conversation since it's not the active one
     inputRef.current?.focus();
   };
 
@@ -148,7 +156,10 @@ export default function Chatbot() {
     if (conversation) {
       setMessages(conversation.messages);
       setCurrentConversationId(conversationId);
+      currentConversationIdRef.current = conversationId;
       setHasUserMessage(conversation.messages.some(msg => msg.role === "user"));
+      // Don't clear loading state here - let the request complete
+      // But hide loading UI for this conversation since it's not the active one
       inputRef.current?.focus();
     }
   };
@@ -211,6 +222,7 @@ export default function Chatbot() {
         // Reuse existing conversation - load it instead of creating a new one
         conversationId = existingConversation.id;
         setCurrentConversationId(conversationId);
+        currentConversationIdRef.current = conversationId;
         setMessages(existingConversation.messages);
         setHasUserMessage(existingConversation.messages.some(msg => msg.role === "user"));
         setInput(""); // Clear input since we're reusing existing conversation
@@ -230,6 +242,7 @@ export default function Chatbot() {
       );
       conversationId = newConversation.id;
       setCurrentConversationId(conversationId);
+      currentConversationIdRef.current = conversationId;
     }
 
     // Add user message to chat
@@ -238,6 +251,8 @@ export default function Chatbot() {
     const currentInput = input.trim();
     setInput("");
     setIsLoading(true);
+    setLoadingConversationId(conversationId); // Track which conversation is loading
+    activeRequestRef.current = { conversationId, userMessage }; // Track the active request
 
     try {
       // Prepare conversation history
@@ -308,14 +323,42 @@ export default function Chatbot() {
         content: responseData.message,
         cached: fromCache || responseData.cached || false,
       };
-      const updatedMessages = [...messages, userMessage, assistantMessage];
-      setMessages(updatedMessages);
 
-      // Update conversation with new messages
+      // Always update the conversation in storage first, regardless of which conversation is active
+      // This ensures the response is saved even if user switched conversations
       if (conversationId) {
         const conversation = conversationService.getConversation(conversationId);
+        const existingMessages = conversation?.messages || [];
+        // Check if userMessage is already the last message to avoid duplicates
+        const lastMessage = existingMessages[existingMessages.length - 1];
+        const userMessageExists = lastMessage?.role === "user" &&
+                                  lastMessage?.content === userMessage.content;
+        const updatedMessages = userMessageExists
+          ? [...existingMessages, assistantMessage]
+          : [...existingMessages, userMessage, assistantMessage];
         const title = conversation?.title || `${t("chatbot.reportFor")} ${userMessage.content.substring(0, 50).trim()}`;
         conversationService.updateConversation(conversationId, updatedMessages, title);
+
+        // Always update UI messages if this is still the active conversation
+        // Use ref to get the latest value since state might be stale in async callbacks
+        // This ensures the UI updates immediately when the response arrives
+        if (currentConversationIdRef.current === conversationId) {
+          // Reload from storage to ensure we have the exact same data that was saved
+          // This guarantees the UI is in sync with storage
+          const updatedConversation = conversationService.getConversation(conversationId);
+          if (updatedConversation) {
+            setMessages(updatedConversation.messages);
+          } else {
+            // Fallback: use functional update if conversation not found
+            setMessages((prevMessages) => {
+              const lastUIMessage = prevMessages[prevMessages.length - 1];
+              if (lastUIMessage?.role === "assistant" && lastUIMessage?.content === assistantMessage.content) {
+                return prevMessages;
+              }
+              return [...prevMessages, assistantMessage];
+            });
+          }
+        }
       }
     } catch (error) {
       console.error("Error sending message:", error);
@@ -326,17 +369,48 @@ export default function Chatbot() {
             ? `Sorry, I encountered an error: ${error.message}`
             : "Sorry, I encountered an error. Please try again.",
       };
-      const updatedMessages = [...messages, userMessage, errorMessage];
-      setMessages(updatedMessages);
 
-      // Save error message to conversation too
+      // Always save error message to conversation storage first
       if (conversationId) {
         const conversation = conversationService.getConversation(conversationId);
+        const existingMessages = conversation?.messages || [];
+        // Check if userMessage is already the last message to avoid duplicates
+        const lastMessage = existingMessages[existingMessages.length - 1];
+        const userMessageExists = lastMessage?.role === "user" &&
+                                  lastMessage?.content === userMessage.content;
+        const updatedMessages = userMessageExists
+          ? [...existingMessages, errorMessage]
+          : [...existingMessages, userMessage, errorMessage];
         const title = conversation?.title || `${t("chatbot.reportFor")} ${userMessage.content.substring(0, 50).trim()}`;
         conversationService.updateConversation(conversationId, updatedMessages, title);
+
+        // Always update UI messages if this is still the active conversation
+        // Use ref to get the latest value since state might be stale in async callbacks
+        if (currentConversationIdRef.current === conversationId) {
+          // Reload from storage to ensure we have the exact same data that was saved
+          // This guarantees the UI is in sync with storage
+          const updatedConversation = conversationService.getConversation(conversationId);
+          if (updatedConversation) {
+            setMessages(updatedConversation.messages);
+          } else {
+            // Fallback: use functional update if conversation not found
+            setMessages((prevMessages) => {
+              const lastUIMessage = prevMessages[prevMessages.length - 1];
+              if (lastUIMessage?.role === "assistant" && lastUIMessage?.content === errorMessage.content) {
+                return prevMessages;
+              }
+              return [...prevMessages, errorMessage];
+            });
+          }
+        }
       }
     } finally {
-      setIsLoading(false);
+      // Only clear loading state if this is still the conversation that was loading
+      if (activeRequestRef.current?.conversationId === conversationId) {
+        setIsLoading(false);
+        setLoadingConversationId(null);
+        activeRequestRef.current = null;
+      }
       inputRef.current?.focus();
     }
   };
@@ -1176,110 +1250,112 @@ ${editContent.trim()}
                 <div className="max-w-3xl mx-auto py-8 px-4 pb-8 space-y-6">
                   {messages.map((message, index) => (
                     <div key={index} className="w-full">
-                      <div
-                        className={`w-full rounded-lg px-4 py-3 ${message.role === "user"
-                          ? "bg-gray-100 text-black mb-4"
-                          : "bg-gray-50 text-gray-800 border border-gray-200"
-                          }`}
-                      >
-                        {message.role === "assistant" ? (
-                          <div className="markdown-content overflow-x-hidden break-words">
-                            {message.cached && (
-                              <div className="mb-2 text-xs text-gray-500 italic flex items-center gap-1">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                {t("chatbot.cachedResponse")}
-                              </div>
-                            )}
-                            <ReactMarkdown
-                              components={{
-                                h1: (props) => (
-                                  <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2 break-words" {...props} />
-                                ),
-                                h2: (props) => (
-                                  <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900 break-words" {...props} />
-                                ),
-                                h3: (props) => (
-                                  <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800 break-words" {...props} />
-                                ),
-                                h4: (props) => (
-                                  <h4 className="text-base font-semibold mt-3 mb-2 text-gray-800 break-words" {...props} />
-                                ),
-                                p: (props) => (
-                                  <p className="mb-3 leading-7 text-gray-700 break-words" {...props} />
-                                ),
-                                ul: (props) => (
-                                  <ul className="list-disc list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
-                                ),
-                                ol: (props) => (
-                                  <ol className="list-decimal list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
-                                ),
-                                li: (props) => (
-                                  <li className="pl-2 leading-7 break-words" {...props} />
-                                ),
-                                strong: (props) => (
-                                  <strong className="font-semibold text-gray-900 break-words" {...props} />
-                                ),
-                                em: (props) => (
-                                  <em className="italic text-gray-700 break-words" {...props} />
-                                ),
-                                code: ({ node, className, children, ...props }: any) => {
-                                  // Check if this is inline code (no className or className doesn't start with language-)
-                                  const isInline = !className || !className.startsWith('language-');
-                                  return isInline ? (
-                                    <code className="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800 break-words" {...props}>
-                                      {children}
-                                    </code>
-                                  ) : (
-                                    <code className="text-sm font-mono text-gray-800" {...props}>
-                                      {children}
-                                    </code>
-                                  );
-                                },
-                                pre: (props) => (
-                                  <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto mb-3 text-sm whitespace-pre-wrap break-words" {...props} />
-                                ),
-                                hr: (props) => (
-                                  <hr className="my-6 border-gray-300" {...props} />
-                                ),
-                                a: (props) => (
-                                  <a className="text-blue-600 hover:text-blue-800 hover:underline font-medium break-all" target="_blank" rel="noopener noreferrer" {...props} />
-                                ),
-                                blockquote: (props) => (
-                                  <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3 text-gray-600 break-words" {...props} />
-                                ),
-                                table: (props) => (
-                                  <div className="overflow-x-auto my-4">
-                                    <table className="min-w-full border-collapse border border-gray-300" {...props} />
-                                  </div>
-                                ),
-                                thead: (props) => (
-                                  <thead className="bg-gray-100" {...props} />
-                                ),
-                                tbody: (props) => (
-                                  <tbody {...props} />
-                                ),
-                                th: (props) => (
-                                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold break-words" {...props} />
-                                ),
-                                td: (props) => (
-                                  <td className="border border-gray-300 px-4 py-2 break-words" {...props} />
-                                ),
-                              }}
-                            >
-                              {message.content}
-                            </ReactMarkdown>
-                          </div>
-                        ) : (
-                          <div className="whitespace-pre-wrap break-words leading-relaxed">
-                            {`${t("chatbot.reportFor")} ${message.content}`}
-                          </div>
-                        )}
-                      </div>
+                      {message.role === "assistant" ? (
+                        <>
+                          {isSecurityAssessment(message.content) ? (
+                            <ReportSummary
+                              parsedResponse={parseResponse(message.content)}
+                              isCached={message.cached}
+                            />
+                          ) : (
+                            <div className="rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border border-gray-200 markdown-content overflow-x-hidden break-words">
+                              {message.cached && (
+                                <div className="mb-2 text-xs text-gray-500 italic flex items-center gap-1">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  {t("chatbot.cachedResponse")}
+                                </div>
+                              )}
+                              <ReactMarkdown
+                                components={{
+                                  h1: (props) => (
+                                    <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2 break-words" {...props} />
+                                  ),
+                                  h2: (props) => (
+                                    <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900 break-words" {...props} />
+                                  ),
+                                  h3: (props) => (
+                                    <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800 break-words" {...props} />
+                                  ),
+                                  h4: (props) => (
+                                    <h4 className="text-base font-semibold mt-3 mb-2 text-gray-800 break-words" {...props} />
+                                  ),
+                                  p: (props) => (
+                                    <p className="mb-3 leading-7 text-gray-700 break-words" {...props} />
+                                  ),
+                                  ul: (props) => (
+                                    <ul className="list-disc list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
+                                  ),
+                                  ol: (props) => (
+                                    <ol className="list-decimal list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
+                                  ),
+                                  li: (props) => (
+                                    <li className="pl-2 leading-7 break-words" {...props} />
+                                  ),
+                                  strong: (props) => (
+                                    <strong className="font-semibold text-gray-900 break-words" {...props} />
+                                  ),
+                                  em: (props) => (
+                                    <em className="italic text-gray-700 break-words" {...props} />
+                                  ),
+                                  code: ({ node, className, children, ...props }: any) => {
+                                    // Check if this is inline code (no className or className doesn't start with language-)
+                                    const isInline = !className || !className.startsWith('language-');
+                                    return isInline ? (
+                                      <code className="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800 break-words" {...props}>
+                                        {children}
+                                      </code>
+                                    ) : (
+                                      <code className="text-sm font-mono text-gray-800" {...props}>
+                                        {children}
+                                      </code>
+                                    );
+                                  },
+                                  pre: (props) => (
+                                    <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto mb-3 text-sm whitespace-pre-wrap break-words" {...props} />
+                                  ),
+                                  hr: (props) => (
+                                    <hr className="my-6 border-gray-300" {...props} />
+                                  ),
+                                  a: (props) => (
+                                    <a className="text-blue-600 hover:text-blue-800 hover:underline font-medium break-all" target="_blank" rel="noopener noreferrer" {...props} />
+                                  ),
+                                  blockquote: (props) => (
+                                    <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3 text-gray-600 break-words" {...props} />
+                                  ),
+                                  table: (props) => (
+                                    <div className="overflow-x-auto my-4">
+                                      <table className="min-w-full border-collapse border border-gray-300" {...props} />
+                                    </div>
+                                  ),
+                                  thead: (props) => (
+                                    <thead className="bg-gray-100" {...props} />
+                                  ),
+                                  tbody: (props) => (
+                                    <tbody {...props} />
+                                  ),
+                                  th: (props) => (
+                                    <th className="border border-gray-300 px-4 py-2 text-left font-semibold break-words" {...props} />
+                                  ),
+                                  td: (props) => (
+                                    <td className="border border-gray-300 px-4 py-2 break-words" {...props} />
+                                  ),
+                                }}
+                              >
+                                {message.content}
+                              </ReactMarkdown>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="rounded-lg px-4 py-3.5 bg-gray-100 text-black whitespace-pre-wrap break-words leading-relaxed">
+                          {`${t("chatbot.reportFor")} ${message.content}`}
+                        </div>
+                      )}
                     </div>
                   ))}
-                  {isLoading && (
+                  {isLoading && loadingConversationId === currentConversationId && (
                     <div className="w-full">
                       <div className="bg-gray-50 text-gray-800 border border-gray-200 rounded-lg px-4 py-3 w-full">
                         <div className="flex items-center gap-3">

@@ -274,11 +274,6 @@ export default function Sidebar({
                         <p className="text-xs text-gray-500 mt-1 whitespace-nowrap truncate">
                           {formatDate(conversation.updatedAt)}
                         </p>
-                        {conversation.messages.length > 0 && (
-                          <p className="text-xs text-gray-400 mt-1 truncate whitespace-nowrap">
-                            {conversation.messages.length} {conversation.messages.length !== 1 ? t("sidebar.messages") : t("sidebar.message")}
-                          </p>
-                        )}
                       </div>
                       <button
                         onClick={(e) => handleDeleteConversation(e, conversation.id)}
@@ -308,16 +303,15 @@ export default function Sidebar({
         )}
 
         {/* Logout button at bottom */}
-        <div className="p-4 border-t border-gray-200 mt-auto">
+        <div className={`p-4 border-t border-gray-200 mt-auto ${isCollapsed ? "flex justify-center" : ""}`}>
           <button
             onClick={() => setShowLogoutDialog(true)}
-            className={`w-full p-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2 cursor-pointer ${isCollapsed ? "justify-center" : ""
-              }`}
+            className={`${isCollapsed ? "w-12 h-12 p-0 aspect-square" : "w-full p-3"} text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2 cursor-pointer`}
             aria-label={t("sidebar.logout")}
             title={t("sidebar.logout")}
           >
             <svg
-              className="w-5 h-5"
+              className={`${isCollapsed ? "w-6 h-6" : "w-5 h-5"}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

@@ -164,7 +164,7 @@ export default function Chatbot() {
     // Create new conversation if this is the first message
     let conversationId = currentConversationId;
     if (!conversationId) {
-      const queryName = input.trim().substring(0, 50) || "New Conversation";
+      const queryName = input.trim().substring(0, 50) || "New Report";
       const title = `${t("chatbot.reportFor")} ${queryName}`;
       const newConversation = conversationService.createConversation(
         title,
@@ -351,7 +351,7 @@ ${lastAssistantMessage.content}
       // Try to use the Web Share API if available
       if (navigator.share) {
         await navigator.share({
-          title: "ToolSense AI Conversation",
+          title: "ToolSense AI Report",
           text: conversationText,
         });
         return; // Successfully shared, exit early
@@ -794,7 +794,6 @@ ${editContent.trim()}
                     className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
                     title={t("chatbot.downloadReport")}
                   >
-                    <span className="text-sm font-medium">{t("chatbot.downloadReport")}</span>
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -808,6 +807,7 @@ ${editContent.trim()}
                         d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M8 12l4 4m0 0l4-4m-4 4V4"
                       />
                     </svg>
+                    <span className="text-sm font-medium">{t("chatbot.downloadReport")}</span>
                   </button>
                   <button
                     type="button"
@@ -815,7 +815,6 @@ ${editContent.trim()}
                     className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
                     title={t("chatbot.share")}
                   >
-                    <span className="text-sm font-medium">{t("chatbot.share")}</span>
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -829,6 +828,7 @@ ${editContent.trim()}
                         d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
                       />
                     </svg>
+                    <span className="text-sm font-medium">{t("chatbot.share")}</span>
                   </button>
                   <button
                     type="button"
@@ -836,7 +836,6 @@ ${editContent.trim()}
                     className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
                     title={t("chatbot.edit")}
                   >
-                    <span className="text-sm font-medium">{t("chatbot.edit")}</span>
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -850,6 +849,7 @@ ${editContent.trim()}
                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                       />
                     </svg>
+                    <span className="text-sm font-medium">{t("chatbot.edit")}</span>
                   </button>
                 </div>
               ) : (

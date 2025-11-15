@@ -46,9 +46,9 @@
       }
     },
     "chatbot": {
-      "whatCanIHelp": "What can I help with?",
+      "whatCanIHelp": "Generate a security report",
       "subtitle": "Turn any app or URL into CISO-ready trust briefs in seconds.",
-      "messagePlaceholder": "Message ToolSense AI...",
+      "messagePlaceholder": "Enter tool name, vendor, or URL...",
       "footerText": "ToolSense AI analyzes tools for security—enter a product, vendor, or URL.",
       "cachedResponse": "Cached response",
       "downloadReport": "Download as MD",
@@ -108,19 +108,19 @@
       "noLanguagesFound": "No languages found"
     },
     "sidebar": {
-      "conversations": "Conversations",
-      "newConversation": "New Conversation",
-      "noConversations": "No conversations yet. Start a new one!",
+      "reports": "Reports",
+      "newReport": "New Report",
+      "noReports": "No reports yet. Start a new one!",
       "justNow": "Just now",
       "minutesAgo": "m ago",
       "hoursAgo": "h ago",
       "daysAgo": "d ago",
       "message": "message",
       "messages": "messages",
-      "deleteConfirm": "Are you sure you want to delete this conversation?",
+      "deleteConfirm": "Are you sure you want to delete this report?",
       "closeSidebar": "Close sidebar",
       "toggleSidebar": "Toggle sidebar",
-      "deleteConversation": "Delete conversation",
+      "deleteReport": "Delete report",
       "logout": "Logout",
       "logoutConfirm": "Are you sure you want to logout?",
       "cancel": "Cancel",
@@ -238,19 +238,19 @@
       "noLanguagesFound": "未找到语言"
     },
     "sidebar": {
-      "conversations": "对话",
-      "newConversation": "新对话",
-      "noConversations": "还没有对话。开始一个新的吧！",
+      "reports": "报告",
+      "newReport": "新报告",
+      "noReports": "还没有报告。开始一个新的吧！",
       "justNow": "刚刚",
       "minutesAgo": "分钟前",
       "hoursAgo": "小时前",
       "daysAgo": "天前",
       "message": "条消息",
       "messages": "条消息",
-      "deleteConfirm": "您确定要删除此对话吗？",
+      "deleteConfirm": "您确定要删除此报告吗？",
       "closeSidebar": "关闭侧边栏",
       "toggleSidebar": "切换侧边栏",
-      "deleteConversation": "删除对话",
+      "deleteReport": "删除报告",
       "logout": "登出",
       "logoutConfirm": "您确定要登出吗？",
       "cancel": "取消",
@@ -368,19 +368,19 @@
       "noLanguagesFound": "No se encontraron idiomas"
     },
     "sidebar": {
-      "conversations": "Conversaciones",
-      "newConversation": "Nueva conversación",
-      "noConversations": "Aún no hay conversaciones. ¡Comienza una nueva!",
+      "reports": "Informes",
+      "newReport": "Nuevo informe",
+      "noReports": "Aún no hay informes. ¡Comienza uno nuevo!",
       "justNow": "Ahora mismo",
       "minutesAgo": "m hace",
       "hoursAgo": "h hace",
       "daysAgo": "d hace",
       "message": "mensaje",
       "messages": "mensajes",
-      "deleteConfirm": "¿Estás seguro de que quieres eliminar esta conversación?",
+      "deleteConfirm": "¿Estás seguro de que quieres eliminar este informe?",
       "closeSidebar": "Cerrar barra lateral",
       "toggleSidebar": "Alternar barra lateral",
-      "deleteConversation": "Eliminar conversación",
+      "deleteReport": "Eliminar informe",
       "logout": "Cerrar sesión",
       "logoutConfirm": "¿Estás seguro de que quieres cerrar sesión?",
       "cancel": "Cancelar",
@@ -453,9 +453,9 @@
       "noLanguagesFound": "Kieliä ei löytynyt"
     },
     "sidebar": {
-      "conversations": "Keskustelut",
-      "newConversation": "Uusi keskustelu",
-      "noConversations": "Ei keskusteluja vielä. Aloita uusi!",
+      "reports": "Keskustelut",
+      "newReport": "Uusi keskustelu",
+      "noReports": "Ei keskusteluja vielä. Aloita uusi!",
       "justNow": "Juuri nyt",
       "minutesAgo": "min sitten",
       "hoursAgo": "t sitten",
@@ -465,7 +465,7 @@
       "deleteConfirm": "Haluatko varmasti poistaa tämän keskustelun?",
       "closeSidebar": "Sulje sivupalkki",
       "toggleSidebar": "Vaihda sivupalkki",
-      "deleteConversation": "Poista keskustelu",
+      "deleteReport": "Poista keskustelu",
       "logout": "Kirjaudu ulos",
       "logoutConfirm": "Haluatko varmasti kirjautua ulos?",
       "cancel": "Peruuta",
@@ -538,19 +538,19 @@
       "noLanguagesFound": "Keine Sprachen gefunden"
     },
     "sidebar": {
-      "conversations": "Unterhaltungen",
-      "newConversation": "Neue Unterhaltung",
-      "noConversations": "Noch keine Unterhaltungen. Starten Sie eine neue!",
+      "reports": "Berichte",
+      "newReport": "Neuer Bericht",
+      "noReports": "Noch keine Berichte. Erstellen Sie einen neuen!",
       "justNow": "Gerade eben",
       "minutesAgo": "Min. vor",
       "hoursAgo": "Std. vor",
       "daysAgo": "T. vor",
       "message": "Nachricht",
       "messages": "Nachrichten",
-      "deleteConfirm": "Möchten Sie diese Unterhaltung wirklich löschen?",
+      "deleteConfirm": "Möchten Sie diesen Bericht wirklich löschen?",
       "closeSidebar": "Seitenleiste schließen",
       "toggleSidebar": "Seitenleiste umschalten",
-      "deleteConversation": "Unterhaltung löschen",
+      "deleteReport": "Bericht löschen",
       "logout": "Abmelden",
       "logoutConfirm": "Möchten Sie sich wirklich abmelden?",
       "cancel": "Abbrechen",
@@ -623,19 +623,19 @@
       "noLanguagesFound": "Aucune langue trouvée"
     },
     "sidebar": {
-      "conversations": "Conversations",
-      "newConversation": "Nouvelle conversation",
-      "noConversations": "Aucune conversation pour le moment. Commencez-en une nouvelle !",
+      "reports": "Rapports",
+      "newReport": "Nouveau rapport",
+      "noReports": "Aucun rapport pour le moment. Commencez-en un nouveau !",
       "justNow": "À l'instant",
       "minutesAgo": "min",
       "hoursAgo": "h",
       "daysAgo": "j",
       "message": "message",
       "messages": "messages",
-      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette conversation ?",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce rapport ?",
       "closeSidebar": "Fermer la barre latérale",
       "toggleSidebar": "Basculer la barre latérale",
-      "deleteConversation": "Supprimer la conversation",
+      "deleteReport": "Supprimer le rapport",
       "logout": "Déconnexion",
       "logoutConfirm": "Êtes-vous sûr de vouloir vous déconnecter ?",
       "cancel": "Annuler",
@@ -708,19 +708,19 @@
       "noLanguagesFound": "Языки не найдены"
     },
     "sidebar": {
-      "conversations": "Разговоры",
-      "newConversation": "Новый разговор",
-      "noConversations": "Пока нет разговоров. Начните новый!",
+      "reports": "Отчеты",
+      "newReport": "Новый отчет",
+      "noReports": "Пока нет отчетов. Начните новый!",
       "justNow": "Только что",
       "minutesAgo": "мин назад",
       "hoursAgo": "ч назад",
       "daysAgo": "дн назад",
       "message": "сообщение",
       "messages": "сообщений",
-      "deleteConfirm": "Вы уверены, что хотите удалить этот разговор?",
+      "deleteConfirm": "Вы уверены, что хотите удалить этот отчет?",
       "closeSidebar": "Закрыть боковую панель",
       "toggleSidebar": "Переключить боковую панель",
-      "deleteConversation": "Удалить разговор",
+      "deleteReport": "Удалить отчет",
       "logout": "Выйти",
       "logoutConfirm": "Вы уверены, что хотите выйти?",
       "cancel": "Отмена",
@@ -793,9 +793,9 @@
       "noLanguagesFound": "कोई भाषा नहीं मिली"
     },
     "sidebar": {
-      "conversations": "बातचीत",
-      "newConversation": "नई बातचीत",
-      "noConversations": "अभी तक कोई बातचीत नहीं है। एक नई शुरू करें!",
+      "reports": "बातचीत",
+      "newReport": "नई बातचीत",
+      "noReports": "अभी तक कोई बातचीत नहीं है। एक नई शुरू करें!",
       "justNow": "अभी",
       "minutesAgo": "मिनट पहले",
       "hoursAgo": "घंटे पहले",
@@ -805,7 +805,7 @@
       "deleteConfirm": "क्या आप वाकई इस बातचीत को हटाना चाहते हैं?",
       "closeSidebar": "साइडबार बंद करें",
       "toggleSidebar": "साइडबार टॉगल करें",
-      "deleteConversation": "बातचीत हटाएं",
+      "deleteReport": "बातचीत हटाएं",
       "logout": "लॉगआउट",
       "logoutConfirm": "क्या आप वाकई लॉगआउट करना चाहते हैं?",
       "cancel": "रद्द करें",
@@ -878,9 +878,9 @@
       "noLanguagesFound": "لم يتم العثور على لغات"
     },
     "sidebar": {
-      "conversations": "المحادثات",
-      "newConversation": "محادثة جديدة",
-      "noConversations": "لا توجد محادثات بعد. ابدأ واحدة جديدة!",
+      "reports": "المحادثات",
+      "newReport": "محادثة جديدة",
+      "noReports": "لا توجد محادثات بعد. ابدأ واحدة جديدة!",
       "justNow": "الآن",
       "minutesAgo": "دقيقة",
       "hoursAgo": "ساعة",
@@ -890,7 +890,7 @@
       "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذه المحادثة؟",
       "closeSidebar": "إغلاق الشريط الجانبي",
       "toggleSidebar": "تبديل الشريط الجانبي",
-      "deleteConversation": "حذف المحادثة",
+      "deleteReport": "حذف المحادثة",
       "logout": "تسجيل الخروج",
       "logoutConfirm": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
       "cancel": "إلغاء",
@@ -963,9 +963,9 @@
       "noLanguagesFound": "Nenhum idioma encontrado"
     },
     "sidebar": {
-      "conversations": "Conversas",
-      "newConversation": "Nova conversa",
-      "noConversations": "Ainda não há conversas. Comece uma nova!",
+      "reports": "Conversas",
+      "newReport": "Nova conversa",
+      "noReports": "Ainda não há conversas. Comece uma nova!",
       "justNow": "Agora mesmo",
       "minutesAgo": "min atrás",
       "hoursAgo": "h atrás",
@@ -975,7 +975,7 @@
       "deleteConfirm": "Tem certeza de que deseja excluir esta conversa?",
       "closeSidebar": "Fechar barra lateral",
       "toggleSidebar": "Alternar barra lateral",
-      "deleteConversation": "Excluir conversa",
+      "deleteReport": "Excluir conversa",
       "logout": "Sair",
       "logoutConfirm": "Tem certeza de que deseja sair?",
       "cancel": "Cancelar",
@@ -1048,9 +1048,9 @@
       "noLanguagesFound": "কোন ভাষা পাওয়া যায়নি"
     },
     "sidebar": {
-      "conversations": "কথোপকথন",
-      "newConversation": "নতুন কথোপকথন",
-      "noConversations": "এখনও কোন কথোপকথন নেই। একটি নতুন শুরু করুন!",
+      "reports": "কথোপকথন",
+      "newReport": "নতুন কথোপকথন",
+      "noReports": "এখনও কোন কথোপকথন নেই। একটি নতুন শুরু করুন!",
       "justNow": "এইমাত্র",
       "minutesAgo": "মিনিট আগে",
       "hoursAgo": "ঘন্টা আগে",
@@ -1060,7 +1060,7 @@
       "deleteConfirm": "আপনি কি নিশ্চিত যে আপনি এই কথোপকথনটি মুছতে চান?",
       "closeSidebar": "সাইডবার বন্ধ করুন",
       "toggleSidebar": "সাইডবার টগল করুন",
-      "deleteConversation": "কথোপকথন মুছুন",
+      "deleteReport": "কথোপকথন মুছুন",
       "logout": "লগআউট",
       "logoutConfirm": "আপনি কি নিশ্চিত যে আপনি লগআউট করতে চান?",
       "cancel": "বাতিল",
@@ -1133,9 +1133,9 @@
       "noLanguagesFound": "言語が見つかりません"
     },
     "sidebar": {
-      "conversations": "会話",
-      "newConversation": "新しい会話",
-      "noConversations": "まだ会話がありません。新しい会話を始めましょう！",
+      "reports": "会話",
+      "newReport": "新しい会話",
+      "noReports": "まだ会話がありません。新しい会話を始めましょう！",
       "justNow": "たった今",
       "minutesAgo": "分前",
       "hoursAgo": "時間前",
@@ -1145,7 +1145,7 @@
       "deleteConfirm": "この会話を削除してもよろしいですか？",
       "closeSidebar": "サイドバーを閉じる",
       "toggleSidebar": "サイドバーを切り替える",
-      "deleteConversation": "会話を削除",
+      "deleteReport": "会話を削除",
       "logout": "ログアウト",
       "logoutConfirm": "ログアウトしてもよろしいですか？",
       "cancel": "キャンセル",
@@ -1218,9 +1218,9 @@
       "noLanguagesFound": "ਕੋਈ ਭਾਸ਼ਾ ਨਹੀਂ ਮਿਲੀ"
     },
     "sidebar": {
-      "conversations": "ਗੱਲਬਾਤਾਂ",
-      "newConversation": "ਨਵੀਂ ਗੱਲਬਾਤ",
-      "noConversations": "ਅਜੇ ਤੱਕ ਕੋਈ ਗੱਲਬਾਤ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵੀਂ ਸ਼ੁਰੂ ਕਰੋ!",
+      "reports": "ਗੱਲਬਾਤਾਂ",
+      "newReport": "ਨਵੀਂ ਗੱਲਬਾਤ",
+      "noReports": "ਅਜੇ ਤੱਕ ਕੋਈ ਗੱਲਬਾਤ ਨਹੀਂ ਹੈ। ਇੱਕ ਨਵੀਂ ਸ਼ੁਰੂ ਕਰੋ!",
       "justNow": "ਹੁਣੇ",
       "minutesAgo": "ਮਿੰਟ ਪਹਿਲਾਂ",
       "hoursAgo": "ਘੰਟੇ ਪਹਿਲਾਂ",
@@ -1230,7 +1230,7 @@
       "deleteConfirm": "ਕੀ ਤੁਸੀਂ ਯਕੀਨਨ ਇਸ ਗੱਲਬਾਤ ਨੂੰ ਮਿਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?",
       "closeSidebar": "ਸਾਈਡਬਾਰ ਬੰਦ ਕਰੋ",
       "toggleSidebar": "ਸਾਈਡਬਾਰ ਟੌਗਲ ਕਰੋ",
-      "deleteConversation": "ਗੱਲਬਾਤ ਮਿਟਾਓ"
+      "deleteReport": "ਗੱਲਬਾਤ ਮਿਟਾਓ"
     }
   },
   "jv": {
@@ -1297,9 +1297,9 @@
       "noLanguagesFound": "Ora ana basa sing ditemokake"
     },
     "sidebar": {
-      "conversations": "Obrolan",
-      "newConversation": "Obrolan anyar",
-      "noConversations": "Durung ana obrolan. Wiwiti sing anyar!",
+      "reports": "Obrolan",
+      "newReport": "Obrolan anyar",
+      "noReports": "Durung ana obrolan. Wiwiti sing anyar!",
       "justNow": "Saiki",
       "minutesAgo": "menit kepungkur",
       "hoursAgo": "jam kepungkur",
@@ -1309,7 +1309,7 @@
       "deleteConfirm": "Apa sampeyan yakin pengin mbusak obrolan iki?",
       "closeSidebar": "Tutup sidebar",
       "toggleSidebar": "Ganti sidebar",
-      "deleteConversation": "Mbusak obrolan"
+      "deleteReport": "Mbusak obrolan"
     }
   },
   "ko": {
@@ -1376,9 +1376,9 @@
       "noLanguagesFound": "언어를 찾을 수 없습니다"
     },
     "sidebar": {
-      "conversations": "대화",
-      "newConversation": "새 대화",
-      "noConversations": "아직 대화가 없습니다. 새 대화를 시작하세요!",
+      "reports": "대화",
+      "newReport": "새 대화",
+      "noReports": "아직 대화가 없습니다. 새 대화를 시작하세요!",
       "justNow": "방금",
       "minutesAgo": "분 전",
       "hoursAgo": "시간 전",
@@ -1388,7 +1388,7 @@
       "deleteConfirm": "이 대화를 삭제하시겠습니까?",
       "closeSidebar": "사이드바 닫기",
       "toggleSidebar": "사이드바 전환",
-      "deleteConversation": "대화 삭제"
+      "deleteReport": "대화 삭제"
     }
   },
   "te": {
@@ -1455,9 +1455,9 @@
       "noLanguagesFound": "భాషలు కనుగొనబడలేదు"
     },
     "sidebar": {
-      "conversations": "సంభాషణలు",
-      "newConversation": "కొత్త సంభాషణ",
-      "noConversations": "ఇంకా సంభాషణలు లేవు. కొత్తదాన్ని ప్రారంభించండి!",
+      "reports": "సంభాషణలు",
+      "newReport": "కొత్త సంభాషణ",
+      "noReports": "ఇంకా సంభాషణలు లేవు. కొత్తదాన్ని ప్రారంభించండి!",
       "justNow": "ఇప్పుడే",
       "minutesAgo": "నిమిషాల క్రితం",
       "hoursAgo": "గంటల క్రితం",
@@ -1467,7 +1467,7 @@
       "deleteConfirm": "మీరు ఖచ్చితంగా ఈ సంభాషణను తొలగించాలనుకుంటున్నారా?",
       "closeSidebar": "సైడ్బార్ మూసివేయి",
       "toggleSidebar": "సైడ్బార్ మార్చు",
-      "deleteConversation": "సంభాషణను తొలగించు"
+      "deleteReport": "సంభాషణను తొలగించు"
     }
   },
   "vi": {
@@ -1534,9 +1534,9 @@
       "noLanguagesFound": "Không tìm thấy ngôn ngữ"
     },
     "sidebar": {
-      "conversations": "Cuộc trò chuyện",
-      "newConversation": "Cuộc trò chuyện mới",
-      "noConversations": "Chưa có cuộc trò chuyện nào. Bắt đầu một cuộc trò chuyện mới!",
+      "reports": "Cuộc trò chuyện",
+      "newReport": "Cuộc trò chuyện mới",
+      "noReports": "Chưa có cuộc trò chuyện nào. Bắt đầu một cuộc trò chuyện mới!",
       "justNow": "Vừa xong",
       "minutesAgo": "phút trước",
       "hoursAgo": "giờ trước",
@@ -1546,7 +1546,7 @@
       "deleteConfirm": "Bạn có chắc chắn muốn xóa cuộc trò chuyện này không?",
       "closeSidebar": "Đóng thanh bên",
       "toggleSidebar": "Chuyển thanh bên",
-      "deleteConversation": "Xóa cuộc trò chuyện"
+      "deleteReport": "Xóa cuộc trò chuyện"
     }
   },
   "it": {
@@ -1613,9 +1613,9 @@
       "noLanguagesFound": "Nessuna lingua trovata"
     },
     "sidebar": {
-      "conversations": "Conversazioni",
-      "newConversation": "Nuova conversazione",
-      "noConversations": "Nessuna conversazione ancora. Iniziane una nuova!",
+      "reports": "Conversazioni",
+      "newReport": "Nuova conversazione",
+      "noReports": "Nessuna conversazione ancora. Iniziane una nuova!",
       "justNow": "Proprio ora",
       "minutesAgo": "min fa",
       "hoursAgo": "h fa",
@@ -1625,7 +1625,7 @@
       "deleteConfirm": "Sei sicuro di voler eliminare questa conversazione?",
       "closeSidebar": "Chiudi barra laterale",
       "toggleSidebar": "Attiva/disattiva barra laterale",
-      "deleteConversation": "Elimina conversazione"
+      "deleteReport": "Elimina conversazione"
     }
   },
   "tr": {
@@ -1692,9 +1692,9 @@
       "noLanguagesFound": "Dil bulunamadı"
     },
     "sidebar": {
-      "conversations": "Konuşmalar",
-      "newConversation": "Yeni konuşma",
-      "noConversations": "Henüz konuşma yok. Yeni bir tane başlat!",
+      "reports": "Konuşmalar",
+      "newReport": "Yeni konuşma",
+      "noReports": "Henüz konuşma yok. Yeni bir tane başlat!",
       "justNow": "Az önce",
       "minutesAgo": "dk önce",
       "hoursAgo": "sa önce",
@@ -1704,7 +1704,7 @@
       "deleteConfirm": "Bu konuşmayı silmek istediğinizden emin misiniz?",
       "closeSidebar": "Kenar çubuğunu kapat",
       "toggleSidebar": "Kenar çubuğunu aç/kapat",
-      "deleteConversation": "Konuşmayı sil"
+      "deleteReport": "Konuşmayı sil"
     }
   },
   "pl": {
@@ -1771,9 +1771,9 @@
       "noLanguagesFound": "Nie znaleziono języków"
     },
     "sidebar": {
-      "conversations": "Rozmowy",
-      "newConversation": "Nowa rozmowa",
-      "noConversations": "Jeszcze nie ma rozmów. Rozpocznij nową!",
+      "reports": "Rozmowy",
+      "newReport": "Nowa rozmowa",
+      "noReports": "Jeszcze nie ma rozmów. Rozpocznij nową!",
       "justNow": "Właśnie teraz",
       "minutesAgo": "min temu",
       "hoursAgo": "godz. temu",
@@ -1783,7 +1783,7 @@
       "deleteConfirm": "Czy na pewno chcesz usunąć tę rozmowę?",
       "closeSidebar": "Zamknij pasek boczny",
       "toggleSidebar": "Przełącz pasek boczny",
-      "deleteConversation": "Usuń rozmowę"
+      "deleteReport": "Usuń rozmowę"
     }
   },
   "uk": {
@@ -1850,9 +1850,9 @@
       "noLanguagesFound": "Мови не знайдено"
     },
     "sidebar": {
-      "conversations": "Розмови",
-      "newConversation": "Нова розмова",
-      "noConversations": "Поки що немає розмов. Почніть нову!",
+      "reports": "Розмови",
+      "newReport": "Нова розмова",
+      "noReports": "Поки що немає розмов. Почніть нову!",
       "justNow": "Щойно",
       "minutesAgo": "хв тому",
       "hoursAgo": "год тому",
@@ -1862,7 +1862,7 @@
       "deleteConfirm": "Ви впевнені, що хочете видалити цю розмову?",
       "closeSidebar": "Закрити бічну панель",
       "toggleSidebar": "Перемкнути бічну панель",
-      "deleteConversation": "Видалити розмову"
+      "deleteReport": "Видалити розмову"
     }
   },
   "th": {
@@ -1929,9 +1929,9 @@
       "noLanguagesFound": "ไม่พบภาษา"
     },
     "sidebar": {
-      "conversations": "การสนทนา",
-      "newConversation": "การสนทนาใหม่",
-      "noConversations": "ยังไม่มีการสนทนา เริ่มต้นใหม่!",
+      "reports": "การสนทนา",
+      "newReport": "การสนทนาใหม่",
+      "noReports": "ยังไม่มีการสนทนา เริ่มต้นใหม่!",
       "justNow": "เมื่อสักครู่",
       "minutesAgo": "นาทีที่แล้ว",
       "hoursAgo": "ชั่วโมงที่แล้ว",
@@ -1941,7 +1941,7 @@
       "deleteConfirm": "คุณแน่ใจหรือไม่ว่าต้องการลบการสนทนานี้?",
       "closeSidebar": "ปิดแถบด้านข้าง",
       "toggleSidebar": "สลับแถบด้านข้าง",
-      "deleteConversation": "ลบการสนทนา"
+      "deleteReport": "ลบการสนทนา"
     }
   },
   "nl": {
@@ -2008,9 +2008,9 @@
       "noLanguagesFound": "Geen talen gevonden"
     },
     "sidebar": {
-      "conversations": "Gesprekken",
-      "newConversation": "Nieuw gesprek",
-      "noConversations": "Nog geen gesprekken. Begin een nieuwe!",
+      "reports": "Gesprekken",
+      "newReport": "Nieuw gesprek",
+      "noReports": "Nog geen gesprekken. Begin een nieuwe!",
       "justNow": "Zojuist",
       "minutesAgo": "min geleden",
       "hoursAgo": "u geleden",
@@ -2020,7 +2020,7 @@
       "deleteConfirm": "Weet je zeker dat je dit gesprek wilt verwijderen?",
       "closeSidebar": "Zijbalk sluiten",
       "toggleSidebar": "Zijbalk wisselen",
-      "deleteConversation": "Gesprek verwijderen"
+      "deleteReport": "Gesprek verwijderen"
     }
   },
   "el": {
@@ -2087,9 +2087,9 @@
       "noLanguagesFound": "Δεν βρέθηκαν γλώσσες"
     },
     "sidebar": {
-      "conversations": "Συνομιλίες",
-      "newConversation": "Νέα συνομιλία",
-      "noConversations": "Δεν υπάρχουν ακόμα συνομιλίες. Ξεκινήστε μια νέα!",
+      "reports": "Συνομιλίες",
+      "newReport": "Νέα συνομιλία",
+      "noReports": "Δεν υπάρχουν ακόμα συνομιλίες. Ξεκινήστε μια νέα!",
       "justNow": "Μόλις τώρα",
       "minutesAgo": "λεπτά πριν",
       "hoursAgo": "ώρες πριν",
@@ -2099,7 +2099,7 @@
       "deleteConfirm": "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτή τη συνομιλία;",
       "closeSidebar": "Κλείσιμο πλευρικής γραμμής",
       "toggleSidebar": "Εναλλαγή πλευρικής γραμμής",
-      "deleteConversation": "Διαγραφή συνομιλίας"
+      "deleteReport": "Διαγραφή συνομιλίας"
     }
   },
   "cs": {
@@ -2166,9 +2166,9 @@
       "noLanguagesFound": "Jazyky nenalezeny"
     },
     "sidebar": {
-      "conversations": "Konverzace",
-      "newConversation": "Nová konverzace",
-      "noConversations": "Zatím žádné konverzace. Začněte novou!",
+      "reports": "Konverzace",
+      "newReport": "Nová konverzace",
+      "noReports": "Zatím žádné konverzace. Začněte novou!",
       "justNow": "Právě teď",
       "minutesAgo": "min před",
       "hoursAgo": "h před",
@@ -2178,7 +2178,7 @@
       "deleteConfirm": "Opravdu chcete smazat tuto konverzaci?",
       "closeSidebar": "Zavřít postranní panel",
       "toggleSidebar": "Přepnout postranní panel",
-      "deleteConversation": "Smazat konverzaci"
+      "deleteReport": "Smazat konverzaci"
     }
   },
   "sv": {
@@ -2245,9 +2245,9 @@
       "noLanguagesFound": "Inga språk hittades"
     },
     "sidebar": {
-      "conversations": "Konversationer",
-      "newConversation": "Ny konversation",
-      "noConversations": "Inga konversationer än. Starta en ny!",
+      "reports": "Konversationer",
+      "newReport": "Ny konversation",
+      "noReports": "Inga konversationer än. Starta en ny!",
       "justNow": "Precis nu",
       "minutesAgo": "min sedan",
       "hoursAgo": "tim sedan",
@@ -2257,7 +2257,7 @@
       "deleteConfirm": "Är du säker på att du vill radera denna konversation?",
       "closeSidebar": "Stäng sidofältet",
       "toggleSidebar": "Växla sidofältet",
-      "deleteConversation": "Radera konversation"
+      "deleteReport": "Radera konversation"
     }
   },
   "ro": {
@@ -2324,9 +2324,9 @@
       "noLanguagesFound": "Nu s-au găsit limbi"
     },
     "sidebar": {
-      "conversations": "Conversații",
-      "newConversation": "Conversație nouă",
-      "noConversations": "Nu există conversații încă. Începeți una nouă!",
+      "reports": "Conversații",
+      "newReport": "Conversație nouă",
+      "noReports": "Nu există conversații încă. Începeți una nouă!",
       "justNow": "Chiar acum",
       "minutesAgo": "min în urmă",
       "hoursAgo": "ore în urmă",
@@ -2336,7 +2336,7 @@
       "deleteConfirm": "Sigur doriți să ștergeți această conversație?",
       "closeSidebar": "Închide bara laterală",
       "toggleSidebar": "Comută bara laterală",
-      "deleteConversation": "Șterge conversația"
+      "deleteReport": "Șterge conversația"
     }
   },
   "hu": {
@@ -2403,9 +2403,9 @@
       "noLanguagesFound": "Nem találhatók nyelvek"
     },
     "sidebar": {
-      "conversations": "Beszélgetések",
-      "newConversation": "Új beszélgetés",
-      "noConversations": "Még nincsenek beszélgetések. Kezdj egy újat!",
+      "reports": "Beszélgetések",
+      "newReport": "Új beszélgetés",
+      "noReports": "Még nincsenek beszélgetések. Kezdj egy újat!",
       "justNow": "Épp most",
       "minutesAgo": "perccel ezelőtt",
       "hoursAgo": "órával ezelőtt",
@@ -2415,7 +2415,7 @@
       "deleteConfirm": "Biztosan törölni szeretnéd ezt a beszélgetést?",
       "closeSidebar": "Oldalsáv bezárása",
       "toggleSidebar": "Oldalsáv váltása",
-      "deleteConversation": "Beszélgetés törlése"
+      "deleteReport": "Beszélgetés törlése"
     }
   },
   "id": {
@@ -2482,9 +2482,9 @@
       "noLanguagesFound": "Tidak ada bahasa yang ditemukan"
     },
     "sidebar": {
-      "conversations": "Percakapan",
-      "newConversation": "Percakapan baru",
-      "noConversations": "Belum ada percakapan. Mulai yang baru!",
+      "reports": "Percakapan",
+      "newReport": "Percakapan baru",
+      "noReports": "Belum ada percakapan. Mulai yang baru!",
       "justNow": "Baru saja",
       "minutesAgo": "menit yang lalu",
       "hoursAgo": "jam yang lalu",
@@ -2494,7 +2494,7 @@
       "deleteConfirm": "Apakah Anda yakin ingin menghapus percakapan ini?",
       "closeSidebar": "Tutup bilah samping",
       "toggleSidebar": "Alihkan bilah samping",
-      "deleteConversation": "Hapus percakapan"
+      "deleteReport": "Hapus percakapan"
     }
   },
   "ms": {
@@ -2561,9 +2561,9 @@
       "noLanguagesFound": "Tiada bahasa ditemui"
     },
     "sidebar": {
-      "conversations": "Perbualan",
-      "newConversation": "Perbualan baharu",
-      "noConversations": "Belum ada perbualan. Mulakan yang baharu!",
+      "reports": "Perbualan",
+      "newReport": "Perbualan baharu",
+      "noReports": "Belum ada perbualan. Mulakan yang baharu!",
       "justNow": "Baru sahaja",
       "minutesAgo": "minit lalu",
       "hoursAgo": "jam lalu",
@@ -2573,7 +2573,7 @@
       "deleteConfirm": "Adakah anda pasti mahu memadam perbualan ini?",
       "closeSidebar": "Tutup bar sisi",
       "toggleSidebar": "Tukar bar sisi",
-      "deleteConversation": "Padam perbualan"
+      "deleteReport": "Padam perbualan"
     }
   }
 }

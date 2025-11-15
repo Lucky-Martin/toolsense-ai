@@ -185,7 +185,7 @@ export default function Sidebar({
         <div className={`p-4 border-b border-gray-200 flex items-center ${isCollapsed ? "justify-center" : "justify-between"}`}>
           {!isCollapsed && (
             <h2 className="text-lg font-semibold text-gray-900 whitespace-nowrap">
-              {t("sidebar.conversations")}
+              {t("sidebar.reports")}
             </h2>
           )}
           <button
@@ -216,7 +216,7 @@ export default function Sidebar({
             <button
               onClick={onNewConversation}
               className="w-full p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 cursor-pointer"
-              aria-label={t("sidebar.newConversation")}
+              aria-label={t("sidebar.newReport")}
             >
               <svg
                 className="w-5 h-5"
@@ -231,7 +231,7 @@ export default function Sidebar({
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              <span className="font-medium whitespace-nowrap">{t("sidebar.newConversation")}</span>
+              <span className="font-medium whitespace-nowrap">{t("sidebar.newReport")}</span>
             </button>
           </div>
         )}
@@ -241,7 +241,7 @@ export default function Sidebar({
           <div className="flex-1 overflow-y-auto">
             {conversations.length === 0 ? (
               <div className="p-4 text-center text-gray-500 text-sm whitespace-nowrap">
-                {t("sidebar.noConversations")}
+                {t("sidebar.noReports")}
               </div>
             ) : (
               <div className="p-2">
@@ -271,7 +271,7 @@ export default function Sidebar({
                       <button
                         onClick={(e) => handleDeleteConversation(e, conversation.id)}
                         className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-gray-200 transition-opacity cursor-pointer"
-                        aria-label={t("sidebar.deleteConversation")}
+                        aria-label={t("sidebar.deleteReport")}
                       >
                         <svg
                           className="w-4 h-4 text-gray-500"

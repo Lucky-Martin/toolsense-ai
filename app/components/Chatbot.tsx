@@ -9,46 +9,50 @@ import Sidebar from "./Sidebar";
 import { conversationService, Message } from "../services/conversations";
 import { clientCacheService } from "../services/clientCache";
 
-const LOADING_MESSAGES = [
-  "Analyzing company security posture...",
-  "Researching vendor reputation...",
-  "Scanning CVE databases...",
-  "Reviewing compliance certifications...",
-  "Assessing data handling practices...",
-  "Evaluating security incidents...",
-  "Checking CISA KEV catalog...",
-  "Reviewing SOC 2 reports...",
-  "Analyzing ISO certifications...",
-  "Examining vendor PSIRT pages...",
-  "Reviewing Terms of Service...",
-  "Assessing deployment controls...",
-  "Evaluating authentication methods...",
-  "Reviewing security advisories...",
-  "Analyzing trust factors...",
-  "Calculating risk score...",
-  "Researching safer alternatives...",
-  "Reviewing incident response history...",
-  "Checking bug bounty programs...",
-  "Analyzing API security...",
-  "Reviewing data encryption practices...",
-  "Evaluating access controls...",
-  "Researching market position...",
-  "Analyzing financial stability...",
-  "Reviewing customer testimonials...",
-  "Checking third-party audits...",
-  "Evaluating patch responsiveness...",
-  "Researching abuse signals...",
-  "Analyzing data residency...",
-  "Reviewing privacy policies...",
-  "Checking GDPR compliance...",
-  "Evaluating administrative controls...",
-  "Researching security best practices...",
-  "Analyzing integration capabilities...",
-  "Reviewing audit logging features...",
+const LOADING_MESSAGE_KEYS = [
+  "analyzingCompanySecurityPosture",
+  "researchingVendorReputation",
+  "scanningCVEDatabases",
+  "reviewingComplianceCertifications",
+  "assessingDataHandlingPractices",
+  "evaluatingSecurityIncidents",
+  "checkingCISAKEVCatalog",
+  "reviewingSOC2Reports",
+  "analyzingISOCertifications",
+  "examiningVendorPSIRTPages",
+  "reviewingTermsOfService",
+  "assessingDeploymentControls",
+  "evaluatingAuthenticationMethods",
+  "reviewingSecurityAdvisories",
+  "analyzingTrustFactors",
+  "calculatingRiskScore",
+  "researchingSaferAlternatives",
+  "reviewingIncidentResponseHistory",
+  "checkingBugBountyPrograms",
+  "analyzingAPISecurity",
+  "reviewingDataEncryptionPractices",
+  "evaluatingAccessControls",
+  "researchingMarketPosition",
+  "analyzingFinancialStability",
+  "reviewingCustomerTestimonials",
+  "checkingThirdPartyAudits",
+  "evaluatingPatchResponsiveness",
+  "researchingAbuseSignals",
+  "analyzingDataResidency",
+  "reviewingPrivacyPolicies",
+  "checkingGDPRCompliance",
+  "evaluatingAdministrativeControls",
+  "researchingSecurityBestPractices",
+  "analyzingIntegrationCapabilities",
+  "reviewingAuditLoggingFeatures",
 ];
 
 export default function Chatbot() {
   const { t } = useTranslation();
+
+  const getLoadingMessages = () => {
+    return LOADING_MESSAGE_KEYS.map(key => t(`chatbot.loadingMessages.${key}`));
+  };
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -110,14 +114,15 @@ export default function Chatbot() {
   useEffect(() => {
     if (isLoading) {
       // Set initial loading message
-      const randomIndex = Math.floor(Math.random() * LOADING_MESSAGES.length);
-      setCurrentLoadingMessage(LOADING_MESSAGES[randomIndex]);
+      const loadingMessages = getLoadingMessages();
+      const randomIndex = Math.floor(Math.random() * loadingMessages.length);
+      setCurrentLoadingMessage(loadingMessages[randomIndex]);
 
       // Rotate through loading messages every 2 seconds
       loadingIntervalRef.current = setInterval(() => {
         setCurrentLoadingMessage((current) => {
           // Get a random message that's different from current
-          const availableMessages = LOADING_MESSAGES.filter(
+          const availableMessages = loadingMessages.filter(
             (msg) => msg !== current
           );
 
@@ -432,29 +437,8 @@ ${lastAssistantMessage.content}
 
   const handleSaveEdit = () => {
     if (editMessageIndex !== -1 && editContent.trim()) {
-      if (isEditingAssistant) {
-        // For assistant messages, download the edited content
-        handleDownloadEdited();
-      } else {
-        // For user messages, update the message (original behavior)
-        const newMessages = [...messages];
-        newMessages[editMessageIndex] = {
-          ...newMessages[editMessageIndex],
-          content: editContent.trim(),
-        };
-
-        // Remove messages after the edited one (including assistant response)
-        const updatedMessages = newMessages.slice(0, editMessageIndex + 1);
-        setMessages(updatedMessages);
-        setHasUserMessage(false);
-
-        // Update conversation
-        if (currentConversationId) {
-          const conversation = conversationService.getConversation(currentConversationId);
-          const title = conversation?.title || `${t("chatbot.reportFor")} ${editContent.substring(0, 50).trim()}`;
-          conversationService.updateConversation(currentConversationId, updatedMessages, title);
-        }
-      }
+      // For assistant messages, download the edited content
+      handleDownloadEdited();
 
       setShowEditDialog(false);
       setEditContent("");
@@ -541,7 +525,7 @@ ${editContent.trim()}
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${safeFilename}-edited-${Date.now()}.md`;
+    link.download = `${safeFilename}-edited.md`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -922,7 +906,7 @@ ${editContent.trim()}
                 <button
                   onClick={handleCopyEdit}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light flex items-center gap-2"
-                  title="Copy text"
+                  title={t("chatbot.editDialog.copyText")}
                 >
                   <svg
                     className="w-4 h-4"
@@ -937,12 +921,12 @@ ${editContent.trim()}
                       d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                     />
                   </svg>
-                  Copy
+                  {t("chatbot.editDialog.copy")}
                 </button>
                 <button
                   onClick={() => setIsPreviewMode(!isPreviewMode)}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light flex items-center gap-2"
-                  title={isPreviewMode ? "Switch to Editor" : "Switch to Preview"}
+                  title={isPreviewMode ? t("chatbot.editDialog.switchToEditor") : t("chatbot.editDialog.switchToPreview")}
                 >
                   {isPreviewMode ? (
                     <>
@@ -959,7 +943,7 @@ ${editContent.trim()}
                           d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                         />
                       </svg>
-                      Editor
+                      {t("chatbot.editDialog.editor")}
                     </>
                   ) : (
                     <>
@@ -982,7 +966,7 @@ ${editContent.trim()}
                           d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                         />
                       </svg>
-                      Preview
+                      {t("chatbot.editDialog.preview")}
                     </>
                   )}
                 </button>

@@ -451,8 +451,8 @@ ${lastAssistantMessage.content}
 
         <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
           <div
-            className={`flex-1 flex flex-col min-h-0 overflow-hidden  pb-0 items-start ${
-              hasMessages ? "" : "justify-center"
+            className={`flex-1 flex flex-col min-h-0 overflow-hidden pb-0 ${
+              hasMessages ? "items-start" : "items-center justify-center"
             }`}
           >
             {!hasMessages ? (

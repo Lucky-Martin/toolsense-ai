@@ -31,7 +31,8 @@ export async function POST(request: NextRequest) {
     );
 
     return NextResponse.json({
-      message: response,
+      message: response.message,
+      model: response.model,
       success: true,
       cached: false, // Cache is handled client-side, so API always returns false
     });

@@ -192,7 +192,7 @@ export default function Chatbot() {
         }
       }
 
-      let responseData: { message: string; cached?: boolean; error?: string; details?: string };
+      let responseData: { message: string; model?: string; cached?: boolean; error?: string; details?: string };
 
       if (fromCache && cachedResponse) {
         // Use cached response
@@ -225,7 +225,8 @@ export default function Chatbot() {
 
         // Cache the response if it's a new query
         if (isNewQuery && responseData.message) {
-          await clientCacheService.set(currentInput, responseData.message, "gemini-2.5-pro", languageId);
+          const responseModel = responseData.model || "gemini-2.5-pro";
+          await clientCacheService.set(currentInput, responseData.message, responseModel, languageId);
         }
       }
 
@@ -428,11 +429,6 @@ ${lastAssistantMessage.content}
       }
       inputRef.current?.focus();
     }
-  };
-
-  const handleAdd = () => {
-    // Start a new conversation
-    handleNewConversation();
   };
 
   return (
@@ -651,27 +647,6 @@ ${lastAssistantMessage.content}
                         strokeLinejoin="round"
                         strokeWidth={2}
                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleAdd}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
-                    title={t("chatbot.add")}
-                  >
-                    <span className="text-sm font-medium">{t("chatbot.add")}</span>
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4v16m8-8H4"
                       />
                     </svg>
                   </button>

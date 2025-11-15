@@ -14,7 +14,7 @@ export interface ChatMessage {
 
 export interface ChatResponse {
   message: string;
-  success: boolean;
+  model: string;
 }
 
 class GeminiService {
@@ -177,123 +177,67 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
     message: string,
     history: ChatMessage[] = [],
     language: string = "en"
-  ): Promise<string> {
+  ): Promise<ChatResponse> {
     try {
       const genAI = this.initializeGenAI();
 
-      // Build language-specific system instruction
-      const languageInstruction = language !== "en"
-        ? `\n\n**LANGUAGE REQUIREMENT**: Generate the entire report in ${language} language. All sections, headings, and content must be in ${language}.`
-        : "";
+      const languageInstruction =
+        language !== "en"
+          ? `\n\n**LANGUAGE REQUIREMENT**: Generate the entire report in ${language} language. All sections, headings, and content must be in ${language}.`
+          : "";
 
       const fullSystemInstruction = this.systemInstruction + languageInstruction;
+      const userMessage = message;
+      const fallbackPrompt = `${fullSystemInstruction}\n\nUser query: ${userMessage}`;
 
-      // Build conversation history for Gemini
       const chatHistory = history.map((msg) => ({
         role: msg.role === "user" ? "user" : "model",
         parts: [{ text: msg.content }],
       }));
 
-      // Try to get the model with systemInstruction support
-      // Newer models (1.5-flash, 2.5-flash) support systemInstruction
-      let model;
+      const modelCandidates: { name: string; supportsSystemInstruction: boolean }[] = [
+        { name: "gemini-2.5-pro", supportsSystemInstruction: true },
+        { name: "gemini-2.5-flash", supportsSystemInstruction: true },
+        { name: "gemini-1.5-pro", supportsSystemInstruction: true },
+        { name: "gemini-pro", supportsSystemInstruction: true },
+        { name: "gemini-pro", supportsSystemInstruction: false },
+      ];
 
-      try {
-        // Use gemini-2.5-pro with systemInstruction (best for research)
-        model = genAI.getGenerativeModel({
-          model: this.modelName,
-          systemInstruction: fullSystemInstruction,
-        });
-      } catch (error) {
-        // If gemini-2.5-pro is overloaded/unavailable, try gemini-2.5-flash
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        if (errorMessage.includes("overloaded") || errorMessage.includes("503") || errorMessage.includes("not available")) {
-          console.warn(`Model ${this.modelName} unavailable/overloaded, trying gemini-2.5-flash`);
-          try {
-            model = genAI.getGenerativeModel({
-              model: "gemini-2.5-flash",
-              systemInstruction: fullSystemInstruction,
-            });
-          } catch (flashError) {
-            console.warn("gemini-2.5-flash initialization failed:", flashError);
-            // Fallback to gemini-1.5-pro if gemini-2.5-flash is not available
-            console.warn("gemini-2.5-flash not available, trying gemini-1.5-pro");
-            try {
-              model = genAI.getGenerativeModel({
-                model: "gemini-1.5-pro",
+      let lastErrorMessage = "";
+
+      for (const candidate of modelCandidates) {
+        try {
+          const model = candidate.supportsSystemInstruction
+            ? genAI.getGenerativeModel({
+                model: candidate.name,
                 systemInstruction: fullSystemInstruction,
+              })
+            : genAI.getGenerativeModel({
+                model: candidate.name,
               });
-            } catch (fallbackError) {
-              console.warn("gemini-1.5-pro initialization failed:", fallbackError);
-              // Last resort: use gemini-pro
-              console.warn("gemini-1.5-pro not available, trying gemini-pro");
-              try {
-                model = genAI.getGenerativeModel({
-                  model: "gemini-pro",
-                  systemInstruction: fullSystemInstruction,
-                });
-              } catch (finalError) {
-                console.warn("gemini-pro initialization with system instruction failed:", finalError);
-                // Final fallback: use gemini-pro without systemInstruction
-                console.warn("gemini-pro with systemInstruction not available, using gemini-pro without systemInstruction");
-                model = genAI.getGenerativeModel({
-                  model: "gemini-pro",
-                });
-              // Prepend system instruction to message if model doesn't support it
-              if (chatHistory.length === 0) {
-                message = `${fullSystemInstruction}\n\nUser query: ${message}`;
-              }
-              }
-            }
+
+          const chat = model.startChat({
+            history: chatHistory,
+          });
+
+          const prompt = candidate.supportsSystemInstruction ? userMessage : fallbackPrompt;
+          const result = await chat.sendMessage(prompt);
+          const response = await result.response;
+          const text = response.text();
+
+          if (!text) {
+            throw new Error("Empty response from Gemini API");
           }
-        } else {
-          // For other errors, try gemini-1.5-pro directly
-          console.warn(`Model ${this.modelName} error, trying gemini-1.5-pro`);
-          try {
-            model = genAI.getGenerativeModel({
-              model: "gemini-1.5-pro",
-              systemInstruction: fullSystemInstruction,
-            });
-          } catch (fallbackError) {
-            console.warn("gemini-1.5-pro initialization failed:", fallbackError);
-            // Last resort: use gemini-pro
-            console.warn("gemini-1.5-pro not available, trying gemini-pro");
-            try {
-              model = genAI.getGenerativeModel({
-                model: "gemini-pro",
-                systemInstruction: fullSystemInstruction,
-              });
-            } catch (finalError) {
-              console.warn("gemini-pro initialization with system instruction failed:", finalError);
-              // Final fallback: use gemini-pro without systemInstruction
-              console.warn("gemini-pro with systemInstruction not available, using gemini-pro without systemInstruction");
-              model = genAI.getGenerativeModel({
-                model: "gemini-pro",
-              });
-              // Prepend system instruction to message if model doesn't support it
-              if (chatHistory.length === 0) {
-                message = `${fullSystemInstruction}\n\nUser query: ${message}`;
-              }
-            }
-          }
+
+          return { message: text, model: candidate.name };
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          lastErrorMessage = errorMessage;
+          console.warn(`Model ${candidate.name} failed: ${errorMessage}`);
         }
       }
 
-      // Start a chat session
-      const chat = model.startChat({
-        history: chatHistory,
-      });
-
-      // Send the message and get response
-      const result = await chat.sendMessage(message);
-      const response = await result.response;
-      const text = response.text();
-
-      if (!text) {
-        throw new Error("Empty response from Gemini API");
-      }
-
-      return text;
+      throw new Error(lastErrorMessage || "Unknown Gemini API error");
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       console.error("Gemini API error details:", errorMessage);

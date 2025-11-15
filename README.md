@@ -30,11 +30,11 @@ Create a `.env.local` file in the root directory with the following variables:
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-**Note:** Firebase configuration is already set up in `lib/firebase.ts`. If you need to use your own Firebase project, update the configuration in that file.
+**Note:** Firebase configuration is already set up in `app/lib/firebase.ts`. If you need to use your own Firebase project, update the configuration in that file.
 
 ### Firebase Authentication Setup
 
-This project uses Firebase Authentication for Google sign-in. The Firebase configuration is already set up in `lib/firebase.ts` with the following credentials:
+This project uses Firebase Authentication for Google sign-in. The Firebase configuration is already set up in `app/lib/firebase.ts` with the following credentials:
 
 - **Project ID**: `gen-lang-client-0685314272`
 - **Auth Domain**: `gen-lang-client-0685314272.firebaseapp.com`
@@ -51,7 +51,7 @@ This project uses Firebase Authentication for Google sign-in. The Firebase confi
    - Go to Project Settings > General
    - Scroll down to "Your apps" and click the web icon (`</>`)
    - Copy the Firebase configuration object
-5. Update `lib/firebase.ts` with your Firebase configuration
+5. Update `app/lib/firebase.ts` with your Firebase configuration
 
 ### Running the Development Server
 

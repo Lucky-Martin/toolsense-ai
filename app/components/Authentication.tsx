@@ -14,7 +14,7 @@ import {
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { useTranslation } from "@/app/contexts/TranslationContext";
-import { auth } from "@/lib/firebase";
+import { auth } from "@/app/lib/firebase";
 import Navbar from "./Navbar";
 
 export default function Authentication() {

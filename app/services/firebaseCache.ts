@@ -9,7 +9,7 @@
  * Uses Admin SDK which bypasses security rules - perfect for server-side operations.
  */
 
-import { getAdminDb } from "@/lib/firebaseAdmin";
+import { getAdminDb } from "@/app/lib/firebaseAdmin";
 import { createHash } from "crypto";
 import { Timestamp } from "firebase-admin/firestore";
 

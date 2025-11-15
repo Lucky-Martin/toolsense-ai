@@ -21,8 +21,33 @@ export interface Conversation {
 
 const STORAGE_KEY = "toolsense_conversations";
 const MAX_CONVERSATIONS = 100;
+const STORAGE_EVENT_NAME = "toolsense_conversations_changed";
 
 class ConversationService {
+  private listeners: Set<() => void> = new Set();
+
+  /**
+   * Subscribe to conversation changes
+   */
+  subscribe(callback: () => void): () => void {
+    this.listeners.add(callback);
+    // Return unsubscribe function
+    return () => {
+      this.listeners.delete(callback);
+    };
+  }
+
+  /**
+   * Notify all subscribers of changes
+   */
+  private notify(): void {
+    // Dispatch custom event for cross-tab sync
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent(STORAGE_EVENT_NAME));
+    }
+    // Notify direct subscribers
+    this.listeners.forEach((callback) => callback());
+  }
   /**
    * Get all conversations from storage
    */
@@ -75,6 +100,7 @@ class ConversationService {
       ).slice(0, MAX_CONVERSATIONS);
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted));
+      this.notify();
     } catch (error) {
       console.error("Error saving conversation:", error);
     }
@@ -148,6 +174,7 @@ class ConversationService {
       const conversations = this.getAllConversations();
       const filtered = conversations.filter((conv) => conv.id !== id);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+      this.notify();
     } catch (error) {
       console.error("Error deleting conversation:", error);
     }
@@ -159,6 +186,14 @@ class ConversationService {
   clearAllConversations(): void {
     if (typeof window === "undefined") return;
     localStorage.removeItem(STORAGE_KEY);
+    this.notify();
+  }
+
+  /**
+   * Get the storage event name for cross-tab listening
+   */
+  getStorageEventName(): string {
+    return STORAGE_EVENT_NAME;
   }
 }
 

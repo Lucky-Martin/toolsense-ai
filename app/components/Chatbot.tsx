@@ -82,16 +82,25 @@ export default function Chatbot() {
     // Focus input on mount
     inputRef.current?.focus();
 
-    // Clean up expired cache entries on mount and periodically
+    // Clean up expired cache entries on mount
     const cleanupCache = async () => {
       await clientCacheService.clearExpired();
     };
 
     cleanupCache();
-    // Clean up expired entries every hour
-    const interval = setInterval(cleanupCache, 60 * 60 * 1000);
 
-    return () => clearInterval(interval);
+    // Clean up when page becomes visible (user returns to tab)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        cleanupCache();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   // Create new conversation
@@ -374,8 +383,8 @@ ${lastAssistantMessage.content}
       // Ensure the document is focused before attempting clipboard operation
       if (document.hasFocus && !document.hasFocus()) {
         window.focus();
-        // Wait a bit for focus to be established
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Wait for next frame for focus to be established (more efficient than setTimeout)
+        await new Promise(resolve => requestAnimationFrame(resolve));
       }
 
       // Check if clipboard API is available
@@ -458,7 +467,8 @@ ${lastAssistantMessage.content}
     try {
       if (document.hasFocus && !document.hasFocus()) {
         window.focus();
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Wait for next frame for focus to be established (more efficient than setTimeout)
+        await new Promise(resolve => requestAnimationFrame(resolve));
       }
 
       if (!navigator.clipboard || !navigator.clipboard.writeText) {
@@ -583,7 +593,8 @@ ${editContent.trim()}
     try {
       if (document.hasFocus && !document.hasFocus()) {
         window.focus();
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Wait for next frame for focus to be established (more efficient than setTimeout)
+        await new Promise(resolve => requestAnimationFrame(resolve));
       }
 
       if (!navigator.clipboard || !navigator.clipboard.writeText) {

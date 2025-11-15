@@ -101,6 +101,7 @@ export default function Sidebar({
       setConversations(loaded);
     };
 
+    // Initial load
     loadConversations();
 
     // Listen for storage changes (for cross-tab sync)
@@ -111,14 +112,25 @@ export default function Sidebar({
       setIsCollapsed(newSaved !== "false");
     };
 
+    // Listen for custom events (for same-tab updates)
+    const handleCustomStorageChange = () => {
+      loadConversations();
+    };
+
+    // Subscribe to conversation service changes
+    const unsubscribe = conversationService.subscribe(loadConversations);
+
+    // Listen for browser storage events (cross-tab sync)
     window.addEventListener("storage", handleStorageChange);
 
-    // Poll for changes (since same-tab updates don't trigger storage event)
-    const interval = setInterval(loadConversations, 1000);
+    // Listen for custom events (same-tab sync)
+    const eventName = conversationService.getStorageEventName();
+    window.addEventListener(eventName, handleCustomStorageChange);
 
     return () => {
+      unsubscribe();
       window.removeEventListener("storage", handleStorageChange);
-      clearInterval(interval);
+      window.removeEventListener(eventName, handleCustomStorageChange);
     };
   }, []);
 

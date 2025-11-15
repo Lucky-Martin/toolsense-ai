@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import Editor from "@monaco-editor/react";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -54,6 +55,11 @@ export default function Chatbot() {
   const [currentLoadingMessage, setCurrentLoadingMessage] = useState("");
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [hasUserMessage, setHasUserMessage] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editContent, setEditContent] = useState("");
+  const [editMessageIndex, setEditMessageIndex] = useState<number>(-1);
+  const [isEditingAssistant, setIsEditingAssistant] = useState(false);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -171,9 +177,9 @@ export default function Chatbot() {
     try {
       // Prepare conversation history
       const history = messages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        }));
+        role: msg.role,
+        content: msg.content,
+      }));
 
       // Get language from localStorage (default to "en")
       const languageId = typeof window !== "undefined"
@@ -405,32 +411,242 @@ ${lastAssistantMessage.content}
   };
 
   const handleEdit = () => {
-    // Find the last user message
-    let lastUserIndex = -1;
+    // Find the last assistant message (response text)
+    let lastAssistantIndex = -1;
     for (let i = messages.length - 1; i >= 0; i--) {
-      if (messages[i].role === "user") {
-        lastUserIndex = i;
+      if (messages[i].role === "assistant") {
+        lastAssistantIndex = i;
         break;
       }
     }
 
-    if (lastUserIndex !== -1) {
-      const lastUserMessage = messages[lastUserIndex];
-      setInput(lastUserMessage.content);
-      // Remove the last user message and assistant response
-      const newMessages = messages.slice(0, lastUserIndex);
-      setMessages(newMessages);
-      setHasUserMessage(false);
-      // Update conversation
-      if (currentConversationId) {
-        const conversation = conversationService.getConversation(currentConversationId);
-        const title = conversation?.title || `${t("chatbot.reportFor")} ${lastUserMessage.content.substring(0, 50).trim()}`;
-        conversationService.updateConversation(currentConversationId, newMessages, title);
+    if (lastAssistantIndex !== -1) {
+      const lastAssistantMessage = messages[lastAssistantIndex];
+      setEditContent(lastAssistantMessage.content);
+      setEditMessageIndex(lastAssistantIndex);
+      setIsEditingAssistant(true);
+      setIsPreviewMode(false);
+      setShowEditDialog(true);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (editMessageIndex !== -1 && editContent.trim()) {
+      if (isEditingAssistant) {
+        // For assistant messages, download the edited content
+        handleDownloadEdited();
+      } else {
+        // For user messages, update the message (original behavior)
+        const newMessages = [...messages];
+        newMessages[editMessageIndex] = {
+          ...newMessages[editMessageIndex],
+          content: editContent.trim(),
+        };
+
+        // Remove messages after the edited one (including assistant response)
+        const updatedMessages = newMessages.slice(0, editMessageIndex + 1);
+        setMessages(updatedMessages);
+        setHasUserMessage(false);
+
+        // Update conversation
+        if (currentConversationId) {
+          const conversation = conversationService.getConversation(currentConversationId);
+          const title = conversation?.title || `${t("chatbot.reportFor")} ${editContent.substring(0, 50).trim()}`;
+          conversationService.updateConversation(currentConversationId, updatedMessages, title);
+        }
       }
+
+      setShowEditDialog(false);
+      setEditContent("");
+      setEditMessageIndex(-1);
+      setIsEditingAssistant(false);
+      setIsPreviewMode(false);
       inputRef.current?.focus();
     }
   };
 
+  const handleCopyEdit = async () => {
+    if (!editContent.trim()) return;
+
+    try {
+      if (document.hasFocus && !document.hasFocus()) {
+        window.focus();
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      if (!navigator.clipboard || !navigator.clipboard.writeText) {
+        throw new Error("Clipboard API not available");
+      }
+
+      await navigator.clipboard.writeText(editContent);
+      alert(t("chatbot.copiedToClipboard"));
+    } catch (clipboardError: unknown) {
+      console.error("Failed to copy to clipboard:", clipboardError);
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = editContent;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textArea);
+
+        if (successful) {
+          alert(t("chatbot.copiedToClipboard"));
+        } else {
+          prompt("Copy this text:", editContent);
+        }
+      } catch (fallbackError) {
+        console.error("Fallback copy method also failed:", fallbackError);
+        prompt("Copy this text:", editContent);
+      }
+    }
+  };
+
+  const handleDownloadEdited = () => {
+    if (!editContent.trim()) return;
+
+    // Find the user query that prompted this response
+    let userQuery = "security-assessment";
+    if (editMessageIndex > 0 && messages[editMessageIndex - 1]?.role === "user") {
+      userQuery = messages[editMessageIndex - 1].content;
+    }
+
+    // Create a safe filename from the user query
+    const safeFilename = userQuery
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .substring(0, 50) || "security-assessment";
+
+    // Create the file content with metadata
+    const fileContent = `# Security Assessment Report
+
+**Tool:** ${userQuery}
+**Generated by:** ToolSense AI
+**Date:** ${new Date().toLocaleString()}
+**Edited:** ${new Date().toLocaleString()}
+
+---
+
+${editContent.trim()}
+`;
+
+    // Create a blob and download
+    const blob = new Blob([fileContent], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${safeFilename}-edited-${Date.now()}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleShareEdited = async () => {
+    if (!editContent.trim()) return;
+
+    // Find the user query that prompted this response
+    let userQuery = "security-assessment";
+    if (editMessageIndex > 0 && messages[editMessageIndex - 1]?.role === "user") {
+      userQuery = messages[editMessageIndex - 1].content;
+    }
+
+    const shareText = `# Security Assessment Report
+
+**Tool:** ${userQuery}
+**Generated by:** ToolSense AI
+**Date:** ${new Date().toLocaleString()}
+**Edited:** ${new Date().toLocaleString()}
+
+---
+
+${editContent.trim()}
+`;
+
+    try {
+      // Try to use the Web Share API if available
+      if (navigator.share) {
+        await navigator.share({
+          title: "ToolSense AI - Edited Report",
+          text: shareText,
+        });
+        // Close dialog after sharing
+        setShowEditDialog(false);
+        setEditContent("");
+        setEditMessageIndex(-1);
+        setIsEditingAssistant(false);
+        setIsPreviewMode(false);
+        return;
+      }
+    } catch (error: unknown) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        console.log("Share cancelled by user");
+        return;
+      }
+      console.log("Web Share API failed, trying clipboard fallback");
+    }
+
+    // Fallback: copy to clipboard
+    try {
+      if (document.hasFocus && !document.hasFocus()) {
+        window.focus();
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      if (!navigator.clipboard || !navigator.clipboard.writeText) {
+        throw new Error("Clipboard API not available");
+      }
+
+      await navigator.clipboard.writeText(shareText);
+      alert(t("chatbot.copiedToClipboard"));
+      // Close dialog after copying
+      setShowEditDialog(false);
+      setEditContent("");
+      setEditMessageIndex(-1);
+      setIsEditingAssistant(false);
+      setIsPreviewMode(false);
+    } catch (clipboardError: unknown) {
+      console.error("Failed to copy to clipboard:", clipboardError);
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = shareText;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textArea);
+
+        if (successful) {
+          alert(t("chatbot.copiedToClipboard"));
+          // Close dialog after copying
+          setShowEditDialog(false);
+          setEditContent("");
+          setEditMessageIndex(-1);
+          setIsEditingAssistant(false);
+        } else {
+          prompt("Copy this text:", shareText);
+        }
+      } catch (fallbackError) {
+        console.error("Fallback copy method also failed:", fallbackError);
+        prompt("Copy this text:", shareText);
+      }
+    }
+  };
+
+  const handleAdd = () => {
+    // Start a new conversation
+    handleNewConversation();
+  };
   return (
     <div className="flex h-screen w-full bg-white overflow-hidden">
       {/* Sidebar */}
@@ -447,9 +663,8 @@ ${lastAssistantMessage.content}
 
         <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
           <div
-            className={`flex-1 flex flex-col min-h-0 overflow-hidden pb-0 ${
-              hasMessages ? "items-start" : "items-center justify-center"
-            }`}
+            className={`flex-1 flex flex-col min-h-0 overflow-hidden pb-0 ${hasMessages ? "items-start" : "items-center justify-center"
+              }`}
           >
             {!hasMessages ? (
               <div className="w-full max-w-3xl text-center">
@@ -466,11 +681,10 @@ ${lastAssistantMessage.content}
                   {messages.map((message, index) => (
                     <div key={index} className="w-full">
                       <div
-                        className={`w-full rounded-lg px-4 py-3 ${
-                          message.role === "user"
-                            ? "bg-gray-100 text-black mb-4"
-                            : "bg-gray-50 text-gray-800 border border-gray-200"
-                        }`}
+                        className={`w-full rounded-lg px-4 py-3 ${message.role === "user"
+                          ? "bg-gray-100 text-black mb-4"
+                          : "bg-gray-50 text-gray-800 border border-gray-200"
+                          }`}
                       >
                         {message.role === "assistant" ? (
                           <div className="markdown-content">
@@ -587,27 +801,27 @@ ${lastAssistantMessage.content}
               {hasAssistantResponse ? (
                 // Show buttons when there's an assistant response
                 <div className="flex items-center justify-center gap-4">
-              <button
-                type="button"
-                onClick={handleDownload}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
-                title={t("chatbot.downloadReport")}
-              >
-                <span className="text-sm font-medium">{t("chatbot.downloadReport")}</span>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M8 12l4 4m0 0l4-4m-4 4V4"
-                  />
-                </svg>
-              </button>
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors cursor-pointer"
+                    title={t("chatbot.downloadReport")}
+                  >
+                    <span className="text-sm font-medium">{t("chatbot.downloadReport")}</span>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M8 12l4 4m0 0l4-4m-4 4V4"
+                      />
+                    </svg>
+                  </button>
                   <button
                     type="button"
                     onClick={handleShare}
@@ -695,6 +909,240 @@ ${lastAssistantMessage.content}
           </div>
         </div>
       </div>
+
+      {/* Edit Dialog with Text Editor */}
+      {showEditDialog && (
+        <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000 }}>
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 border border-gray-200 flex flex-col" style={{ height: '80vh' }}>
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-lg font-light text-gray-900">
+                {t("chatbot.edit")}
+              </h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleCopyEdit}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light flex items-center gap-2"
+                  title="Copy text"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                  Copy
+                </button>
+                <button
+                  onClick={() => setIsPreviewMode(!isPreviewMode)}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light flex items-center gap-2"
+                  title={isPreviewMode ? "Switch to Editor" : "Switch to Preview"}
+                >
+                  {isPreviewMode ? (
+                    <>
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                      Editor
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                      Preview
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              {isPreviewMode ? (
+                <div className="h-full overflow-y-auto p-6 bg-gray-50">
+                  <div className="markdown-content max-w-none">
+                    <ReactMarkdown
+                      components={{
+                        h1: (props) => (
+                          <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2" {...props} />
+                        ),
+                        h2: (props) => (
+                          <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900" {...props} />
+                        ),
+                        h3: (props) => (
+                          <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800" {...props} />
+                        ),
+                        h4: (props) => (
+                          <h4 className="text-base font-semibold mt-3 mb-2 text-gray-800" {...props} />
+                        ),
+                        p: (props) => (
+                          <p className="mb-3 leading-7 text-gray-700" {...props} />
+                        ),
+                        ul: (props) => (
+                          <ul className="list-disc list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
+                        ),
+                        ol: (props) => (
+                          <ol className="list-decimal list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
+                        ),
+                        li: (props) => (
+                          <li className="pl-2 leading-7" {...props} />
+                        ),
+                        strong: (props) => (
+                          <strong className="font-semibold text-gray-900" {...props} />
+                        ),
+                        em: (props) => (
+                          <em className="italic text-gray-700" {...props} />
+                        ),
+                        code: (props) => (
+                          <code className="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />
+                        ),
+                        pre: (props) => (
+                          <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto mb-3 text-sm" {...props} />
+                        ),
+                        hr: (props) => (
+                          <hr className="my-6 border-gray-300" {...props} />
+                        ),
+                        a: (props) => (
+                          <a className="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank" rel="noopener noreferrer" {...props} />
+                        ),
+                        blockquote: (props) => (
+                          <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3 text-gray-600" {...props} />
+                        ),
+                        table: (props) => (
+                          <div className="overflow-x-auto my-4">
+                            <table className="min-w-full border-collapse border border-gray-300" {...props} />
+                          </div>
+                        ),
+                        thead: (props) => (
+                          <thead className="bg-gray-100" {...props} />
+                        ),
+                        th: (props) => (
+                          <th className="border border-gray-300 px-4 py-2 text-left font-semibold" {...props} />
+                        ),
+                        td: (props) => (
+                          <td className="border border-gray-300 px-4 py-2" {...props} />
+                        ),
+                      }}
+                    >
+                      {editContent}
+                    </ReactMarkdown>
+                  </div>
+                </div>
+              ) : (
+                <Editor
+                  height="100%"
+                  defaultLanguage="markdown"
+                  value={editContent}
+                  onChange={(value) => setEditContent(value || "")}
+                  theme="vs-light"
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    wordWrap: 'on',
+                    lineNumbers: 'on',
+                    scrollBeyondLastLine: false,
+                    automaticLayout: true,
+                  }}
+                />
+              )}
+            </div>
+            <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setShowEditDialog(false);
+                  setEditContent("");
+                  setEditMessageIndex(-1);
+                  setIsEditingAssistant(false);
+                  setIsPreviewMode(false);
+                }}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light"
+              >
+                {t("sidebar.cancel")}
+              </button>
+              {isEditingAssistant ? (
+                <>
+                  <button
+                    onClick={handleShareEdited}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer font-light flex items-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                      />
+                    </svg>
+                    {t("chatbot.share")}
+                  </button>
+                  <button
+                    onClick={handleSaveEdit}
+                    className="px-4 py-2 text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer font-light flex items-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M8 12l4 4m0 0l4-4m-4 4V4"
+                      />
+                    </svg>
+                    {t("chatbot.downloadReport")}
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleSaveEdit}
+                  className="px-4 py-2 text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer font-light"
+                >
+                  {t("sidebar.confirm")}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

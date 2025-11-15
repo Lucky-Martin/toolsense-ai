@@ -4,6 +4,8 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useTranslation } from "../contexts/TranslationContext";
 import { ParsedResponse } from "../utils/responseParser";
+import { getScoreColor, getScoreBgColor, getScoreRingColor } from "../utils/scoreUtils";
+import { markdownComponents } from "./markdown/MarkdownComponents";
 
 interface ReportSummaryProps {
   parsedResponse: ParsedResponse;
@@ -27,30 +29,6 @@ export default function ReportSummary({ parsedResponse, isCached }: ReportSummar
     productName,
   } = parsedResponse;
 
-  // Get score color based on value
-  const getScoreColor = (score: number | null): string => {
-    if (score === null) return "text-gray-500";
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    if (score >= 40) return "text-orange-600";
-    return "text-red-600";
-  };
-
-  const getScoreBgColor = (score: number | null): string => {
-    if (score === null) return "bg-gray-100";
-    if (score >= 80) return "bg-green-50 border-green-200";
-    if (score >= 60) return "bg-yellow-50 border-yellow-200";
-    if (score >= 40) return "bg-orange-50 border-orange-200";
-    return "bg-red-50 border-red-200";
-  };
-
-  const getScoreRingColor = (score: number | null): string => {
-    if (score === null) return "ring-gray-300";
-    if (score >= 80) return "ring-green-300";
-    if (score >= 60) return "ring-yellow-300";
-    if (score >= 40) return "ring-orange-300";
-    return "ring-red-300";
-  };
 
   return (
     <div className="w-full">
@@ -85,15 +63,7 @@ export default function ReportSummary({ parsedResponse, isCached }: ReportSummar
                 <p className="text-sm text-gray-600">Trust/Risk Score: {scoreText}</p>
                 {confidenceLevel && (
                   <p className="text-xs text-gray-500 mt-1">
-                    Confidence:{" "}
-                    <ReactMarkdown
-                      components={{
-                        strong: (props) => <strong className="font-semibold" {...props} />,
-                        p: (props) => <span {...props} />,
-                      }}
-                    >
-                      {confidenceLevel}
-                    </ReactMarkdown>
+                    Confidence: {confidenceLevel}
                   </p>
                 )}
               </div>
@@ -248,15 +218,7 @@ export default function ReportSummary({ parsedResponse, isCached }: ReportSummar
                 <p className="text-sm text-gray-700 leading-relaxed">{rationale}</p>
                 {confidenceLevel && (
                   <p className="text-xs text-gray-500 mt-2">
-                    <span className="font-medium">Confidence Level:</span>{" "}
-                    <ReactMarkdown
-                      components={{
-                        strong: (props) => <strong className="font-semibold" {...props} />,
-                        p: (props) => <span {...props} />,
-                      }}
-                    >
-                      {confidenceLevel}
-                    </ReactMarkdown>
+                    <span className="font-medium">Confidence:</span> {confidenceLevel}
                   </p>
                 )}
               </div>
@@ -386,82 +348,7 @@ export default function ReportSummary({ parsedResponse, isCached }: ReportSummar
           {/* Full Content */}
           <div className="p-6">
             <div className="markdown-content overflow-x-hidden break-words">
-              <ReactMarkdown
-                components={{
-                  h1: (props) => (
-                    <h1
-                      className="text-2xl font-bold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2 break-words"
-                      {...props}
-                    />
-                  ),
-                  h2: (props) => (
-                    <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900 break-words" {...props} />
-                  ),
-                  h3: (props) => (
-                    <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800 break-words" {...props} />
-                  ),
-                  h4: (props) => (
-                    <h4 className="text-base font-semibold mt-3 mb-2 text-gray-800 break-words" {...props} />
-                  ),
-                  p: (props) => (
-                    <p className="mb-3 leading-7 text-gray-700 break-words" {...props} />
-                  ),
-                  ul: (props) => (
-                    <ul className="list-disc list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
-                  ),
-                  ol: (props) => (
-                    <ol className="list-decimal list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
-                  ),
-                  li: (props) => <li className="pl-2 leading-7 break-words" {...props} />,
-                  strong: (props) => (
-                    <strong className="font-semibold text-gray-900 break-words" {...props} />
-                  ),
-                  em: (props) => <em className="italic text-gray-700 break-words" {...props} />,
-                  code: ({ node, className, children, ...props }: any) => {
-                    const isInline = !className || !className.startsWith("language-");
-                    return isInline ? (
-                      <code
-                        className="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800 break-words"
-                        {...props}
-                      >
-                        {children}
-                      </code>
-                    ) : (
-                      <code className="text-sm font-mono text-gray-800" {...props}>
-                        {children}
-                      </code>
-                    );
-                  },
-                  pre: (props) => (
-                    <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto mb-3 text-sm whitespace-pre-wrap break-words" {...props} />
-                  ),
-                  hr: (props) => <hr className="my-6 border-gray-300" {...props} />,
-                  a: (props) => (
-                    <a
-                      className="text-blue-600 hover:text-blue-800 hover:underline font-medium break-all"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      {...props}
-                    />
-                  ),
-                  blockquote: (props) => (
-                    <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3 text-gray-600 break-words" {...props} />
-                  ),
-                  table: (props) => (
-                    <div className="overflow-x-auto my-4">
-                      <table className="min-w-full border-collapse border border-gray-300" {...props} />
-                    </div>
-                  ),
-                  thead: (props) => <thead className="bg-gray-100" {...props} />,
-                  tbody: (props) => <tbody {...props} />,
-                  th: (props) => (
-                    <th className="border border-gray-300 px-4 py-2 text-left font-semibold break-words" {...props} />
-                  ),
-                  td: (props) => (
-                    <td className="border border-gray-300 px-4 py-2 break-words" {...props} />
-                  ),
-                }}
-              >
+              <ReactMarkdown components={markdownComponents}>
                 {fullContent}
               </ReactMarkdown>
             </div>

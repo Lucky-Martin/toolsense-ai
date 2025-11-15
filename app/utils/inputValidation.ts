@@ -50,11 +50,12 @@ const PROMPT_INJECTION_PATTERNS = [
   /what\s+are\s+your\s+(instructions?|directives?|prompts?)/i,
   /print\s+(your|the)\s+(system|prompt|instructions?)/i,
 
-  // Jailbreak attempts
-  /jailbreak/i,
-  /bypass/i,
-  /hack/i,
-  /exploit/i,
+  // Jailbreak attempts (only match as standalone words, not in product names like "hackjunction")
+  /\bjailbreak\b/i,
+  /\bbypass\b/i,
+  // Only match "hack" when it's used as a verb with suspicious context, not in product names
+  /\bhack\s+(into|the|your|this|that|it|me|you|system|account|database|server|website|app|application|code|script|program|software|tool|device|network|computer|machine|api|endpoint|service|platform|site|page|file|data|information|access|permission|security|firewall|defense|protection|authentication|authorization|login|password|credential|token|key|secret|private|sensitive|confidential|personal|user|admin|root|privilege|escalation|exploit|vulnerability|bug|flaw|weakness|hole|backdoor|malware|virus|trojan|worm|ransomware|spyware|adware|rootkit|botnet|ddos|dos|attack|intrusion|breach|leak|theft|fraud|scam|phishing|spoofing|spam|abuse|misuse|unauthorized|illegal|illegitimate|unlawful|criminal|malicious|harmful|dangerous|destructive|damaging|corrupting|infecting|compromising|breaking|destroying|stealing|copying|replicating|duplicating|cloning|forging|faking|impersonating|pretending|masquerading|disguising|hiding|concealing|obfuscating)\b/i,
+  /\bexploit\b/i,
 
   // Special characters that might be used for injection
   /```[\s\S]*?```/, // Code blocks

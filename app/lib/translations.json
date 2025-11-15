@@ -71,7 +71,17 @@
       "share": "Share",
       "edit": "Edit",
       "add": "Add",
-      "copiedToClipboard": "Copied to clipboard!"
+      "copiedToClipboard": "Copied to clipboard!",
+      "popupBlocked": "Please allow pop-ups to download PDF",
+      "copyTextPrompt": "Copy this text:",
+      "editDialog": {
+        "copyText": "Copy text",
+        "copy": "Copy",
+        "switchToEditor": "Switch to editor",
+        "switchToPreview": "Switch to preview",
+        "editor": "Editor",
+        "preview": "Preview"
+      }
     },
     "navbar": {
       "searchLanguages": "Search languages...",
@@ -175,7 +185,17 @@
       "share": "分享",
       "edit": "编辑",
       "add": "添加",
-      "copiedToClipboard": "已复制到剪贴板！"
+      "copiedToClipboard": "已复制到剪贴板！",
+      "popupBlocked": "请允许弹出窗口以下载PDF",
+      "copyTextPrompt": "复制此文本：",
+      "editDialog": {
+        "copyText": "复制文本",
+        "copy": "复制",
+        "switchToEditor": "切换到编辑器",
+        "switchToPreview": "切换到预览",
+        "editor": "编辑器",
+        "preview": "预览"
+      }
     },
     "navbar": {
       "searchLanguages": "搜索语言...",
@@ -279,7 +299,17 @@
       "share": "Compartir",
       "edit": "Editar",
       "add": "Añadir",
-      "copiedToClipboard": "¡Copiado al portapapeles!"
+      "copiedToClipboard": "¡Copiado al portapapeles!",
+      "popupBlocked": "Por favor, permite ventanas emergentes para descargar PDF",
+      "copyTextPrompt": "Copia este texto:",
+      "editDialog": {
+        "copyText": "Copiar texto",
+        "copy": "Copiar",
+        "switchToEditor": "Cambiar a editor",
+        "switchToPreview": "Cambiar a vista previa",
+        "editor": "Editor",
+        "preview": "Vista previa"
+      }
     },
     "navbar": {
       "searchLanguages": "Buscar idiomas...",
@@ -383,7 +413,17 @@
       "share": "Jaa",
       "edit": "Muokkaa",
       "add": "Lisää",
-      "copiedToClipboard": "Kopioitu leikepöydälle!"
+      "copiedToClipboard": "Kopioitu leikepöydälle!",
+      "popupBlocked": "Salli ponnahdusikkunat PDF:n lataamiseksi",
+      "copyTextPrompt": "Kopioi tämä teksti:",
+      "editDialog": {
+        "copyText": "Kopioi teksti",
+        "copy": "Kopioi",
+        "switchToEditor": "Vaihda editoriin",
+        "switchToPreview": "Vaihda esikatseluun",
+        "editor": "Editori",
+        "preview": "Esikatselu"
+      }
     },
     "navbar": {
       "searchLanguages": "Etsi kieliä...",
@@ -487,7 +527,17 @@
       "share": "Teilen",
       "edit": "Bearbeiten",
       "add": "Hinzufügen",
-      "copiedToClipboard": "In die Zwischenablage kopiert!"
+      "copiedToClipboard": "In die Zwischenablage kopiert!",
+      "popupBlocked": "Bitte erlauben Sie Pop-ups zum Herunterladen von PDF",
+      "copyTextPrompt": "Kopieren Sie diesen Text:",
+      "editDialog": {
+        "copyText": "Text kopieren",
+        "copy": "Kopieren",
+        "switchToEditor": "Zum Editor wechseln",
+        "switchToPreview": "Zur Vorschau wechseln",
+        "editor": "Editor",
+        "preview": "Vorschau"
+      }
     },
     "navbar": {
       "searchLanguages": "Sprachen suchen...",
@@ -591,7 +641,17 @@
       "share": "Partager",
       "edit": "Modifier",
       "add": "Ajouter",
-      "copiedToClipboard": "Copié dans le presse-papiers !"
+      "copiedToClipboard": "Copié dans le presse-papiers !",
+      "popupBlocked": "Veuillez autoriser les fenêtres contextuelles pour télécharger le PDF",
+      "copyTextPrompt": "Copiez ce texte :",
+      "editDialog": {
+        "copyText": "Copier le texte",
+        "copy": "Copier",
+        "switchToEditor": "Passer à l'éditeur",
+        "switchToPreview": "Passer à l'aperçu",
+        "editor": "Éditeur",
+        "preview": "Aperçu"
+      }
     },
     "navbar": {
       "searchLanguages": "Rechercher des langues...",
@@ -695,7 +755,17 @@
       "share": "Поделиться",
       "edit": "Редактировать",
       "add": "Добавить",
-      "copiedToClipboard": "Скопировано в буфер обмена!"
+      "copiedToClipboard": "Скопировано в буфер обмена!",
+      "popupBlocked": "Пожалуйста, разрешите всплывающие окна для загрузки PDF",
+      "copyTextPrompt": "Скопируйте этот текст:",
+      "editDialog": {
+        "copyText": "Копировать текст",
+        "copy": "Копировать",
+        "switchToEditor": "Переключиться на редактор",
+        "switchToPreview": "Переключиться на предпросмотр",
+        "editor": "Редактор",
+        "preview": "Предпросмотр"
+      }
     },
     "navbar": {
       "searchLanguages": "Поиск языков...",

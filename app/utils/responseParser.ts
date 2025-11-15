@@ -111,16 +111,49 @@ function extractScoreDetails(scoreSection: string): {
     }
   }
 
-  // Extract confidence level
+  // Extract confidence level - only extract the value (High/Medium/Low), not the description
   const confidencePatterns = [
-    /\*\*Confidence\s+Level\*\*:\s*([^\n]+)/i,
-    /Confidence\s+Level:\s*([^\n]+)/i,
+    // Match "Confidence Level: **High**" format (preferred - stops at closing **)
+    /\*\*Confidence\s+Level\*\*:\s*\*\*([^*]+?)\*\*/i,
+    /Confidence\s+Level:\s*\*\*([^*]+?)\*\*/i,
+    // Match "Confidence: **High**" format (without "Level")
+    /\*\*Confidence\*\*:\s*\*\*([^*]+?)\*\*/i,
+    /Confidence:\s*\*\*([^*]+?)\*\*/i,
+    // Match "Confidence Level: High." format (stop at first period, but only take first word/phrase)
+    /\*\*Confidence\s+Level\*\*:\s*([^.\n]+?)(?:\.|$)/i,
+    /Confidence\s+Level:\s*([^.\n]+?)(?:\.|$)/i,
+    // Match "Confidence: High." format (without "Level")
+    /\*\*Confidence\*\*:\s*([^.\n]+?)(?:\.|$)/i,
+    /Confidence:\s*([^.\n]+?)(?:\.|$)/i,
   ];
 
   for (const pattern of confidencePatterns) {
     const match = scoreSection.match(pattern);
     if (match) {
-      confidenceLevel = match[1].trim();
+      let extracted = match[1].trim();
+      // Remove markdown formatting
+      extracted = extracted.replace(/\*\*/g, '').replace(/\*/g, '').trim();
+
+      // Extract only the confidence value word(s) - stop at first period or comma
+      const beforePunctuation = extracted.split(/[.,;]/)[0].trim();
+
+      // Try to extract just the confidence value (High, Medium, Low, Very High, etc.)
+      // Look for common confidence level words
+      const confidenceMatch = beforePunctuation.match(/\b(Very\s+)?(High|Medium|Low)\b/i);
+      if (confidenceMatch) {
+        confidenceLevel = confidenceMatch[0];
+      } else {
+        // If no match, take only the first word or first two words if they're short
+        const words = beforePunctuation.split(/\s+/);
+        if (words.length === 1) {
+          confidenceLevel = words[0];
+        } else if (words.length === 2 && (words[0] + ' ' + words[1]).length <= 15) {
+          confidenceLevel = words[0] + ' ' + words[1];
+        } else {
+          // Just take the first word
+          confidenceLevel = words[0];
+        }
+      }
       break;
     }
   }

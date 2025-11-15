@@ -4,36 +4,66 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  signInWithPopup,
-  signInWithRedirect,
-  GoogleAuthProvider,
   getRedirectResult,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { FirebaseError } from "firebase/app";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 import { auth } from "@/app/lib/firebase";
+import { useAuthForm } from "@/app/hooks/useAuthForm";
+import { useGoogleSignIn } from "@/app/hooks/useGoogleSignIn";
+import AuthToggle from "./auth/AuthToggle";
+import FormField from "./ui/FormField";
+import ErrorDisplay from "./ui/ErrorDisplay";
+import PasswordRequirements from "./auth/PasswordRequirements";
+import GoogleSignInButton from "./auth/GoogleSignInButton";
 
 export default function Authentication() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    name: "",
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [rememberMe, setRememberMe] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
+
+  const { signIn: handleGoogleSignIn, isLoading: isGoogleLoading, error: googleError } = useGoogleSignIn();
+
+  const handleEmailPasswordSubmit = async (formData: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    name: string;
+  }) => {
+    if (isLogin) {
+      await signInWithEmailAndPassword(auth, formData.email, formData.password);
+    } else {
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error(t("auth.errors.passwordsDoNotMatch"));
+      }
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      if (formData.name) {
+        await updateProfile(userCredential.user, { displayName: formData.name });
+      }
+    }
+    router.push("/chat");
+  };
+
+  const {
+    formData,
+    errors,
+    isSubmitting: isFormSubmitting,
+    checkPasswordRequirements,
+    handleInputChange,
+    handleConfirmPasswordBlur,
+    handleSubmit,
+    resetForm,
+    setErrors,
+  } = useAuthForm({
+    isLogin,
+    onSubmit: handleEmailPasswordSubmit,
+  });
 
   useEffect(() => {
-    // Check for mode parameter (register or login)
     const mode = searchParams.get("mode");
     if (mode === "register") {
       setIsLogin(false);
@@ -41,11 +71,9 @@ export default function Authentication() {
       setIsLogin(true);
     }
 
-    // Check for redirect result after Firebase authentication
     getRedirectResult(auth)
       .then((result) => {
         if (result) {
-          // User signed in via redirect
           router.push("/chat");
         }
       })
@@ -54,209 +82,16 @@ export default function Authentication() {
         setErrors({ general: t("auth.errors.authenticationFailed") });
       });
 
-    // Check for any URL error parameters
     const error = searchParams.get("error");
     if (error) {
       setErrors({ general: error });
     }
-  }, [searchParams, router, t]);
+  }, [searchParams, router, t, setErrors]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-
-    // Clear general error when user starts typing
-    if (errors.general) {
-      setErrors((prev) => ({ ...prev, general: "" }));
-    }
-  };
-
-  const handleConfirmPasswordBlur = () => {
-    if (!isLogin && formData.password && formData.confirmPassword) {
-      if (formData.password !== formData.confirmPassword) {
-        setErrors((prev) => ({ ...prev, confirmPassword: t("auth.errors.passwordsDoNotMatch") }));
-      } else {
-        setErrors((prev) => ({ ...prev, confirmPassword: "" }));
-      }
-    }
-  };
-
-  const checkPasswordRequirements = () => {
-    const password = formData.password;
-    return {
-      minLength: password.length >= 6,
-      hasUpperCase: /[A-Z]/.test(password),
-      hasLowerCase: /[a-z]/.test(password),
-      hasNumber: /[0-9]/.test(password),
-    };
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.email) {
-      newErrors.email = t("auth.errors.emailRequired");
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = t("auth.errors.emailInvalid");
-    }
-
-    if (!formData.password) {
-      newErrors.password = t("auth.errors.passwordRequired");
-    } else if (!isLogin) {
-      const requirements = checkPasswordRequirements();
-      if (!requirements.minLength || !requirements.hasUpperCase || !requirements.hasLowerCase || !requirements.hasNumber) {
-        newErrors.password = t("auth.errors.passwordRequirements");
-      }
-    } else if (formData.password.length < 6) {
-      newErrors.password = t("auth.errors.passwordMinLength");
-    }
-
-    if (!isLogin) {
-      if (!formData.name) {
-        newErrors.name = t("auth.errors.nameRequired");
-      }
-      // Validate password confirmation
-      if (!formData.confirmPassword) {
-        newErrors.confirmPassword = t("auth.errors.confirmPasswordRequired");
-      } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = t("auth.errors.passwordsDoNotMatch");
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const getFirebaseErrorMessage = (error: FirebaseError): string => {
-    switch (error.code) {
-      case "auth/email-already-in-use":
-        return t("auth.errors.emailAlreadyInUse");
-      case "auth/invalid-email":
-        return t("auth.errors.emailInvalid");
-      case "auth/operation-not-allowed":
-        return t("auth.errors.operationNotAllowed");
-      case "auth/weak-password":
-        return t("auth.errors.passwordRequirements");
-      case "auth/user-disabled":
-        return t("auth.errors.userDisabled");
-      case "auth/user-not-found":
-        return t("auth.errors.userNotFound");
-      case "auth/wrong-password":
-        return t("auth.errors.wrongPassword");
-      case "auth/invalid-credential":
-        return t("auth.errors.invalidCredential");
-      case "auth/too-many-requests":
-        return t("auth.errors.tooManyRequests");
-      case "auth/network-request-failed":
-        return t("auth.errors.networkError");
-      default:
-        return error.message || t("auth.errors.authenticationFailed");
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Clear previous errors
+  const handleToggle = (newIsLogin: boolean) => {
+    setIsLogin(newIsLogin);
     setErrors({});
-
-    // Validate form including password confirmation
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsFormSubmitting(true);
-
-    try {
-      if (isLogin) {
-        await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      } else {
-        // Double-check password confirmation before creating account
-        if (formData.password !== formData.confirmPassword) {
-          setErrors({
-            confirmPassword: t("auth.errors.passwordsDoNotMatch"),
-            general: t("auth.errors.passwordsDoNotMatch")
-          });
-          setIsFormSubmitting(false);
-          return;
-        }
-
-        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-        if (formData.name) {
-          await updateProfile(userCredential.user, { displayName: formData.name });
-        }
-      }
-      router.push("/chat");
-    } catch (error) {
-      console.error("Email/password authentication error:", error);
-      if (error instanceof FirebaseError) {
-        setErrors({ general: getFirebaseErrorMessage(error) });
-      } else if (error instanceof Error) {
-        setErrors({ general: error.message });
-      } else {
-        setErrors({ general: t("auth.errors.authenticationFailed") });
-      }
-    } finally {
-      setIsFormSubmitting(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    setErrors({});
-
-    try {
-      const provider = new GoogleAuthProvider();
-
-      // Try popup first, fallback to redirect if blocked
-      try {
-        await signInWithPopup(auth, provider);
-        router.push("/chat");
-      } catch (popupError) {
-        if (
-          popupError instanceof FirebaseError &&
-          (popupError.code === "auth/popup-blocked" || popupError.code === "auth/popup-closed-by-user")
-        ) {
-          // Fallback to redirect if popup is blocked
-          await signInWithRedirect(auth, provider);
-          // Note: signInWithRedirect will navigate away, so we don't need to handle the result here
-          // The useEffect will handle the redirect result
-        } else {
-          throw popupError;
-        }
-      }
-    } catch (error) {
-      console.error("Google sign-in error:", error);
-
-      if (error instanceof FirebaseError) {
-        if (error.code === "auth/popup-closed-by-user") {
-          setErrors({ general: t("auth.errors.signInCancelled") });
-          return;
-        }
-
-        if (error.code === "auth/popup-blocked") {
-          setErrors({ general: t("auth.errors.popupBlocked") });
-          return;
-        }
-
-        setErrors({ general: getFirebaseErrorMessage(error) });
-        return;
-      }
-
-      if (error instanceof Error) {
-        setErrors({ general: error.message });
-        return;
-      }
-
-      setErrors({ general: t("auth.errors.googleSignInFailed") });
-    } finally {
-      setIsGoogleLoading(false);
-    }
+    resetForm();
   };
 
   return (
@@ -277,259 +112,69 @@ export default function Authentication() {
           </div>
 
           {/* Toggle Buttons */}
-          <div className="relative flex mb-8 p-1 bg-gray-100 rounded-2xl border border-gray-200 shadow-sm">
-            <button
-              type="button"
-              onClick={() => {
-                setIsLogin(true);
-                setErrors({});
-                setFormData({
-                  email: "",
-                  password: "",
-                  confirmPassword: "",
-                  name: "",
-                });
-              }}
-              className="relative flex-1 py-2.5 px-4 rounded-xl text-sm font-light transition-colors duration-200 z-10 cursor-pointer"
-              style={{ outline: 'none', WebkitTapHighlightColor: 'transparent' }}
-              onMouseDown={(e) => e.preventDefault()}
-            >
-              <span className={`relative z-10 transition-colors duration-200 ${isLogin ? "text-gray-700" : "text-gray-500"
-                }`}>
-                {t("auth.login")}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setIsLogin(false);
-                setErrors({});
-                setFormData({
-                  email: "",
-                  password: "",
-                  confirmPassword: "",
-                  name: "",
-                });
-              }}
-              className="relative flex-1 py-2.5 px-4 rounded-xl text-sm font-light transition-colors duration-200 z-10 cursor-pointer"
-              style={{ outline: 'none', WebkitTapHighlightColor: 'transparent' }}
-              onMouseDown={(e) => e.preventDefault()}
-            >
-              <span className={`relative z-10 transition-colors duration-200 ${!isLogin ? "text-gray-700" : "text-gray-500"
-                }`}>
-                {t("auth.signUp")}
-              </span>
-            </button>
-            <div
-              className="absolute top-1 bottom-1 rounded-xl bg-white border border-gray-200 shadow-sm transition-all duration-200 ease-in-out"
-              style={{
-                left: isLogin ? '0.25rem' : 'calc(50% + 0.25rem)',
-                width: 'calc(50% - 0.5rem)',
-              }}
-            />
-          </div>
+          <AuthToggle isLogin={isLogin} onToggle={handleToggle} />
 
           {/* Form */}
           <form onSubmit={handleSubmit} noValidate className="space-y-5 relative">
             {/* Error Message - Absolute positioned */}
-            {errors.general && (
+            {(errors.general || googleError) && (
               <div className="absolute -top-7 left-0 right-0 animate-in fade-in duration-200 z-20">
-                <div className="p-3 rounded-xl bg-red-50 border border-red-200">
-                  <p className="text-xs text-red-600 font-light">{errors.general}</p>
-                </div>
+                <ErrorDisplay error={errors.general || googleError || ""} />
               </div>
             )}
+
             {!isLogin && (
-              <div className="relative">
-                <label
-                  htmlFor="name"
-                  className="block text-xs font-light text-gray-500 mb-2 uppercase tracking-wider"
-                >
-                  {t("auth.fullName")}
-                </label>
-                <input
-                  type="text"
+              <FormField
+                label={t("auth.fullName")}
                   id="name"
                   name="name"
+                type="text"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.name
-                    ? "border-red-400 focus:border-red-500"
-                    : "border-gray-200 focus:border-gray-300"
-                    } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
                   placeholder="John Doe"
-                />
-                <div className="h-4 relative">
-                  {errors.name && (
-                    <p className="absolute top-0.5 left-0 text-xs text-red-500 font-light animate-in fade-in duration-200">
-                      {errors.name}
-                    </p>
-                  )}
-                </div>
-              </div>
+                error={errors.name}
+              />
             )}
 
-            <div className="relative">
-              <label
-                htmlFor="email"
-                className="block text-xs font-light text-gray-500 mb-2 uppercase tracking-wider"
-              >
-                {t("auth.emailAddress")}
-              </label>
-              <input
-                type="email"
+            <FormField
+              label={t("auth.emailAddress")}
                 id="email"
                 name="email"
+              type="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.email
-                  ? "border-red-400 focus:border-red-500"
-                  : "border-gray-200 focus:border-gray-300"
-                  } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
                 placeholder="you@example.com"
-              />
-              <div className="h-4 relative">
-                {errors.email && (
-                  <p className="absolute top-0.5 left-0 text-xs text-red-500 font-light animate-in fade-in duration-200">
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-            </div>
+              error={errors.email}
+            />
 
             <div className="relative">
-              <label
-                htmlFor="password"
-                className="block text-xs font-light text-gray-500 mb-2 uppercase tracking-wider"
-              >
-                {t("auth.password")}
-              </label>
-              <input
-                type="password"
+              <FormField
+                label={t("auth.password")}
                 id="password"
                 name="password"
+                type="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.password
-                  ? "border-red-400 focus:border-red-500"
-                  : "border-gray-200 focus:border-gray-300"
-                  } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
                 placeholder="••••••••"
+                error={errors.password}
               />
-              <div className="h-4 relative">
-                {errors.password && (
-                  <p className="absolute top-0.5 left-0 text-xs text-red-500 font-light animate-in fade-in duration-200">
-                    {errors.password}
-                  </p>
-                )}
-              </div>
-              {/* Password Requirements - Only show on sign up */}
               {!isLogin && (
-                <div className="-mt-1 space-y-1.5">
-                  {(() => {
-                    const requirements = checkPasswordRequirements();
-                    return (
-                      <>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${requirements.minLength
-                            ? "bg-gray-500 border-gray-500"
-                            : "border-gray-300"
-                            }`}>
-                            {requirements.minLength && (
-                              <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className={`text-xs font-light transition-colors duration-200 ${requirements.minLength ? "text-gray-600" : "text-gray-400"
-                            }`}>
-                            {t("auth.passwordRequirements.minLength")}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${requirements.hasUpperCase
-                            ? "bg-gray-500 border-gray-500"
-                            : "border-gray-300"
-                            }`}>
-                            {requirements.hasUpperCase && (
-                              <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className={`text-xs font-light transition-colors duration-200 ${requirements.hasUpperCase ? "text-gray-600" : "text-gray-400"
-                            }`}>
-                            {t("auth.passwordRequirements.hasUpperCase")}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${requirements.hasLowerCase
-                            ? "bg-gray-500 border-gray-500"
-                            : "border-gray-300"
-                            }`}>
-                            {requirements.hasLowerCase && (
-                              <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className={`text-xs font-light transition-colors duration-200 ${requirements.hasLowerCase ? "text-gray-600" : "text-gray-400"
-                            }`}>
-                            {t("auth.passwordRequirements.hasLowerCase")}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-all duration-200 ${requirements.hasNumber
-                            ? "bg-gray-500 border-gray-500"
-                            : "border-gray-300"
-                            }`}>
-                            {requirements.hasNumber && (
-                              <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className={`text-xs font-light transition-colors duration-200 ${requirements.hasNumber ? "text-gray-600" : "text-gray-400"
-                            }`}>
-                            {t("auth.passwordRequirements.hasNumber")}
-                          </span>
-                        </div>
-                      </>
-                    );
-                  })()}
-                </div>
+                <PasswordRequirements requirements={checkPasswordRequirements()} />
               )}
             </div>
 
             {!isLogin && (
-              <div className="relative">
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-xs font-light text-gray-500 mb-2 uppercase tracking-wider"
-                >
-                  {t("auth.confirmPassword")}
-                </label>
-                <input
-                  type="password"
+              <FormField
+                label={t("auth.confirmPassword")}
                   id="confirmPassword"
                   name="confirmPassword"
+                type="password"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   onBlur={handleConfirmPasswordBlur}
-                  className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.confirmPassword
-                    ? "border-red-400 focus:border-red-500"
-                    : "border-gray-200 focus:border-gray-300"
-                    } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
                   placeholder="••••••••"
-                />
-                <div className="h-4 relative">
-                  {errors.confirmPassword && (
-                    <p className="absolute top-0.5 left-0 text-xs text-red-500 font-light animate-in fade-in duration-200">
-                      {errors.confirmPassword}
-                    </p>
-                  )}
-                </div>
-              </div>
+                error={errors.confirmPassword}
+              />
             )}
 
             {isLogin && (
@@ -604,32 +249,10 @@ export default function Authentication() {
 
           {/* Social Login */}
           <div className="flex flex-col">
-            <button
-              type="button"
+            <GoogleSignInButton
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading || isFormSubmitting}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl border border-gray-200 bg-white text-gray-600 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-100 transition-all font-light text-sm shadow-sm hover:shadow-md cursor-pointer focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  fill="currentColor"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                />
-                <path
-                  fill="currentColor"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                />
-                <path
-                  fill="currentColor"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                />
-                <path
-                  fill="currentColor"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                />
-              </svg>
-              Google
-            </button>
+            />
           </div>
 
         </div>

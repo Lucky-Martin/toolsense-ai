@@ -57,9 +57,25 @@ export default function Authentication() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+
+    // Clear general error when user starts typing
+    if (errors.general) {
+      setErrors((prev) => ({ ...prev, general: "" }));
+    }
+  };
+
+  const handleConfirmPasswordBlur = () => {
+    if (!isLogin && formData.password && formData.confirmPassword) {
+      if (formData.password !== formData.confirmPassword) {
+        setErrors((prev) => ({ ...prev, confirmPassword: t("auth.errors.passwordsDoNotMatch") }));
+      } else {
+        setErrors((prev) => ({ ...prev, confirmPassword: "" }));
+      }
     }
   };
 
@@ -97,6 +113,7 @@ export default function Authentication() {
       if (!formData.name) {
         newErrors.name = t("auth.errors.nameRequired");
       }
+      // Validate password confirmation
       if (!formData.confirmPassword) {
         newErrors.confirmPassword = t("auth.errors.confirmPasswordRequired");
       } else if (formData.password !== formData.confirmPassword) {
@@ -108,19 +125,60 @@ export default function Authentication() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const getFirebaseErrorMessage = (error: FirebaseError): string => {
+    switch (error.code) {
+      case "auth/email-already-in-use":
+        return t("auth.errors.emailAlreadyInUse");
+      case "auth/invalid-email":
+        return t("auth.errors.emailInvalid");
+      case "auth/operation-not-allowed":
+        return t("auth.errors.operationNotAllowed");
+      case "auth/weak-password":
+        return t("auth.errors.passwordRequirements");
+      case "auth/user-disabled":
+        return t("auth.errors.userDisabled");
+      case "auth/user-not-found":
+        return t("auth.errors.userNotFound");
+      case "auth/wrong-password":
+        return t("auth.errors.wrongPassword");
+      case "auth/invalid-credential":
+        return t("auth.errors.invalidCredential");
+      case "auth/too-many-requests":
+        return t("auth.errors.tooManyRequests");
+      case "auth/network-request-failed":
+        return t("auth.errors.networkError");
+      default:
+        return error.message || t("auth.errors.authenticationFailed");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Clear previous errors
+    setErrors({});
+
+    // Validate form including password confirmation
     if (!validateForm()) {
       return;
     }
 
     setIsFormSubmitting(true);
-    setErrors({});
 
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, formData.email, formData.password);
       } else {
+        // Double-check password confirmation before creating account
+        if (formData.password !== formData.confirmPassword) {
+          setErrors({
+            confirmPassword: t("auth.errors.passwordsDoNotMatch"),
+            general: t("auth.errors.passwordsDoNotMatch")
+          });
+          setIsFormSubmitting(false);
+          return;
+        }
+
         const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
         if (formData.name) {
           await updateProfile(userCredential.user, { displayName: formData.name });
@@ -130,7 +188,7 @@ export default function Authentication() {
     } catch (error) {
       console.error("Email/password authentication error:", error);
       if (error instanceof FirebaseError) {
-        setErrors({ general: error.message || t("auth.errors.authenticationFailed") });
+        setErrors({ general: getFirebaseErrorMessage(error) });
       } else if (error instanceof Error) {
         setErrors({ general: error.message });
       } else {
@@ -170,16 +228,16 @@ export default function Authentication() {
 
       if (error instanceof FirebaseError) {
         if (error.code === "auth/popup-closed-by-user") {
-          setErrors({ general: "Sign-in was cancelled" });
+          setErrors({ general: t("auth.errors.signInCancelled") });
           return;
         }
 
         if (error.code === "auth/popup-blocked") {
-          setErrors({ general: "Popup was blocked. Using redirect instead..." });
+          setErrors({ general: t("auth.errors.popupBlocked") });
           return;
         }
 
-        setErrors({ general: error.message || "Failed to sign in with Google" });
+        setErrors({ general: getFirebaseErrorMessage(error) });
         return;
       }
 
@@ -188,7 +246,7 @@ export default function Authentication() {
         return;
       }
 
-      setErrors({ general: "Failed to sign in with Google" });
+      setErrors({ general: t("auth.errors.googleSignInFailed") });
     } finally {
       setIsGoogleLoading(false);
     }
@@ -269,8 +327,10 @@ export default function Authentication() {
           <form onSubmit={handleSubmit} noValidate className="space-y-5 relative">
             {/* Error Message - Absolute positioned */}
             {errors.general && (
-              <div className="absolute -top-6 left-0 right-0 h-4 animate-in fade-in duration-200 z-20">
-                <p className="pt-0.5 text-xs text-red-500 font-light">{errors.general}</p>
+              <div className="absolute -top-7 left-0 right-0 animate-in fade-in duration-200 z-20">
+                <div className="p-3 rounded-xl bg-red-50 border border-red-200">
+                  <p className="text-xs text-red-600 font-light">{errors.general}</p>
+                </div>
               </div>
             )}
             {!isLogin && (
@@ -449,6 +509,7 @@ export default function Authentication() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
+                  onBlur={handleConfirmPasswordBlur}
                   className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.confirmPassword
                     ? "border-red-400 focus:border-red-500"
                     : "border-gray-200 focus:border-gray-300"
@@ -534,12 +595,6 @@ export default function Authentication() {
             </div>
           </div>
 
-          {/* Error Message */}
-          {errors.general && (
-            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
-              <p className="text-xs text-red-600">{errors.general}</p>
-            </div>
-          )}
 
           {/* Social Login */}
           <div className="flex flex-col">

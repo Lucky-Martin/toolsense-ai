@@ -25,7 +25,18 @@
         "nameRequired": "Name is required",
         "confirmPasswordRequired": "Please confirm your password",
         "passwordsDoNotMatch": "Passwords do not match",
-        "authenticationFailed": "Authentication failed"
+        "authenticationFailed": "Authentication failed",
+        "emailAlreadyInUse": "This email is already registered",
+        "userNotFound": "No account found with this email",
+        "wrongPassword": "Incorrect password",
+        "invalidCredential": "Invalid email or password",
+        "userDisabled": "This account has been disabled",
+        "operationNotAllowed": "This operation is not allowed",
+        "tooManyRequests": "Too many attempts. Please try again later",
+        "networkError": "Network error. Please check your connection",
+        "signInCancelled": "Sign-in was cancelled",
+        "popupBlocked": "Popup was blocked. Please allow popups and try again",
+        "googleSignInFailed": "Failed to sign in with Google"
       },
       "passwordRequirements": {
         "minLength": "At least 6 characters",
@@ -103,7 +114,18 @@
         "nameRequired": "需要姓名",
         "confirmPasswordRequired": "请确认您的密码",
         "passwordsDoNotMatch": "密码不匹配",
-        "authenticationFailed": "身份验证失败"
+        "authenticationFailed": "身份验证失败",
+        "emailAlreadyInUse": "此电子邮件已被注册",
+        "userNotFound": "未找到使用此电子邮件的账户",
+        "wrongPassword": "密码错误",
+        "invalidCredential": "电子邮件或密码无效",
+        "userDisabled": "此账户已被禁用",
+        "operationNotAllowed": "不允许此操作",
+        "tooManyRequests": "尝试次数过多，请稍后再试",
+        "networkError": "网络错误，请检查您的连接",
+        "signInCancelled": "登录已取消",
+        "popupBlocked": "弹出窗口被阻止，请允许弹出窗口并重试",
+        "googleSignInFailed": "使用Google登录失败"
       },
       "passwordRequirements": {
         "minLength": "至少6个字符",
@@ -181,7 +203,18 @@
         "nameRequired": "El nombre es obligatorio",
         "confirmPasswordRequired": "Por favor confirma tu contraseña",
         "passwordsDoNotMatch": "Las contraseñas no coinciden",
-        "authenticationFailed": "Error de autenticación"
+        "authenticationFailed": "Error de autenticación",
+        "emailAlreadyInUse": "Este correo electrónico ya está registrado",
+        "userNotFound": "No se encontró ninguna cuenta con este correo electrónico",
+        "wrongPassword": "Contraseña incorrecta",
+        "invalidCredential": "Correo electrónico o contraseña inválidos",
+        "userDisabled": "Esta cuenta ha sido deshabilitada",
+        "operationNotAllowed": "Esta operación no está permitida",
+        "tooManyRequests": "Demasiados intentos. Por favor, inténtalo de nuevo más tarde",
+        "networkError": "Error de red. Por favor, verifica tu conexión",
+        "signInCancelled": "El inicio de sesión fue cancelado",
+        "popupBlocked": "La ventana emergente fue bloqueada. Por favor, permite ventanas emergentes e inténtalo de nuevo",
+        "googleSignInFailed": "Error al iniciar sesión con Google"
       },
       "passwordRequirements": {
         "minLength": "Al menos 6 caracteres",
@@ -259,7 +292,18 @@
         "nameRequired": "Nimi on pakollinen",
         "confirmPasswordRequired": "Vahvista salasanasi",
         "passwordsDoNotMatch": "Salasanat eivät täsmää",
-        "authenticationFailed": "Tunnistautuminen epäonnistui"
+        "authenticationFailed": "Tunnistautuminen epäonnistui",
+        "emailAlreadyInUse": "Tämä sähköposti on jo rekisteröity",
+        "userNotFound": "Tällä sähköpostilla ei löytynyt tiliä",
+        "wrongPassword": "Väärä salasana",
+        "invalidCredential": "Virheellinen sähköposti tai salasana",
+        "userDisabled": "Tämä tili on poistettu käytöstä",
+        "operationNotAllowed": "Tämä toiminto ei ole sallittu",
+        "tooManyRequests": "Liian monta yritystä. Yritä myöhemmin uudelleen",
+        "networkError": "Verkkovirhe. Tarkista yhteytesi",
+        "signInCancelled": "Kirjautuminen peruutettiin",
+        "popupBlocked": "Ponnahdusikkuna estettiin. Salli ponnahdusikkunat ja yritä uudelleen",
+        "googleSignInFailed": "Google-kirjautuminen epäonnistui"
       },
       "passwordRequirements": {
         "minLength": "Vähintään 6 merkkiä",
@@ -337,7 +381,18 @@
         "nameRequired": "Name ist erforderlich",
         "confirmPasswordRequired": "Bitte bestätigen Sie Ihr Passwort",
         "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
-        "authenticationFailed": "Authentifizierung fehlgeschlagen"
+        "authenticationFailed": "Authentifizierung fehlgeschlagen",
+        "emailAlreadyInUse": "Diese E-Mail ist bereits registriert",
+        "userNotFound": "Kein Konto mit dieser E-Mail gefunden",
+        "wrongPassword": "Falsches Passwort",
+        "invalidCredential": "Ungültige E-Mail oder Passwort",
+        "userDisabled": "Dieses Konto wurde deaktiviert",
+        "operationNotAllowed": "Diese Operation ist nicht erlaubt",
+        "tooManyRequests": "Zu viele Versuche. Bitte versuchen Sie es später erneut",
+        "networkError": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung",
+        "signInCancelled": "Anmeldung wurde abgebrochen",
+        "popupBlocked": "Popup wurde blockiert. Bitte erlauben Sie Popups und versuchen Sie es erneut",
+        "googleSignInFailed": "Google-Anmeldung fehlgeschlagen"
       },
       "passwordRequirements": {
         "minLength": "Mindestens 6 Zeichen",
@@ -415,7 +470,18 @@
         "nameRequired": "Le nom est requis",
         "confirmPasswordRequired": "Veuillez confirmer votre mot de passe",
         "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
-        "authenticationFailed": "Échec de l'authentification"
+        "authenticationFailed": "Échec de l'authentification",
+        "emailAlreadyInUse": "Cet e-mail est déjà enregistré",
+        "userNotFound": "Aucun compte trouvé avec cet e-mail",
+        "wrongPassword": "Mot de passe incorrect",
+        "invalidCredential": "E-mail ou mot de passe invalide",
+        "userDisabled": "Ce compte a été désactivé",
+        "operationNotAllowed": "Cette opération n'est pas autorisée",
+        "tooManyRequests": "Trop de tentatives. Veuillez réessayer plus tard",
+        "networkError": "Erreur réseau. Veuillez vérifier votre connexion",
+        "signInCancelled": "La connexion a été annulée",
+        "popupBlocked": "La fenêtre contextuelle a été bloquée. Veuillez autoriser les fenêtres contextuelles et réessayer",
+        "googleSignInFailed": "Échec de la connexion avec Google"
       },
       "passwordRequirements": {
         "minLength": "Au moins 6 caractères",
@@ -493,7 +559,18 @@
         "nameRequired": "Требуется имя",
         "confirmPasswordRequired": "Пожалуйста, подтвердите ваш пароль",
         "passwordsDoNotMatch": "Пароли не совпадают",
-        "authenticationFailed": "Ошибка аутентификации"
+        "authenticationFailed": "Ошибка аутентификации",
+        "emailAlreadyInUse": "Этот адрес электронной почты уже зарегистрирован",
+        "userNotFound": "Аккаунт с этим адресом электронной почты не найден",
+        "wrongPassword": "Неверный пароль",
+        "invalidCredential": "Неверный адрес электронной почты или пароль",
+        "userDisabled": "Этот аккаунт был отключен",
+        "operationNotAllowed": "Эта операция не разрешена",
+        "tooManyRequests": "Слишком много попыток. Пожалуйста, попробуйте позже",
+        "networkError": "Ошибка сети. Пожалуйста, проверьте ваше подключение",
+        "signInCancelled": "Вход был отменен",
+        "popupBlocked": "Всплывающее окно было заблокировано. Пожалуйста, разрешите всплывающие окна и попробуйте снова",
+        "googleSignInFailed": "Не удалось войти через Google"
       },
       "passwordRequirements": {
         "minLength": "Не менее 6 символов",

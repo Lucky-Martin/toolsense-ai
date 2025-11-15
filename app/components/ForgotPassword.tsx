@@ -3,7 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 import { useTranslation } from "@/app/contexts/TranslationContext";
+import { auth } from "@/app/lib/firebase";
 import Navbar from "./Navbar";
 
 export default function ForgotPassword() {
@@ -27,6 +30,21 @@ export default function ForgotPassword() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const getFirebaseErrorMessage = (error: FirebaseError): string => {
+    switch (error.code) {
+      case "auth/user-not-found":
+        return t("auth.errors.userNotFound");
+      case "auth/invalid-email":
+        return t("auth.errors.emailInvalid");
+      case "auth/too-many-requests":
+        return t("auth.errors.tooManyRequests");
+      case "auth/network-request-failed":
+        return t("auth.errors.networkError");
+      default:
+        return t("auth.forgotPasswordPage.failedToSend");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -35,24 +53,26 @@ export default function ForgotPassword() {
     }
 
     setIsLoading(true);
+    setErrors({});
 
     try {
-      // TODO: Implement API call to send password reset email
-      // const response = await fetch("/api/auth/forgot-password", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ email }),
-      // });
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
+      await sendPasswordResetEmail(auth, email);
       setIsSubmitted(true);
     } catch (error) {
       console.error("Failed to send reset email:", error);
-      setErrors({
-        general: t("auth.forgotPasswordPage.failedToSend"),
-      });
+      if (error instanceof FirebaseError) {
+        setErrors({
+          general: getFirebaseErrorMessage(error),
+        });
+      } else if (error instanceof Error) {
+        setErrors({
+          general: error.message || t("auth.forgotPasswordPage.failedToSend"),
+        });
+      } else {
+        setErrors({
+          general: t("auth.forgotPasswordPage.failedToSend"),
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -128,8 +148,10 @@ export default function ForgotPassword() {
             <form onSubmit={handleSubmit} noValidate className="space-y-5 relative">
               {/* Error Message - Absolute positioned */}
               {errors.general && (
-                <div className="absolute -top-6 left-0 right-0 h-4 animate-in fade-in duration-200 z-20">
-                  <p className="pt-0.5 text-xs text-red-500 font-light">{errors.general}</p>
+                <div className="absolute -top-7 left-0 right-0 animate-in fade-in duration-200 z-20">
+                  <div className="p-3 rounded-xl bg-red-50 border border-red-200">
+                    <p className="text-xs text-red-600 font-light">{errors.general}</p>
+                  </div>
                 </div>
               )}
 

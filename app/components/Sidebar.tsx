@@ -19,39 +19,39 @@ export default function Sidebar({
 }: SidebarProps) {
   const { t } = useTranslation();
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
 
   // Helper function to format conversation title
   const formatTitle = (title: string, conversation: Conversation): string => {
     // Check if title already has "Report for" prefix (in various languages)
     const hasPrefix = title.includes("Report for") ||
-                     title.includes("报告：") ||
-                     title.includes("Informe para") ||
-                     title.includes("Rapport pour") ||
-                     title.includes("Rapport per") ||
-                     title.includes("Rapport voor") ||
-                     title.includes("Rapport för") ||
-                     title.includes("Rapport pentru") ||
-                     title.includes("Bericht für") ||
-                     title.includes("Отчет для") ||
-                     title.includes("Звіт для") ||
-                     title.includes("レポート：") ||
-                     title.includes("보고서:") ||
-                     title.includes("Rapporto per") ||
-                     title.includes("Raport dla") ||
-                     title.includes("Raport:") ||
-                     title.includes("รายงานสำหรับ") ||
-                     title.includes("Laporan untuk") ||
-                     title.includes("Laporan kanggo") ||
-                     title.includes("Báo cáo cho") ||
-                     title.includes("रिपोर्ट:") ||
-                     title.includes("রিপোর্ট:") ||
-                     title.includes("ਰਿਪੋਰਟ:") ||
-                     title.includes("రిపోర్ట్:") ||
-                     title.includes("Raportti:") ||
-                     title.includes("Jelentés:") ||
-                     title.includes("Zpráva pro") ||
-                     title.includes("Αναφορά για");
+      title.includes("报告：") ||
+      title.includes("Informe para") ||
+      title.includes("Rapport pour") ||
+      title.includes("Rapport per") ||
+      title.includes("Rapport voor") ||
+      title.includes("Rapport för") ||
+      title.includes("Rapport pentru") ||
+      title.includes("Bericht für") ||
+      title.includes("Отчет для") ||
+      title.includes("Звіт для") ||
+      title.includes("レポート：") ||
+      title.includes("보고서:") ||
+      title.includes("Rapporto per") ||
+      title.includes("Raport dla") ||
+      title.includes("Raport:") ||
+      title.includes("รายงานสำหรับ") ||
+      title.includes("Laporan untuk") ||
+      title.includes("Laporan kanggo") ||
+      title.includes("Báo cáo cho") ||
+      title.includes("रिपोर्ट:") ||
+      title.includes("রিপোর্ট:") ||
+      title.includes("ਰਿਪੋਰਟ:") ||
+      title.includes("రిపోర్ట్:") ||
+      title.includes("Raportti:") ||
+      title.includes("Jelentés:") ||
+      title.includes("Zpráva pro") ||
+      title.includes("Αναφορά για");
 
     if (hasPrefix) {
       return title;
@@ -79,8 +79,8 @@ export default function Sidebar({
 
     // Restore collapsed state from localStorage (client-side only)
     const saved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
-    if (saved === "true") {
-      setIsCollapsed(true);
+    if (saved === "false") {
+      setIsCollapsed(false);
     }
 
     loadConversations();
@@ -90,7 +90,7 @@ export default function Sidebar({
       loadConversations();
       // Also sync collapsed state
       const newSaved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
-      setIsCollapsed(newSaved === "true");
+      setIsCollapsed(newSaved !== "false");
     };
 
     window.addEventListener("storage", handleStorageChange);
@@ -160,7 +160,7 @@ export default function Sidebar({
           )}
           <button
             onClick={toggleCollapse}
-            className="p-2 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
+            className="p-2 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0 cursor-pointer"
             aria-label={isCollapsed ? t("sidebar.expandSidebar") : t("sidebar.collapseSidebar")}
             title={isCollapsed ? t("sidebar.expandSidebar") : t("sidebar.collapseSidebar")}
           >
@@ -185,7 +185,7 @@ export default function Sidebar({
           <div className="p-4 border-b border-gray-200">
             <button
               onClick={onNewConversation}
-              className="w-full p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+              className="w-full p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 cursor-pointer"
               aria-label={t("sidebar.newConversation")}
             >
               <svg
@@ -240,7 +240,7 @@ export default function Sidebar({
                       </div>
                       <button
                         onClick={(e) => handleDeleteConversation(e, conversation.id)}
-                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-gray-200 transition-opacity"
+                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-gray-200 transition-opacity cursor-pointer"
                         aria-label={t("sidebar.deleteConversation")}
                       >
                         <svg

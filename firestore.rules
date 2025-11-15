@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user owns a document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // cachedResponses collection
+    // - All authenticated users can read cached responses (to reuse responses across users)
+    // - Write access is handled by Admin SDK (bypasses these rules) for security
+    // - Client-side writes are denied for security (only Admin SDK should write)
+    match /cachedResponses/{responseId} {
+      // Allow read if user is authenticated
+      // This enables the functionality where all users can access cached responses
+      // if they ask the same query
+      allow read: if isAuthenticated();
+
+      // Deny all client-side writes - only Admin SDK (server-side) can write
+      // Admin SDK bypasses security rules, so server operations will work
+      allow write: if false;
+    }
+
+    // users collection
+    // - Users can only read/write their own document
+    match /users/{userId} {
+      // Users can only read their own document
+      allow read: if isOwner(userId);
+
+      // Users can write to their own document
+      // Note: Admin SDK (server-side) bypasses these rules and can write to any user document
+      // This is intentional - the server needs to track which users accessed which cached responses
+      allow write: if isOwner(userId);
+    }
+
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

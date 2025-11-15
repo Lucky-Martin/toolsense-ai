@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { geminiService, ChatMessage } from "../../services/gemini";
+import { firebaseCacheService } from "../../services/firebaseCache";
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, history = [], languageId = "en" } = await request.json();
+    const { message, history = [], languageId = "en", userId } = await request.json();
 
     if (!message) {
       return NextResponse.json(
@@ -22,19 +23,56 @@ export async function POST(request: NextRequest) {
     // Normalize language code (default to "en" if not provided)
     const language = languageId || "en";
 
-    // Use the Gemini service to send the message with language
-    // Caching is now handled client-side using IndexedDB
-    const response = await geminiService.sendMessage(
-      message,
-      history as ChatMessage[],
-      language
-    );
+    // Check cache first (only for new queries, not follow-up questions)
+    const isNewQuery = history.length === 0;
+    let cachedResponse: string | null = null;
+    let fromCache = false;
+
+    if (isNewQuery) {
+      cachedResponse = await firebaseCacheService.get(message, language, userId);
+      if (cachedResponse) {
+        fromCache = true;
+      }
+    }
+
+    let responseData: { message: string; model: string };
+
+    if (fromCache && cachedResponse) {
+      // Use cached response
+      responseData = {
+        message: cachedResponse,
+        model: "gemini-2.5-pro", // Default model name for cached responses
+      };
+    } else {
+      // Use the Gemini service to send the message with language
+      const response = await geminiService.sendMessage(
+        message,
+        history as ChatMessage[],
+        language
+      );
+
+      responseData = {
+        message: response.message,
+        model: response.model,
+      };
+
+      // Cache the response if it's a new query
+      if (isNewQuery && responseData.message) {
+        await firebaseCacheService.set(
+          message,
+          responseData.message,
+          responseData.model,
+          language,
+          userId
+        );
+      }
+    }
 
     return NextResponse.json({
-      message: response.message,
-      model: response.model,
+      message: responseData.message,
+      model: responseData.model,
       success: true,
-      cached: false, // Cache is handled client-side, so API always returns false
+      cached: fromCache,
     });
   } catch (error) {
     console.error("Error calling Gemini API:", error);

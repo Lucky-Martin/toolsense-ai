@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import Editor from "@monaco-editor/react";
 import { useTranslation } from "@/app/contexts/TranslationContext";
+import { useAuth } from "@/app/contexts/AuthContext";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import { conversationService, Message } from "../services/conversations";
@@ -49,6 +50,7 @@ const LOADING_MESSAGES = [
 
 export default function Chatbot() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -217,6 +219,7 @@ export default function Chatbot() {
             message: currentInput,
             history: history,
             languageId: languageId,
+            userId: user?.uid || undefined,
           }),
         });
 
@@ -677,7 +680,7 @@ ${editContent.trim()}
               </div>
             ) : (
               <div className="w-full h-full overflow-y-auto">
-                <div className="max-w-3xl mx-auto py-8 px-4 pb-32 space-y-6">
+                <div className="max-w-3xl mx-auto py-8 px-4 pb-8 space-y-6">
                   {messages.map((message, index) => (
                     <div key={index} className="w-full">
                       <div

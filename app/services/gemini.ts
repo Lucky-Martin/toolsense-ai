@@ -215,6 +215,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
               systemInstruction: fullSystemInstruction,
             });
           } catch (flashError) {
+            console.warn("gemini-2.5-flash initialization failed:", flashError);
             // Fallback to gemini-1.5-pro if gemini-2.5-flash is not available
             console.warn("gemini-2.5-flash not available, trying gemini-1.5-pro");
             try {
@@ -223,6 +224,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
                 systemInstruction: fullSystemInstruction,
               });
             } catch (fallbackError) {
+              console.warn("gemini-1.5-pro initialization failed:", fallbackError);
               // Last resort: use gemini-pro
               console.warn("gemini-1.5-pro not available, trying gemini-pro");
               try {
@@ -231,6 +233,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
                   systemInstruction: fullSystemInstruction,
                 });
               } catch (finalError) {
+                console.warn("gemini-pro initialization with system instruction failed:", finalError);
                 // Final fallback: use gemini-pro without systemInstruction
                 console.warn("gemini-pro with systemInstruction not available, using gemini-pro without systemInstruction");
                 model = genAI.getGenerativeModel({
@@ -252,6 +255,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
               systemInstruction: fullSystemInstruction,
             });
           } catch (fallbackError) {
+            console.warn("gemini-1.5-pro initialization failed:", fallbackError);
             // Last resort: use gemini-pro
             console.warn("gemini-1.5-pro not available, trying gemini-pro");
             try {
@@ -260,6 +264,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
                 systemInstruction: fullSystemInstruction,
               });
             } catch (finalError) {
+              console.warn("gemini-pro initialization with system instruction failed:", finalError);
               // Final fallback: use gemini-pro without systemInstruction
               console.warn("gemini-pro with systemInstruction not available, using gemini-pro without systemInstruction");
               model = genAI.getGenerativeModel({
@@ -340,6 +345,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
               systemInstruction: fullSystemInstruction,
             });
           } catch (flashError) {
+            console.warn("gemini-2.5-flash initialization failed:", flashError);
             // Fallback to gemini-1.5-pro if gemini-2.5-flash is not available
             console.warn("gemini-2.5-flash not available, trying gemini-1.5-pro");
             try {
@@ -348,6 +354,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
                 systemInstruction: fullSystemInstruction,
               });
             } catch (fallbackError) {
+              console.warn("gemini-1.5-pro initialization failed:", fallbackError);
               // Last resort: use gemini-pro
               console.warn("gemini-1.5-pro not available, trying gemini-pro");
               try {
@@ -356,6 +363,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
                   systemInstruction: fullSystemInstruction,
                 });
               } catch (finalError) {
+                console.warn("gemini-pro initialization with system instruction failed:", finalError);
                 model = genAI.getGenerativeModel({
                   model: "gemini-pro",
                 });
@@ -374,6 +382,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
               systemInstruction: fullSystemInstruction,
             });
           } catch (fallbackError) {
+            console.warn("gemini-1.5-pro initialization failed:", fallbackError);
             // Last resort: use gemini-pro
             console.warn("gemini-1.5-pro not available, trying gemini-pro");
             try {
@@ -382,6 +391,7 @@ Your response must be comprehensive, well-sourced, and decision-ready for CISOs.
                 systemInstruction: fullSystemInstruction,
               });
             } catch (finalError) {
+              console.warn("gemini-pro initialization with system instruction failed:", finalError);
               model = genAI.getGenerativeModel({
                 model: "gemini-pro",
               });

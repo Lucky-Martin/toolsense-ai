@@ -21,6 +21,19 @@ export default function Sidebar({
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const saved = window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
+    if (saved !== null) {
+      const nextCollapsed = saved !== "false";
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs localStorage with initial client render to avoid hydration mismatch
+      setIsCollapsed(nextCollapsed);
+    }
+  }, []);
+
   // Helper function to format conversation title
   const formatTitle = (title: string, conversation: Conversation): string => {
     // Check if title already has "Report for" prefix (in various languages)
@@ -70,18 +83,16 @@ export default function Sidebar({
     return `${t("chatbot.reportFor")} ${queryName}`;
   };
 
-  // Load conversations from storage and restore collapsed state
+  // Load conversations from storage and keep them in sync
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     const loadConversations = () => {
       const loaded = conversationService.getAllConversations();
       setConversations(loaded);
     };
-
-    // Restore collapsed state from localStorage (client-side only)
-    const saved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
-    if (saved === "false") {
-      setIsCollapsed(false);
-    }
 
     loadConversations();
 

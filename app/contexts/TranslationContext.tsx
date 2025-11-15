@@ -1,9 +1,10 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import translations from "@/lib/translations";
 
 type LanguageCode = keyof typeof translations;
+type TranslationValue = string | Record<string, TranslationValue>;
 
 interface TranslationContextType {
     language: LanguageCode;
@@ -19,45 +20,55 @@ const TranslationContext = createContext<TranslationContextType>({
 
 export const useTranslation = () => useContext(TranslationContext);
 
-export function TranslationProvider({ children }: { children: ReactNode }) {
-    const [language, setLanguageState] = useState<LanguageCode>("en");
+const getInitialLanguage = (): LanguageCode => {
+    if (typeof window === "undefined") {
+        return "en";
+    }
 
-    useEffect(() => {
-        // Load language from localStorage
-        const storedLanguage = localStorage.getItem("languageId") as LanguageCode | null;
-        if (storedLanguage && translations[storedLanguage]) {
-            setLanguageState(storedLanguage);
+    const storedLanguage = window.localStorage.getItem("languageId") as LanguageCode | null;
+    if (storedLanguage && translations[storedLanguage]) {
+        return storedLanguage;
+    }
+
+    return "en";
+};
+
+const getNestedValue = (
+    obj: TranslationValue | undefined,
+    keys: string[]
+): string | null => {
+    let value: TranslationValue | undefined = obj;
+
+    for (const key of keys) {
+        if (value && typeof value === "object" && key in value) {
+            value = (value as Record<string, TranslationValue>)[key];
+        } else {
+            return null;
         }
-    }, []);
+    }
+
+    return typeof value === "string" ? value : null;
+};
+
+export function TranslationProvider({ children }: { children: ReactNode }) {
+    const [language, setLanguageState] = useState<LanguageCode>(() => getInitialLanguage());
 
     const setLanguage = (lang: LanguageCode) => {
         setLanguageState(lang);
-        localStorage.setItem("languageId", lang);
+        if (typeof window !== "undefined") {
+            localStorage.setItem("languageId", lang);
+        }
     };
 
     const t = (key: string): string => {
         const keys = key.split(".");
-        let value: any = translations[language] || translations.en;
-
-        // Try to get value from current language
-        for (const k of keys) {
-            if (value && typeof value === "object" && k in value) {
-                value = value[k];
-            } else {
-                // Fallback to English if translation not found
-                value = translations.en;
-                for (const fallbackKey of keys) {
-                    if (value && typeof value === "object" && fallbackKey in value) {
-                        value = value[fallbackKey];
-                    } else {
-                        return key; // Return key if translation not found
-                    }
-                }
-                return typeof value === "string" ? value : key;
-            }
+        const currentLanguageValue = getNestedValue(translations[language] || translations.en, keys);
+        if (currentLanguageValue !== null) {
+            return currentLanguageValue;
         }
 
-        return typeof value === "string" ? value : key;
+        const fallbackValue = getNestedValue(translations.en, keys);
+        return fallbackValue ?? key;
     };
 
     return (

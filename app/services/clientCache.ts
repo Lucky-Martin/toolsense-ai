@@ -121,7 +121,7 @@ class ClientCacheService {
       const normalizedQuery = this.normalizeQuery(query);
       const cacheKey = this.getCacheKey(query, language);
 
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const transaction = this.db!.transaction([STORE_NAME], "readonly");
         const store = transaction.objectStore(STORE_NAME);
         const index = store.index("normalizedQuery");

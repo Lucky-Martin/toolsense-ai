@@ -54,7 +54,6 @@ export default function Chatbot() {
   const [currentLoadingMessage, setCurrentLoadingMessage] = useState("");
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [hasUserMessage, setHasUserMessage] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -88,7 +87,6 @@ export default function Chatbot() {
     setMessages([]);
     setCurrentConversationId(null);
     setHasUserMessage(false);
-    setIsEditing(false);
     inputRef.current?.focus();
   };
 
@@ -99,7 +97,6 @@ export default function Chatbot() {
       setMessages(conversation.messages);
       setCurrentConversationId(conversationId);
       setHasUserMessage(conversation.messages.some(msg => msg.role === "user"));
-      setIsEditing(false);
       inputRef.current?.focus();
     }
   };
@@ -344,14 +341,17 @@ ${lastAssistantMessage.content}
         });
         return; // Successfully shared, exit early
       }
-    } catch (error: any) {
-      // If sharing is cancelled (user cancelled), don't try clipboard
-      if (error.name === "AbortError") {
+    } catch (error: unknown) {
+      if (error instanceof DOMException && error.name === "AbortError") {
         console.log("Share cancelled by user");
         return;
       }
-      // For other errors, fall through to clipboard fallback
-      console.log("Web Share API failed, trying clipboard fallback:", error.message);
+
+      if (error instanceof Error) {
+        console.log("Web Share API failed, trying clipboard fallback:", error.message);
+      } else {
+        console.log("Web Share API failed, trying clipboard fallback");
+      }
     }
 
     // Fallback: copy to clipboard
@@ -370,7 +370,7 @@ ${lastAssistantMessage.content}
 
       await navigator.clipboard.writeText(conversationText);
       alert(t("chatbot.copiedToClipboard"));
-    } catch (clipboardError: any) {
+    } catch (clipboardError: unknown) {
       // Log the error but don't crash the app
       console.error("Failed to copy to clipboard:", clipboardError);
 
@@ -416,7 +416,6 @@ ${lastAssistantMessage.content}
     if (lastUserIndex !== -1) {
       const lastUserMessage = messages[lastUserIndex];
       setInput(lastUserMessage.content);
-      setIsEditing(true);
       // Remove the last user message and assistant response
       const newMessages = messages.slice(0, lastUserIndex);
       setMessages(newMessages);
@@ -592,6 +591,27 @@ ${lastAssistantMessage.content}
               {hasAssistantResponse ? (
                 // Show buttons when there's an assistant response
                 <div className="flex items-center justify-center gap-4">
+              <button
+                type="button"
+                onClick={handleDownload}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                title={t("chatbot.downloadReport")}
+              >
+                <span className="text-sm font-medium">{t("chatbot.downloadReport")}</span>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M8 12l4 4m0 0l4-4m-4 4V4"
+                  />
+                </svg>
+              </button>
                   <button
                     type="button"
                     onClick={handleShare}

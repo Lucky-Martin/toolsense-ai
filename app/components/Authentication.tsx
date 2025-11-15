@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signInWithPopup, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 import { auth } from "@/lib/firebase";
 import Navbar from "./Navbar";
@@ -42,7 +43,7 @@ export default function Authentication() {
     if (error) {
       setErrors({ general: error });
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, t]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -116,11 +117,13 @@ export default function Authentication() {
 
       // Try popup first, fallback to redirect if blocked
       try {
-        const result = await signInWithPopup(auth, provider);
-        // User signed in successfully
+        await signInWithPopup(auth, provider);
         router.push("/chat");
-      } catch (popupError: any) {
-        if (popupError.code === "auth/popup-blocked" || popupError.code === "auth/popup-closed-by-user") {
+      } catch (popupError) {
+        if (
+          popupError instanceof FirebaseError &&
+          (popupError.code === "auth/popup-blocked" || popupError.code === "auth/popup-closed-by-user")
+        ) {
           // Fallback to redirect if popup is blocked
           await signInWithRedirect(auth, provider);
           // Note: signInWithRedirect will navigate away, so we don't need to handle the result here
@@ -129,18 +132,31 @@ export default function Authentication() {
           throw popupError;
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Google sign-in error:", error);
       setIsLoading(false);
 
-      if (error.code === "auth/popup-closed-by-user") {
-        setErrors({ general: "Sign-in was cancelled" });
-      } else if (error.code === "auth/popup-blocked") {
-        setErrors({ general: "Popup was blocked. Using redirect instead..." });
-        // Will be handled by redirect flow
-      } else {
+      if (error instanceof FirebaseError) {
+        if (error.code === "auth/popup-closed-by-user") {
+          setErrors({ general: "Sign-in was cancelled" });
+          return;
+        }
+
+        if (error.code === "auth/popup-blocked") {
+          setErrors({ general: "Popup was blocked. Using redirect instead..." });
+          return;
+        }
+
         setErrors({ general: error.message || "Failed to sign in with Google" });
+        return;
       }
+
+      if (error instanceof Error) {
+        setErrors({ general: error.message });
+        return;
+      }
+
+      setErrors({ general: "Failed to sign in with Google" });
     }
   };
 

@@ -29,7 +29,7 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateEmail()) {
       return;
     }
@@ -49,6 +49,7 @@ export default function ForgotPassword() {
 
       setIsSubmitted(true);
     } catch (error) {
+      console.error("Failed to send reset email:", error);
       setErrors({
         general: t("auth.forgotPasswordPage.failedToSend"),
       });

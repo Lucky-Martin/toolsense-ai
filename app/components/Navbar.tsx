@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 
 type LanguageCode = "en" | "zh" | "es" | "hi" | "ar" | "pt" | "bn" | "ru" | "ja" | "pa" | "de" | "jv" | "ko" | "fr" | "te" | "vi" | "it" | "tr" | "pl" | "uk" | "fi" | "th" | "nl" | "el" | "cs" | "sv" | "ro" | "hu" | "id" | "ms";
@@ -10,8 +11,6 @@ interface LanguageOption {
     name: string;
     flagUrl: string;
 }
-
-const STORAGE_KEY = "languageId";
 
 export default function Navbar() {
     const { language, setLanguage, t } = useTranslation();
@@ -104,9 +103,11 @@ export default function Navbar() {
                 style={{ outline: 'none', WebkitTapHighlightColor: 'transparent' }}
                 onMouseDown={(e) => e.preventDefault()}
             >
-                <img
+                <Image
                     src={getCurrentLanguage().flagUrl}
                     alt={getCurrentLanguage().name}
+                    width={20}
+                    height={16}
                     className="w-5 h-4 object-cover rounded-sm"
                 />
                 <span className="font-medium">{getCurrentLanguage().name}</span>
@@ -172,9 +173,11 @@ export default function Navbar() {
                                     style={{ outline: 'none', WebkitTapHighlightColor: 'transparent' }}
                                     onMouseDown={(e) => e.preventDefault()}
                                 >
-                                    <img
+                                    <Image
                                         src={language.flagUrl}
                                         alt={language.name}
+                                        width={16}
+                                        height={12}
                                         className="w-4 h-3 object-cover rounded-sm"
                                     />
                                     <span className="font-medium">{language.name}</span>

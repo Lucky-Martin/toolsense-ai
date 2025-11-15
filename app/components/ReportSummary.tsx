@@ -58,7 +58,7 @@ export default function ReportSummary({ parsedResponse, isCached }: ReportSummar
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          Cached Response
+          Cached Response - <span className="text-[#006994] flex items-center gap-1"><svg className="w-3 h-3 rotate-180" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69c-3.37 0-6 2.63-6 6 0 3.37 6 10.31 6 10.31s6-6.94 6-10.31c0-3.37-2.63-6-6-6z" /></svg>20ml of water saved</span>
         </div>
       )}
 
@@ -166,12 +166,11 @@ export default function ReportSummary({ parsedResponse, isCached }: ReportSummar
                   {rationale}
                 </ReactMarkdown>
                 <div
-                  className={`absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t pointer-events-none ${
-                    score !== null && score >= 80 ? "from-green-50" :
-                    score !== null && score >= 60 ? "from-yellow-50" :
-                    score !== null && score >= 40 ? "from-orange-50" :
-                    score !== null ? "from-red-50" : "from-gray-100"
-                  } to-transparent`}
+                  className={`absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t pointer-events-none ${score !== null && score >= 80 ? "from-green-50" :
+                      score !== null && score >= 60 ? "from-yellow-50" :
+                        score !== null && score >= 40 ? "from-orange-50" :
+                          score !== null ? "from-red-50" : "from-gray-100"
+                    } to-transparent`}
                 />
               </div>
             </div>
@@ -274,12 +273,11 @@ export default function ReportSummary({ parsedResponse, isCached }: ReportSummar
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
                             <div
-                              className={`h-2 rounded-full ${
-                                score !== null && score >= 80 ? "bg-green-200" :
-                                score !== null && score >= 60 ? "bg-yellow-200" :
-                                score !== null && score >= 40 ? "bg-orange-200" :
-                                score !== null ? "bg-red-200" : "bg-gray-200"
-                              }`}
+                              className={`h-2 rounded-full ${score !== null && score >= 80 ? "bg-green-200" :
+                                  score !== null && score >= 60 ? "bg-yellow-200" :
+                                    score !== null && score >= 40 ? "bg-orange-200" :
+                                      score !== null ? "bg-red-200" : "bg-gray-200"
+                                }`}
                               style={{ width: `${source.percentage}%` }}
                             />
                           </div>

@@ -332,7 +332,7 @@ export default function Chatbot() {
         // Check if userMessage is already the last message to avoid duplicates
         const lastMessage = existingMessages[existingMessages.length - 1];
         const userMessageExists = lastMessage?.role === "user" &&
-                                  lastMessage?.content === userMessage.content;
+          lastMessage?.content === userMessage.content;
         const updatedMessages = userMessageExists
           ? [...existingMessages, assistantMessage]
           : [...existingMessages, userMessage, assistantMessage];
@@ -377,7 +377,7 @@ export default function Chatbot() {
         // Check if userMessage is already the last message to avoid duplicates
         const lastMessage = existingMessages[existingMessages.length - 1];
         const userMessageExists = lastMessage?.role === "user" &&
-                                  lastMessage?.content === userMessage.content;
+          lastMessage?.content === userMessage.content;
         const updatedMessages = userMessageExists
           ? [...existingMessages, errorMessage]
           : [...existingMessages, userMessage, errorMessage];
@@ -1264,7 +1264,7 @@ ${editContent.trim()}
                                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                   </svg>
-                                  {t("chatbot.cachedResponse")}
+                                  {t("chatbot.cachedResponse")} - <span className="text-[#006994] flex items-center gap-1"><svg className="w-3 h-3 rotate-180" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69c-3.37 0-6 2.63-6 6 0 3.37 6 10.31 6 10.31s6-6.94 6-10.31c0-3.37-2.63-6-6-6z" /></svg>20ml of water saved</span>
                                 </div>
                               )}
                               <ReactMarkdown

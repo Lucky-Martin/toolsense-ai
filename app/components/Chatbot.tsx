@@ -89,6 +89,35 @@ export default function Chatbot() {
     scrollToBottom();
   }, [messages]);
 
+  // Prevent body scroll when edit dialog is open
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (showEditDialog) {
+      // Save the current overflow values
+      const originalBodyOverflow = document.body.style.overflow || "";
+      const originalHtmlOverflow = document.documentElement.style.overflow || "";
+      const originalBodyPosition = document.body.style.position || "";
+
+      // Set overflow hidden on both body and html for better mobile support
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      // Prevent scroll on iOS Safari
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+
+      return () => {
+        // Restore original overflow values when dialog closes
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.style.overflow = originalHtmlOverflow;
+        document.body.style.position = originalBodyPosition;
+        document.body.style.width = "";
+      };
+    }
+  }, [showEditDialog]);
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -1579,7 +1608,7 @@ ${editContent.trim()}
 
       {/* Edit Dialog with Text Editor */}
       {showEditDialog && (
-        <div className="fixed inset-0 flex lg:items-center lg:justify-center items-start justify-start" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000 }}>
+        <div className="fixed inset-0 flex lg:items-center lg:justify-center items-start justify-start" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000, overflow: 'hidden' }}>
           <div className="bg-white rounded-lg lg:rounded-lg rounded-none shadow-xl max-w-4xl w-full lg:mx-4 mx-0 border border-gray-200 flex flex-col h-screen lg:h-[80vh]">
             <div className="p-6 border-b border-gray-200 flex items-center justify-between">
               <h3 className="text-lg font-light text-gray-900">

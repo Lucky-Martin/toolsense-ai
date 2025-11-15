@@ -44,36 +44,36 @@ export default function Sidebar({
   }
 
   const languages: LanguageOption[] = [
-    { code: "en", name: "English", flagUrl: "https://flagcdn.com/w20/gb.png" },
-    { code: "zh", name: "Chinese", flagUrl: "https://flagcdn.com/w20/cn.png" },
-    { code: "es", name: "Spanish", flagUrl: "https://flagcdn.com/w20/es.png" },
-    { code: "hi", name: "Hindi", flagUrl: "https://flagcdn.com/w20/in.png" },
-    { code: "ar", name: "Arabic", flagUrl: "https://flagcdn.com/w20/sa.png" },
-    { code: "pt", name: "Portuguese", flagUrl: "https://flagcdn.com/w20/pt.png" },
-    { code: "bn", name: "Bengali", flagUrl: "https://flagcdn.com/w20/bd.png" },
-    { code: "ru", name: "Russian", flagUrl: "https://flagcdn.com/w20/ru.png" },
-    { code: "ja", name: "Japanese", flagUrl: "https://flagcdn.com/w20/jp.png" },
-    { code: "pa", name: "Punjabi", flagUrl: "https://flagcdn.com/w20/in.png" },
-    { code: "de", name: "German", flagUrl: "https://flagcdn.com/w20/de.png" },
-    { code: "jv", name: "Javanese", flagUrl: "https://flagcdn.com/w20/id.png" },
-    { code: "ko", name: "Korean", flagUrl: "https://flagcdn.com/w20/kr.png" },
-    { code: "fr", name: "French", flagUrl: "https://flagcdn.com/w20/fr.png" },
-    { code: "te", name: "Telugu", flagUrl: "https://flagcdn.com/w20/in.png" },
-    { code: "vi", name: "Vietnamese", flagUrl: "https://flagcdn.com/w20/vn.png" },
-    { code: "it", name: "Italian", flagUrl: "https://flagcdn.com/w20/it.png" },
-    { code: "tr", name: "Turkish", flagUrl: "https://flagcdn.com/w20/tr.png" },
-    { code: "pl", name: "Polish", flagUrl: "https://flagcdn.com/w20/pl.png" },
-    { code: "uk", name: "Ukrainian", flagUrl: "https://flagcdn.com/w20/ua.png" },
-    { code: "fi", name: "Finnish", flagUrl: "https://flagcdn.com/w20/fi.png" },
-    { code: "th", name: "Thai", flagUrl: "https://flagcdn.com/w20/th.png" },
-    { code: "nl", name: "Dutch", flagUrl: "https://flagcdn.com/w20/nl.png" },
-    { code: "el", name: "Greek", flagUrl: "https://flagcdn.com/w20/gr.png" },
-    { code: "cs", name: "Czech", flagUrl: "https://flagcdn.com/w20/cz.png" },
-    { code: "sv", name: "Swedish", flagUrl: "https://flagcdn.com/w20/se.png" },
-    { code: "ro", name: "Romanian", flagUrl: "https://flagcdn.com/w20/ro.png" },
-    { code: "hu", name: "Hungarian", flagUrl: "https://flagcdn.com/w20/hu.png" },
-    { code: "id", name: "Indonesian", flagUrl: "https://flagcdn.com/w20/id.png" },
-    { code: "ms", name: "Malay", flagUrl: "https://flagcdn.com/w20/my.png" },
+    { code: "en", name: "English", flagUrl: "/flags/gb.png" },
+    { code: "zh", name: "Chinese", flagUrl: "/flags/cn.png" },
+    { code: "es", name: "Spanish", flagUrl: "/flags/es.png" },
+    { code: "hi", name: "Hindi", flagUrl: "/flags/in.png" },
+    { code: "ar", name: "Arabic", flagUrl: "/flags/sa.png" },
+    { code: "pt", name: "Portuguese", flagUrl: "/flags/pt.png" },
+    { code: "bn", name: "Bengali", flagUrl: "/flags/bd.png" },
+    { code: "ru", name: "Russian", flagUrl: "/flags/ru.png" },
+    { code: "ja", name: "Japanese", flagUrl: "/flags/jp.png" },
+    { code: "pa", name: "Punjabi", flagUrl: "/flags/in.png" },
+    { code: "de", name: "German", flagUrl: "/flags/de.png" },
+    { code: "jv", name: "Javanese", flagUrl: "/flags/id.png" },
+    { code: "ko", name: "Korean", flagUrl: "/flags/kr.png" },
+    { code: "fr", name: "French", flagUrl: "/flags/fr.png" },
+    { code: "te", name: "Telugu", flagUrl: "/flags/in.png" },
+    { code: "vi", name: "Vietnamese", flagUrl: "/flags/vn.png" },
+    { code: "it", name: "Italian", flagUrl: "/flags/it.png" },
+    { code: "tr", name: "Turkish", flagUrl: "/flags/tr.png" },
+    { code: "pl", name: "Polish", flagUrl: "/flags/pl.png" },
+    { code: "uk", name: "Ukrainian", flagUrl: "/flags/ua.png" },
+    { code: "fi", name: "Finnish", flagUrl: "/flags/fi.png" },
+    { code: "th", name: "Thai", flagUrl: "/flags/th.png" },
+    { code: "nl", name: "Dutch", flagUrl: "/flags/nl.png" },
+    { code: "el", name: "Greek", flagUrl: "/flags/gr.png" },
+    { code: "cs", name: "Czech", flagUrl: "/flags/cz.png" },
+    { code: "sv", name: "Swedish", flagUrl: "/flags/se.png" },
+    { code: "ro", name: "Romanian", flagUrl: "/flags/ro.png" },
+    { code: "hu", name: "Hungarian", flagUrl: "/flags/hu.png" },
+    { code: "id", name: "Indonesian", flagUrl: "/flags/id.png" },
+    { code: "ms", name: "Malay", flagUrl: "/flags/my.png" },
   ];
 
   const getCurrentLanguage = () => {
@@ -132,6 +132,35 @@ export default function Sidebar({
       setLanguageSearchQuery("");
     }
   }, [isLanguageDropdownOpen]);
+
+  // Prevent body scroll when dialogs are open
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (showLogoutDialog || showDeleteDialog) {
+      // Save the current overflow values
+      const originalBodyOverflow = document.body.style.overflow || "";
+      const originalHtmlOverflow = document.documentElement.style.overflow || "";
+      const originalBodyPosition = document.body.style.position || "";
+
+      // Set overflow hidden on both body and html for better mobile support
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      // Prevent scroll on iOS Safari
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+
+      return () => {
+        // Restore original overflow values when dialog closes
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.style.overflow = originalHtmlOverflow;
+        document.body.style.position = originalBodyPosition;
+        document.body.style.width = "";
+      };
+    }
+  }, [showLogoutDialog, showDeleteDialog]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -563,7 +592,7 @@ export default function Sidebar({
 
       {/* Logout Confirmation Dialog */}
       {showLogoutDialog && (
-        <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000 }}>
+        <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000, overflow: 'hidden' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 border border-gray-200">
             <div className="p-6">
               <h3 className="text-lg font-light text-gray-900 mb-4">
@@ -590,7 +619,7 @@ export default function Sidebar({
 
       {/* Delete Conversation Confirmation Dialog */}
       {showDeleteDialog && (
-        <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000 }}>
+        <div className="fixed inset-0 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,.5)', zIndex: 1000, overflow: 'hidden' }}>
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 border border-gray-200">
             <div className="p-6">
               <h3 className="text-lg font-light text-gray-900 mb-4">

@@ -4,7 +4,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 import translations from "@/app/lib/translations";
 
 type LanguageCode = keyof typeof translations;
-type TranslationValue = string | Record<string, TranslationValue>;
+type TranslationValue = string | { [key: string]: TranslationValue };
 
 interface TranslationContextType {
     language: LanguageCode;

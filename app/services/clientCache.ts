@@ -108,6 +108,7 @@ class ClientCacheService {
 
   /**
    * Get cached response if available and not expired
+   * IMPORTANT: Cache is language-specific. Same query in different languages are separate entries.
    */
   async get(query: string, language: string = "en"): Promise<string | null> {
     if (typeof window === "undefined" || !window.indexedDB) {
@@ -118,35 +119,77 @@ class ClientCacheService {
       await this.initDB();
       if (!this.db) return null;
 
+      // Normalize language to ensure consistent matching
+      const normalizedLanguage = (language || "en").toLowerCase().trim();
       const normalizedQuery = this.normalizeQuery(query);
-      const cacheKey = this.getCacheKey(query, language);
+      const cacheKey = this.getCacheKey(query, normalizedLanguage);
 
       return new Promise((resolve) => {
         const transaction = this.db!.transaction([STORE_NAME], "readonly");
         const store = transaction.objectStore(STORE_NAME);
-        const index = store.index("normalizedQuery");
-        const request = index.getAll(normalizedQuery);
 
-        request.onsuccess = () => {
-          const entries = request.result as CacheEntry[];
+        // Try to get the entry directly by ID (cache key includes language)
+        const directRequest = store.get(cacheKey);
 
-          // Find matching entry with same language and not expired
-          const entry = entries.find(
-            (e) => e.language === language && !this.isExpired(e)
-          );
+        directRequest.onsuccess = () => {
+          const entry = directRequest.result as (CacheEntry & { id: string }) | undefined;
 
-          if (entry) {
-            console.log(`Cache hit for: ${query} (language: ${language}, normalized: ${cacheKey})`);
-            resolve(entry.response);
-          } else {
-            console.log(`Cache miss for: ${query} (language: ${language}, normalized: ${cacheKey})`);
-            resolve(null);
+          if (entry && !this.isExpired(entry)) {
+            // Double-check language matches (case-insensitive)
+            const entryLanguageNormalized = entry.language.toLowerCase().trim();
+            if (entryLanguageNormalized === normalizedLanguage) {
+              resolve(entry.response);
+              return;
+            }
           }
+
+          // If direct lookup failed, try index lookup as fallback
+          const index = store.index("normalizedQuery");
+          const indexRequest = index.getAll(normalizedQuery);
+
+          indexRequest.onsuccess = () => {
+            const entries = indexRequest.result as CacheEntry[];
+
+            // Find matching entry with same language and not expired
+            const matchingEntry = entries.find(
+              (e) => e.language.toLowerCase().trim() === normalizedLanguage && !this.isExpired(e)
+            );
+
+            if (matchingEntry) {
+              resolve(matchingEntry.response);
+            } else {
+              resolve(null);
+            }
+          };
+
+          indexRequest.onerror = () => {
+            resolve(null);
+          };
         };
 
-        request.onerror = () => {
-          console.error("Error reading from cache:", request.error);
-          resolve(null);
+        directRequest.onerror = () => {
+          // If direct lookup fails, try index lookup
+          const index = store.index("normalizedQuery");
+          const indexRequest = index.getAll(normalizedQuery);
+
+          indexRequest.onsuccess = () => {
+            const entries = indexRequest.result as CacheEntry[];
+
+            // Find matching entry with same language and not expired
+            const matchingEntry = entries.find(
+              (e) => e.language.toLowerCase().trim() === normalizedLanguage && !this.isExpired(e)
+            );
+
+            if (matchingEntry) {
+              resolve(matchingEntry.response);
+            } else {
+              resolve(null);
+            }
+          };
+
+          indexRequest.onerror = () => {
+            resolve(null);
+          };
         };
       });
     } catch (error) {
@@ -157,6 +200,7 @@ class ClientCacheService {
 
   /**
    * Store response in cache
+   * IMPORTANT: Cache is language-specific. Same query in different languages create separate entries.
    */
   async set(
     query: string,
@@ -172,19 +216,22 @@ class ClientCacheService {
       await this.initDB();
       if (!this.db) return;
 
+      // Normalize language to ensure consistent storage
+      const normalizedLanguage = (language || "en").toLowerCase().trim();
       const normalizedQuery = this.normalizeQuery(query);
-      const cacheKey = this.getCacheKey(query, language);
+      const cacheKey = this.getCacheKey(query, normalizedLanguage);
 
       return new Promise((resolve) => {
         const transaction = this.db!.transaction([STORE_NAME], "readwrite");
         const store = transaction.objectStore(STORE_NAME);
 
         // Add/update entry (put will overwrite if key exists)
+        // Cache key includes language, so same query in different languages are separate entries
         const entry: CacheEntry & { id: string } = {
           id: cacheKey,
           query: query.trim(),
           normalizedQuery,
-          language,
+          language: normalizedLanguage, // Store normalized language
           response,
           timestamp: new Date().toISOString(),
           model,
@@ -193,7 +240,6 @@ class ClientCacheService {
         const putRequest = store.put(entry);
 
         putRequest.onsuccess = () => {
-          console.log(`Cached response for: ${query} (language: ${language}, normalized: ${cacheKey})`);
           resolve();
         };
 

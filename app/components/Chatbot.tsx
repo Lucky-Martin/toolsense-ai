@@ -230,6 +230,13 @@ export default function Chatbot() {
       content: sanitizedInput,
     };
 
+    // Get language BEFORE checking for existing conversations
+    // This ensures we don't reuse conversations from different languages
+    const rawLanguageId = typeof window !== "undefined"
+      ? localStorage.getItem("languageId") || "en"
+      : "en";
+    const languageId = rawLanguageId.toLowerCase().trim();
+
     // Check for existing conversation or create new one if this is the first message
     let conversationId = currentConversationId;
     if (!conversationId) {
@@ -237,30 +244,31 @@ export default function Chatbot() {
       const existingConversation = conversationService.findConversationByQuery(sanitizedInput);
 
       if (existingConversation) {
-        // Reuse existing conversation - load it instead of creating a new one
-        conversationId = existingConversation.id;
+        // IMPORTANT: Don't reuse conversations - always make a new request
+        // This ensures language-specific responses are generated
+        // The old conversation will remain in history, but we'll create a new one
+        // Create a new conversation instead of reusing
+        const queryName = sanitizedInput.substring(0, 50) || "New Report";
+        const title = `${t("chatbot.reportFor")} ${queryName}`;
+        const newConversation = conversationService.createConversation(
+          title,
+          userMessage
+        );
+        conversationId = newConversation.id;
         setCurrentConversationId(conversationId);
         currentConversationIdRef.current = conversationId;
-        setMessages(existingConversation.messages);
-        setHasUserMessage(existingConversation.messages.some(msg => msg.role === "user"));
-        setInput(""); // Clear input since we're reusing existing conversation
-        // Don't add the message again if it's already in the conversation
-        // Just scroll to bottom and return early
-        scrollToBottom();
-        inputRef.current?.focus();
-        return;
+      } else {
+        // No existing conversation found, create a new one
+        const queryName = sanitizedInput.substring(0, 50) || "New Report";
+        const title = `${t("chatbot.reportFor")} ${queryName}`;
+        const newConversation = conversationService.createConversation(
+          title,
+          userMessage
+        );
+        conversationId = newConversation.id;
+        setCurrentConversationId(conversationId);
+        currentConversationIdRef.current = conversationId;
       }
-
-      // No existing conversation found, create a new one
-      const queryName = sanitizedInput.substring(0, 50) || "New Report";
-      const title = `${t("chatbot.reportFor")} ${queryName}`;
-      const newConversation = conversationService.createConversation(
-        title,
-        userMessage
-      );
-      conversationId = newConversation.id;
-      setCurrentConversationId(conversationId);
-      currentConversationIdRef.current = conversationId;
     }
 
     // Add user message to chat
@@ -279,12 +287,12 @@ export default function Chatbot() {
         content: msg.content,
       }));
 
-      // Get language from localStorage (default to "en")
-      const languageId = typeof window !== "undefined"
-        ? localStorage.getItem("languageId") || "en"
-        : "en";
+      // Language already retrieved above, use it here
 
       // Check cache first (only for new queries, not follow-up questions)
+      // IMPORTANT: Cache is language-specific. If "tokmanni" is cached in Chinese (zh)
+      // and user requests it in English (en), cache lookup will return null and trigger
+      // a new API request in English, which will then be cached separately.
       const isNewQuery = history.length === 0;
       let cachedResponse: string | null = null;
       let fromCache = false;
@@ -1282,7 +1290,7 @@ ${editContent.trim()}
                                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                   </svg>
-                                  {t("chatbot.cachedResponse")} - <span className="text-[#006994] flex items-center gap-1"><svg className="w-3 h-3 rotate-180" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69c-3.37 0-6 2.63-6 6 0 3.37 6 10.31 6 10.31s6-6.94 6-10.31c0-3.37-2.63-6-6-6z" /></svg>20ml of water saved</span>
+                                  {t("chatbot.cachedResponse")} - <span className="text-[#006994] flex items-center gap-1"><svg className="w-3 h-3 rotate-180" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69c-3.37 0-6 2.63-6 6 0 3.37 6 10.31 6 10.31s6-6.94 6-10.31c0-3.37-2.63-6-6-6z" /></svg>{t("chatbot.waterSaved")}</span>
                                 </div>
                               )}
                               <ReactMarkdown

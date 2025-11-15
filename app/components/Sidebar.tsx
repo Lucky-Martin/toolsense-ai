@@ -300,7 +300,7 @@ export default function Sidebar({
         <div className={`p-4 border-t border-gray-200 mt-auto ${isCollapsed ? "flex justify-center" : ""}`}>
           <button
             onClick={() => setShowLogoutDialog(true)}
-            className={`${isCollapsed ? "w-12 h-12 p-0 aspect-square" : "w-full p-3"} text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2 cursor-pointer`}
+            className={`${isCollapsed ? "w-12 h-12 p-0 aspect-square" : "w-full p-3"} text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center ${isCollapsed ? "gap-0" : "gap-2"} cursor-pointer`}
             aria-label={t("sidebar.logout")}
             title={t("sidebar.logout")}
           >

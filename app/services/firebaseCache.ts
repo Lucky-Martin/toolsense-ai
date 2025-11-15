@@ -121,58 +121,52 @@ class FirebaseCacheService {
     userId?: string
   ): Promise<string | null> {
     try {
-      console.log(`[Firebase Cache] GET - Starting cache lookup for: ${query} (language: ${language})`);
-      console.log(`[Firebase Cache] GET - Getting Admin DB...`);
+      // Normalize language to ensure consistency
+      const normalizedLanguage = (language || "en").toLowerCase().trim();
 
       const db = getAdminDb();
-      console.log(`[Firebase Cache] GET - Admin DB obtained successfully`);
 
       const normalizedQuery = this.normalizeQuery(query);
       // Cache key is based ONLY on normalized query + language, NOT userId
       // This ensures cache is shared across all users
-      const cacheKey = this.getCacheKey(normalizedQuery, language);
-
-      console.log(`[Firebase Cache] GET - Checking cache: query="${query}", language="${language}", normalized="${normalizedQuery}", cacheKey="${cacheKey}"`);
+      const cacheKey = this.getCacheKey(normalizedQuery, normalizedLanguage);
 
       // Get cached response using Admin SDK (shared across all users)
       const cachedResponseRef = db.collection(CACHED_RESPONSES_COLLECTION).doc(cacheKey);
-      console.log(`[Firebase Cache] GET - Fetching document from collection: ${CACHED_RESPONSES_COLLECTION}, doc: ${cacheKey}`);
 
       const cachedResponseSnap = await cachedResponseRef.get();
-      console.log(`[Firebase Cache] GET - Document exists: ${cachedResponseSnap.exists}`);
 
       if (!cachedResponseSnap.exists) {
-        console.log(`[Firebase Cache] GET - Cache miss for: ${query} (language: ${language}, normalized: ${normalizedQuery})`);
         return null;
       }
 
       const cachedData = cachedResponseSnap.data() as CachedResponse;
-      console.log(`[Firebase Cache] GET - Cached data retrieved, timestamp: ${cachedData.timestamp}`);
+      const cachedLanguageNormalized = (cachedData.language || "en").toLowerCase().trim();
+
+      // CRITICAL: Verify the cached entry's language matches the requested language
+      // This prevents returning a cached response from a different language
+      if (cachedLanguageNormalized !== normalizedLanguage) {
+        return null;
+      }
 
       // Check if expired
       if (this.isExpired(cachedData.timestamp)) {
-        console.log(`[Firebase Cache] GET - Cache expired for: ${query} (language: ${language})`);
         return null;
       }
 
       // Track user access if userId is provided (for analytics, not filtering)
       if (userId) {
         try {
-          console.log(`[Firebase Cache] GET - Tracking user access for userId: ${userId}`);
           await this.trackUserAccess(userId, cacheKey);
         } catch (trackError) {
           // Don't fail if tracking fails
-          console.warn("[Firebase Cache] GET - Failed to track user access:", trackError);
         }
       }
 
       // Cache hit - this response is shared across all users with same query + language
-      console.log(`[Firebase Cache] GET - Cache hit for: ${query} (language: ${language}, normalized: ${normalizedQuery}${userId ? `, userId: ${userId}` : ""}), response length: ${cachedData.response.length}`);
       return cachedData.response;
     } catch (error) {
-      console.error("[Firebase Cache] GET - Error getting cached response from Firebase:", error);
-      console.error("[Firebase Cache] GET - Error details:", error instanceof Error ? error.message : String(error));
-      console.error("[Firebase Cache] GET - Error stack:", error instanceof Error ? error.stack : "No stack trace");
+      console.error("[Firebase Cache] Error getting cached response:", error);
       // Return null on error so the request can proceed without cache
       return null;
     }
@@ -198,74 +192,40 @@ class FirebaseCacheService {
     userId?: string
   ): Promise<void> {
     try {
-      console.log(`[Firebase Cache] SET - Starting cache operation for: ${query} (language: ${language})`);
-      console.log(`[Firebase Cache] SET - Response length: ${response.length} characters`);
-      console.log(`[Firebase Cache] SET - Getting Admin DB...`);
+      // Normalize language to ensure consistency
+      const normalizedLanguage = (language || "en").toLowerCase().trim();
 
       const db = getAdminDb();
-      console.log(`[Firebase Cache] SET - Admin DB obtained successfully`);
 
       const normalizedQuery = this.normalizeQuery(query);
       // Cache key is based ONLY on normalized query + language, NOT userId
       // This ensures cache is shared across all users
-      const cacheKey = this.getCacheKey(normalizedQuery, language);
-
-      console.log(`[Firebase Cache] SET - Cache details: query="${query}", language="${language}", normalized="${normalizedQuery}", cacheKey="${cacheKey}"`);
+      const cacheKey = this.getCacheKey(normalizedQuery, normalizedLanguage);
 
       // Store or update cached response using Admin SDK (shared across all users)
       const cachedResponseRef = db.collection(CACHED_RESPONSES_COLLECTION).doc(cacheKey);
-      console.log(`[Firebase Cache] SET - Preparing to write to collection: ${CACHED_RESPONSES_COLLECTION}, doc: ${cacheKey}`);
 
       const cacheData = {
         normalizedQuery,
         query: query.trim(),
-        language,
+        language: normalizedLanguage, // Store normalized language
         response,
         timestamp: Timestamp.now(),
         model,
       };
 
-      console.log(`[Firebase Cache] SET - Cache data prepared:`, {
-        normalizedQuery,
-        query: query.trim(),
-        language,
-        responseLength: response.length,
-        timestamp: cacheData.timestamp.toString(),
-        model,
-      });
-
-      console.log(`[Firebase Cache] SET - Calling Firestore set()...`);
       await cachedResponseRef.set(cacheData, { merge: true });
-      console.log(`[Firebase Cache] SET - Successfully wrote to Firestore!`);
 
       // Track user access if userId is provided (for analytics, not filtering)
       if (userId) {
         try {
-          console.log(`[Firebase Cache] SET - Tracking user access for userId: ${userId}`);
           await this.trackUserAccess(userId, cacheKey);
-          console.log(`[Firebase Cache] SET - User access tracked successfully`);
         } catch (trackError) {
           // Don't fail if tracking fails
-          console.warn("[Firebase Cache] SET - Failed to track user access:", trackError);
         }
       }
-
-      console.log(`[Firebase Cache] SET - Successfully cached response for: ${query} (language: ${language}, normalized: ${normalizedQuery}${userId ? `, userId: ${userId}` : ""}) - This response is now available to all users`);
     } catch (error) {
-      console.error("[Firebase Cache] SET - Error caching response to Firebase:", error);
-      console.error("[Firebase Cache] SET - Error type:", error?.constructor?.name);
-      console.error("[Firebase Cache] SET - Error message:", error instanceof Error ? error.message : String(error));
-      console.error("[Firebase Cache] SET - Error stack:", error instanceof Error ? error.stack : "No stack trace");
-
-      // Check if it's a credentials error
-      if (error instanceof Error && error.message.includes("credentials")) {
-        console.error("[Firebase Cache] SET - CREDENTIALS ERROR DETECTED!");
-        console.error("[Firebase Cache] SET - Please set up Firebase Admin credentials:");
-        console.error("[Firebase Cache] SET - Option 1: Set FIREBASE_SERVICE_ACCOUNT_KEY environment variable with JSON string");
-        console.error("[Firebase Cache] SET - Option 2: Set GOOGLE_APPLICATION_CREDENTIALS environment variable with path to service account JSON file");
-        console.error("[Firebase Cache] SET - Option 3: Use Application Default Credentials (gcloud auth application-default login)");
-      }
-
+      console.error("[Firebase Cache] Error caching response:", error);
       // Re-throw the error so the caller knows caching failed
       // This helps with debugging and ensures we know when caching isn't working
       throw error;

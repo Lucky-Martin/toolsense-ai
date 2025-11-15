@@ -7,9 +7,8 @@ export async function GET(request: NextRequest) {
 
   // Handle OAuth errors from Google
   if (error) {
-    console.error("Google OAuth error:", error);
     return NextResponse.redirect(
-      new URL(`/?error=${encodeURIComponent(error)}`, request.url)
+      new URL(`/?error=${encodeURIComponent("Authentication failed")}`, request.url)
     );
   }
 
@@ -20,7 +19,6 @@ export async function GET(request: NextRequest) {
 
   // Validate environment variables
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-    console.error("Google OAuth credentials not configured");
     return NextResponse.redirect(
       new URL("/?error=oauth_not_configured", request.url)
     );
@@ -64,33 +62,36 @@ export async function GET(request: NextRequest) {
 
     const user = await userResponse.json();
 
-    // Create a session token (in production, use proper session management)
-    const sessionToken = Buffer.from(
-      JSON.stringify({
-        email: user.email,
-        name: user.name,
-        picture: user.picture,
-        accessToken: tokens.access_token,
-        expiresAt: Date.now() + (tokens.expires_in * 1000),
-      })
-    ).toString("base64");
+    // SECURITY: Do not store access token in session
+    // Only store minimal user info needed for session
+    // Access token should not be stored client-side
+    const sessionData = {
+      email: user.email,
+      name: user.name,
+      picture: user.picture,
+      expiresAt: Date.now() + (tokens.expires_in * 1000),
+    };
 
-    // Redirect to home with session token
+    // Create a session token (in production, use proper session management like JWT)
+    // For now, using base64 but this should be replaced with proper JWT signing
+    const sessionToken = Buffer.from(JSON.stringify(sessionData)).toString("base64");
+
+    // Redirect to home (don't pass token in URL for security)
     const redirectUrl = new URL("/", request.url);
-    redirectUrl.searchParams.set("token", sessionToken);
-    
-    // Set cookie with session token
+
+    // Set cookie with session token (httpOnly prevents XSS access)
     const response = NextResponse.redirect(redirectUrl);
     response.cookies.set("auth_token", sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
     });
 
     return response;
   } catch (error) {
-    console.error("Google OAuth error:", error);
+    // Don't log sensitive error details
     return NextResponse.redirect(
       new URL(
         `/?error=${encodeURIComponent("Authentication failed")}`,

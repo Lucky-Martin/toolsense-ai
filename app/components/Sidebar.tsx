@@ -195,11 +195,9 @@ export default function Sidebar({
       >
         {/* Row 1: Conversations title + Burger menu button */}
         <div className={`p-4 border-b border-gray-200 flex items-center ${isCollapsed ? "justify-center" : "justify-between"}`}>
-          {!isCollapsed && (
-            <h2 className="text-lg font-semibold text-gray-900 whitespace-nowrap">
-              {t("sidebar.reports")}
-            </h2>
-          )}
+          <h2 className={`text-lg font-semibold text-gray-900 whitespace-nowrap transition-all duration-300 ease-in-out ${isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"}`}>
+            {t("sidebar.reports")}
+          </h2>
           <button
             onClick={toggleCollapse}
             className="p-2 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0 cursor-pointer"
@@ -223,84 +221,80 @@ export default function Sidebar({
         </div>
 
         {/* Row 2: Create new chat button */}
-        {!isCollapsed && (
-          <div className="p-4 border-b border-gray-200">
-            <button
-              onClick={onNewConversation}
-              className="w-full p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 cursor-pointer"
-              aria-label={t("sidebar.newReport")}
+        <div className={`p-4 border-b border-gray-200 transition-all duration-300 ease-in-out overflow-hidden ${isCollapsed ? "max-h-0 p-0 opacity-0" : "max-h-32 opacity-100"}`}>
+          <button
+            onClick={onNewConversation}
+            className="w-full p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            aria-label={t("sidebar.newReport")}
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              <span className="font-medium whitespace-nowrap">{t("sidebar.newReport")}</span>
-            </button>
-          </div>
-        )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            <span className="font-medium whitespace-nowrap">{t("sidebar.newReport")}</span>
+          </button>
+        </div>
 
         {/* Row 3: Previous chats list */}
-        {!isCollapsed && (
-          <div className="flex-1 overflow-y-auto">
-            {conversations.length === 0 ? (
-              <div className="p-4 text-center text-gray-500 text-sm whitespace-nowrap">
-                {t("sidebar.noReports")}
-              </div>
-            ) : (
-              <div className="p-2">
-                {conversations.map((conversation) => (
-                  <div
-                    key={conversation.id}
-                    onClick={() => onLoadConversation(conversation.id)}
-                    className={`group relative p-3 rounded-lg mb-2 cursor-pointer transition-colors ${currentConversationId === conversation.id
-                      ? "bg-gray-100 border-2 border-gray-300"
-                      : "hover:bg-gray-50 border-2 border-transparent"
-                      }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-gray-900 truncate whitespace-nowrap">
-                          {formatTitle(conversation.title, conversation)}
-                        </h3>
-                        <p className="text-xs text-gray-500 mt-1 whitespace-nowrap truncate">
-                          {formatDate(conversation.updatedAt)}
-                        </p>
-                      </div>
-                      <button
-                        onClick={(e) => handleDeleteConversation(e, conversation.id)}
-                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-gray-200 transition-opacity cursor-pointer"
-                        aria-label={t("sidebar.deleteReport")}
-                      >
-                        <svg
-                          className="w-4 h-4 text-gray-500"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                      </button>
+        <div className={`flex-1 transition-all duration-300 ease-in-out ${isCollapsed ? "opacity-0 overflow-hidden" : "opacity-100 overflow-y-auto"}`}>
+          {conversations.length === 0 ? (
+            <div className="p-4 text-center text-gray-500 text-sm whitespace-nowrap">
+              {t("sidebar.noReports")}
+            </div>
+          ) : (
+            <div className="p-2">
+              {conversations.map((conversation) => (
+                <div
+                  key={conversation.id}
+                  onClick={() => onLoadConversation(conversation.id)}
+                  className={`group relative p-3 rounded-lg mb-2 cursor-pointer transition-colors ${currentConversationId === conversation.id
+                    ? "bg-gray-100 border-2 border-gray-300"
+                    : "hover:bg-gray-50 border-2 border-transparent"
+                    }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-medium text-gray-900 truncate whitespace-nowrap">
+                        {formatTitle(conversation.title, conversation)}
+                      </h3>
+                      <p className="text-xs text-gray-500 mt-1 whitespace-nowrap truncate">
+                        {formatDate(conversation.updatedAt)}
+                      </p>
                     </div>
+                    <button
+                      onClick={(e) => handleDeleteConversation(e, conversation.id)}
+                      className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-gray-200 transition-opacity cursor-pointer"
+                      aria-label={t("sidebar.deleteReport")}
+                    >
+                      <svg
+                        className="w-4 h-4 text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Logout button at bottom */}
         <div className={`p-4 border-t border-gray-200 mt-auto ${isCollapsed ? "flex justify-center" : ""}`}>
@@ -311,7 +305,7 @@ export default function Sidebar({
             title={t("sidebar.logout")}
           >
             <svg
-              className={`${isCollapsed ? "w-6 h-6" : "w-5 h-5"}`}
+              className={"w-6 h-6"}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -323,9 +317,7 @@ export default function Sidebar({
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
               />
             </svg>
-            {!isCollapsed && (
-              <span className="font-medium whitespace-nowrap">{t("sidebar.logout")}</span>
-            )}
+            <span className={`font-medium whitespace-nowrap transition-all duration-300 ease-in-out ${isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"}`}>{t("sidebar.logout")}</span>
           </button>
         </div>
       </div>

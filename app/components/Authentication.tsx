@@ -34,6 +34,14 @@ export default function Authentication() {
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
   useEffect(() => {
+    // Check for mode parameter (register or login)
+    const mode = searchParams.get("mode");
+    if (mode === "register") {
+      setIsLogin(false);
+    } else {
+      setIsLogin(true);
+    }
+
     // Check for redirect result after Firebase authentication
     getRedirectResult(auth)
       .then((result) => {

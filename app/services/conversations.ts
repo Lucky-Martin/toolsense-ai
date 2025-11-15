@@ -79,6 +79,56 @@ class ConversationService {
   }
 
   /**
+   * Normalize a query to match conversations (same logic as cache normalization)
+   */
+  private normalizeQuery(query: string): string {
+    let normalized = query.toLowerCase().trim();
+
+    // Extract domain from URLs
+    try {
+      const url = new URL(normalized.startsWith("http") ? normalized : `https://${normalized}`);
+      normalized = url.hostname.replace("www.", "");
+    } catch {
+      // Not a URL, continue with normalization
+    }
+
+    // Remove common prefixes/suffixes
+    normalized = normalized
+      .replace(/^https?:\/\//, "")
+      .replace(/^www\./, "")
+      .replace(/\/$/, "")
+      .replace(/[^a-z0-9\s-]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    return normalized;
+  }
+
+  /**
+   * Find an existing conversation by the first user message (normalized query)
+   * This allows reusing conversations when the user asks for the same query again
+   * @param query - The user's query to search for
+   * @returns The existing conversation or null if not found
+   */
+  findConversationByQuery(query: string): Conversation | null {
+    const conversations = this.getAllConversations();
+    const normalizedQuery = this.normalizeQuery(query);
+
+    // Find conversation where the first user message matches the normalized query
+    for (const conversation of conversations) {
+      const firstUserMessage = conversation.messages.find((msg) => msg.role === "user");
+      if (firstUserMessage) {
+        const firstMessageNormalized = this.normalizeQuery(firstUserMessage.content);
+        if (firstMessageNormalized === normalizedQuery) {
+          return conversation;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Save a conversation
    */
   saveConversation(conversation: Conversation): void {

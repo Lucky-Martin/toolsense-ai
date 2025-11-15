@@ -193,9 +193,27 @@ export default function Chatbot() {
       content: input.trim(),
     };
 
-    // Create new conversation if this is the first message
+    // Check for existing conversation or create new one if this is the first message
     let conversationId = currentConversationId;
     if (!conversationId) {
+      // Check if a conversation with the same query already exists
+      const existingConversation = conversationService.findConversationByQuery(input.trim());
+
+      if (existingConversation) {
+        // Reuse existing conversation - load it instead of creating a new one
+        conversationId = existingConversation.id;
+        setCurrentConversationId(conversationId);
+        setMessages(existingConversation.messages);
+        setHasUserMessage(existingConversation.messages.some(msg => msg.role === "user"));
+        setInput(""); // Clear input since we're reusing existing conversation
+        // Don't add the message again if it's already in the conversation
+        // Just scroll to bottom and return early
+        scrollToBottom();
+        inputRef.current?.focus();
+        return;
+      }
+
+      // No existing conversation found, create a new one
       const queryName = input.trim().substring(0, 50) || "New Report";
       const title = `${t("chatbot.reportFor")} ${queryName}`;
       const newConversation = conversationService.createConversation(
@@ -937,7 +955,7 @@ ${editContent.trim()}
                           }`}
                       >
                         {message.role === "assistant" ? (
-                          <div className="markdown-content">
+                          <div className="markdown-content overflow-x-hidden break-words">
                             {message.cached && (
                               <div className="mb-2 text-xs text-gray-500 italic flex items-center gap-1">
                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -949,19 +967,19 @@ ${editContent.trim()}
                             <ReactMarkdown
                               components={{
                                 h1: (props) => (
-                                  <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2" {...props} />
+                                  <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2 break-words" {...props} />
                                 ),
                                 h2: (props) => (
-                                  <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900" {...props} />
+                                  <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900 break-words" {...props} />
                                 ),
                                 h3: (props) => (
-                                  <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800" {...props} />
+                                  <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800 break-words" {...props} />
                                 ),
                                 h4: (props) => (
-                                  <h4 className="text-base font-semibold mt-3 mb-2 text-gray-800" {...props} />
+                                  <h4 className="text-base font-semibold mt-3 mb-2 text-gray-800 break-words" {...props} />
                                 ),
                                 p: (props) => (
-                                  <p className="mb-3 leading-7 text-gray-700" {...props} />
+                                  <p className="mb-3 leading-7 text-gray-700 break-words" {...props} />
                                 ),
                                 ul: (props) => (
                                   <ul className="list-disc list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
@@ -970,28 +988,38 @@ ${editContent.trim()}
                                   <ol className="list-decimal list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
                                 ),
                                 li: (props) => (
-                                  <li className="pl-2 leading-7" {...props} />
+                                  <li className="pl-2 leading-7 break-words" {...props} />
                                 ),
                                 strong: (props) => (
-                                  <strong className="font-semibold text-gray-900" {...props} />
+                                  <strong className="font-semibold text-gray-900 break-words" {...props} />
                                 ),
                                 em: (props) => (
-                                  <em className="italic text-gray-700" {...props} />
+                                  <em className="italic text-gray-700 break-words" {...props} />
                                 ),
-                                code: (props) => (
-                                  <code className="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />
-                                ),
+                                code: ({ node, className, children, ...props }: any) => {
+                                  // Check if this is inline code (no className or className doesn't start with language-)
+                                  const isInline = !className || !className.startsWith('language-');
+                                  return isInline ? (
+                                    <code className="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800 break-words" {...props}>
+                                      {children}
+                                    </code>
+                                  ) : (
+                                    <code className="text-sm font-mono text-gray-800" {...props}>
+                                      {children}
+                                    </code>
+                                  );
+                                },
                                 pre: (props) => (
-                                  <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto mb-3 text-sm" {...props} />
+                                  <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto mb-3 text-sm whitespace-pre-wrap break-words" {...props} />
                                 ),
                                 hr: (props) => (
                                   <hr className="my-6 border-gray-300" {...props} />
                                 ),
                                 a: (props) => (
-                                  <a className="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank" rel="noopener noreferrer" {...props} />
+                                  <a className="text-blue-600 hover:text-blue-800 hover:underline font-medium break-all" target="_blank" rel="noopener noreferrer" {...props} />
                                 ),
                                 blockquote: (props) => (
-                                  <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3 text-gray-600" {...props} />
+                                  <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3 text-gray-600 break-words" {...props} />
                                 ),
                                 table: (props) => (
                                   <div className="overflow-x-auto my-4">
@@ -1001,11 +1029,14 @@ ${editContent.trim()}
                                 thead: (props) => (
                                   <thead className="bg-gray-100" {...props} />
                                 ),
+                                tbody: (props) => (
+                                  <tbody {...props} />
+                                ),
                                 th: (props) => (
-                                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold" {...props} />
+                                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold break-words" {...props} />
                                 ),
                                 td: (props) => (
-                                  <td className="border border-gray-300 px-4 py-2" {...props} />
+                                  <td className="border border-gray-300 px-4 py-2 break-words" {...props} />
                                 ),
                               }}
                             >
@@ -1300,23 +1331,23 @@ ${editContent.trim()}
             <div className="flex-1 overflow-hidden">
               {isPreviewMode ? (
                 <div className="h-full overflow-y-auto p-6 bg-gray-50">
-                  <div className="markdown-content max-w-none">
+                  <div className="markdown-content max-w-none overflow-x-hidden break-words">
                     <ReactMarkdown
                       components={{
                         h1: (props) => (
-                          <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2" {...props} />
+                          <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2 break-words" {...props} />
                         ),
                         h2: (props) => (
-                          <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900" {...props} />
+                          <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900 break-words" {...props} />
                         ),
                         h3: (props) => (
-                          <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800" {...props} />
+                          <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800 break-words" {...props} />
                         ),
                         h4: (props) => (
-                          <h4 className="text-base font-semibold mt-3 mb-2 text-gray-800" {...props} />
+                          <h4 className="text-base font-semibold mt-3 mb-2 text-gray-800 break-words" {...props} />
                         ),
                         p: (props) => (
-                          <p className="mb-3 leading-7 text-gray-700" {...props} />
+                          <p className="mb-3 leading-7 text-gray-700 break-words" {...props} />
                         ),
                         ul: (props) => (
                           <ul className="list-disc list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
@@ -1325,28 +1356,37 @@ ${editContent.trim()}
                           <ol className="list-decimal list-outside mb-3 ml-6 space-y-2 text-gray-700" {...props} />
                         ),
                         li: (props) => (
-                          <li className="pl-2 leading-7" {...props} />
+                          <li className="pl-2 leading-7 break-words" {...props} />
                         ),
                         strong: (props) => (
-                          <strong className="font-semibold text-gray-900" {...props} />
+                          <strong className="font-semibold text-gray-900 break-words" {...props} />
                         ),
                         em: (props) => (
-                          <em className="italic text-gray-700" {...props} />
+                          <em className="italic text-gray-700 break-words" {...props} />
                         ),
-                        code: (props) => (
-                          <code className="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />
-                        ),
+                        code: ({ node, className, children, ...props }: any) => {
+                          const isInline = !node?.position;
+                          return isInline ? (
+                            <code className="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800 break-words" {...props}>
+                              {children}
+                            </code>
+                          ) : (
+                            <code className="text-sm font-mono text-gray-800" {...props}>
+                              {children}
+                            </code>
+                          );
+                        },
                         pre: (props) => (
-                          <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto mb-3 text-sm" {...props} />
+                          <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto mb-3 text-sm whitespace-pre-wrap break-words" {...props} />
                         ),
                         hr: (props) => (
                           <hr className="my-6 border-gray-300" {...props} />
                         ),
                         a: (props) => (
-                          <a className="text-blue-600 hover:text-blue-800 hover:underline font-medium" target="_blank" rel="noopener noreferrer" {...props} />
+                          <a className="text-blue-600 hover:text-blue-800 hover:underline font-medium break-all" target="_blank" rel="noopener noreferrer" {...props} />
                         ),
                         blockquote: (props) => (
-                          <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3 text-gray-600" {...props} />
+                          <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3 text-gray-600 break-words" {...props} />
                         ),
                         table: (props) => (
                           <div className="overflow-x-auto my-4">
@@ -1356,11 +1396,14 @@ ${editContent.trim()}
                         thead: (props) => (
                           <thead className="bg-gray-100" {...props} />
                         ),
+                        tbody: (props) => (
+                          <tbody {...props} />
+                        ),
                         th: (props) => (
-                          <th className="border border-gray-300 px-4 py-2 text-left font-semibold" {...props} />
+                          <th className="border border-gray-300 px-4 py-2 text-left font-semibold break-words" {...props} />
                         ),
                         td: (props) => (
-                          <td className="border border-gray-300 px-4 py-2" {...props} />
+                          <td className="border border-gray-300 px-4 py-2 break-words" {...props} />
                         ),
                       }}
                     >

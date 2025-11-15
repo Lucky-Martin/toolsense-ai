@@ -7,7 +7,6 @@ import { sendPasswordResetEmail } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 import { auth } from "@/app/lib/firebase";
-import Navbar from "./Navbar";
 
 export default function ForgotPassword() {
   const { t } = useTranslation();
@@ -80,7 +79,6 @@ export default function ForgotPassword() {
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center px-4 py-12">
-      <Navbar />
       <div className="w-full max-w-md">
         {/* Card */}
         <div className="rounded-3xl bg-white p-8 border border-gray-200 shadow-lg shadow-gray-200/50">
@@ -173,11 +171,10 @@ export default function ForgotPassword() {
                       setErrors((prev) => ({ ...prev, email: "" }));
                     }
                   }}
-                  className={`w-full px-4 py-3 rounded-2xl bg-white border ${
-                    errors.email
-                      ? "border-red-400 focus:border-red-500"
-                      : "border-gray-200 focus:border-gray-300"
-                  } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
+                  className={`w-full px-4 py-3 rounded-2xl bg-white border ${errors.email
+                    ? "border-red-400 focus:border-red-500"
+                    : "border-gray-200 focus:border-gray-300"
+                    } text-gray-700 placeholder-gray-400 focus:outline-none transition-all font-light shadow-sm focus:shadow-md`}
                   placeholder="you@example.com"
                   disabled={isLoading}
                 />

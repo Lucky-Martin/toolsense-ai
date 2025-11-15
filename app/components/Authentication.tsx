@@ -15,7 +15,6 @@ import {
 import { FirebaseError } from "firebase/app";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 import { auth } from "@/app/lib/firebase";
-import Navbar from "./Navbar";
 
 export default function Authentication() {
   const { t } = useTranslation();
@@ -262,7 +261,6 @@ export default function Authentication() {
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center px-4 py-12">
-      <Navbar />
       <div className="w-full max-w-md">
         {/* Card */}
         <div className="rounded-3xl bg-white p-8 border border-gray-200 shadow-lg shadow-gray-200/50">

@@ -10,78 +10,161 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section with Images */}
-      <section className="h-screen flex items-center px-4 md:px-8 lg:px-16">
-        <div className="container mx-auto grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left Side - Description and Button */}
-          <div className="flex flex-col justify-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              ToolSense AI
-            </h1>
-            <p className="text-lg md:text-xl lg:text-2xl text-gray-600 mb-6">
-              Intelligent security assessment and trust analysis for software tools and services. Get comprehensive insights to make informed decisions about the tools you use.
-            </p>
+      <section className="h-screen md:min-h-screen flex items-center justify-center px-4 md:px-8 lg:px-16 py-8 md:py-16">
+        <div className="container mx-auto h-full md:h-auto">
+          {/* Mobile (< 768px): No images, title/intro/water label on top, button at bottom */}
+          <div className="flex flex-col md:hidden h-full justify-between items-center text-center px-4 py-8">
+            {/* Top Content */}
+            <div className="flex flex-col items-center justify-center w-full flex-1">
+              <h1 className="text-4xl font-bold text-gray-900 mb-6">
+                ToolSense AI
+              </h1>
+              <p className="text-lg text-gray-600 mb-6 max-w-md">
+                Intelligent security assessment and trust analysis for software tools and services. Get comprehensive insights to make informed decisions about the tools you use.
+              </p>
 
-            {/* Water Saving Badge */}
-            <div className="mb-8 inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 w-fit">
-              <svg className="w-5 h-5 text-[#006994] rotate-180" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.69c-3.37 0-6 2.63-6 6 0 3.37 6 10.31 6 10.31s6-6.94 6-10.31c0-3.37-2.63-6-6-6z" />
-              </svg>
-              <span className="text-sm text-gray-700">
-                <span className="font-semibold text-[#006994]">Smart caching</span>
-              </span>
+              {/* Water Saving Badge */}
+              <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 w-fit">
+                <svg className="w-5 h-5 text-[#006994] rotate-180" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.69c-3.37 0-6 2.63-6 6 0 3.37 6 10.31 6 10.31s6-6.94 6-10.31c0-3.37-2.63-6-6-6z" />
+                </svg>
+                <span className="text-sm text-gray-700">
+                  <span className="font-semibold text-[#006994]">Smart caching</span>
+                </span>
+              </div>
             </div>
 
-            {user ? (
-              <Link
-                href="/chat"
-                className="inline-block bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all shadow-lg transform hover:scale-105 w-fit"
-              >
-                Try Now
-              </Link>
-            ) : (
-              <Link
-                href="/login?mode=register"
-                className="inline-block bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all shadow-lg transform hover:scale-105 w-fit"
-              >
-                Try Now
-              </Link>
-            )}
+            {/* Bottom Button */}
+            <div className="w-full flex justify-center pb-4">
+              {user ? (
+                <Link
+                  href="/chat"
+                  className="inline-block bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all shadow-lg transform hover:scale-105 w-full max-w-xs"
+                >
+                  Try Now
+                </Link>
+              ) : (
+                <Link
+                  href="/login?mode=register"
+                  className="inline-block bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all shadow-lg transform hover:scale-105 w-full max-w-xs"
+                >
+                  Try Now
+                </Link>
+              )}
+            </div>
           </div>
 
-          {/* Right Side - Images */}
-          <div className="hidden md:flex items-center justify-center relative h-full">
-            <div className="relative w-full max-w-2xl">
-              {/* Main center image with shadow effect */}
-              <div className="relative z-10 transform hover:scale-105 transition-transform duration-300">
-                <Image
-                  src="/example1.png"
-                  alt="ToolSense AI Dashboard"
-                  width={600}
-                  height={400}
-                  className="rounded-2xl w-full h-auto shadow-2xl"
-                  priority
-                />
+          {/* Tablet (768px - 997px): No images, centered content */}
+          <div className="hidden md:flex lg:hidden flex-col items-center justify-center text-center h-full">
+            <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto">
+              <h1 className="text-5xl font-bold text-gray-900 mb-6">
+                ToolSense AI
+              </h1>
+              <p className="text-xl text-gray-600 mb-6">
+                Intelligent security assessment and trust analysis for software tools and services. Get comprehensive insights to make informed decisions about the tools you use.
+              </p>
+
+              {/* Water Saving Badge */}
+              <div className="mb-8 inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 w-fit">
+                <svg className="w-5 h-5 text-[#006994] rotate-180" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.69c-3.37 0-6 2.63-6 6 0 3.37 6 10.31 6 10.31s6-6.94 6-10.31c0-3.37-2.63-6-6-6z" />
+                </svg>
+                <span className="text-sm text-gray-700">
+                  <span className="font-semibold text-[#006994]">Smart caching</span>
+                </span>
               </div>
 
-              {/* Floating side images */}
-              <div className="absolute -left-8 top-1/4 transform -translate-y-1/2 z-20 opacity-90 hover:opacity-100 transition-opacity duration-300">
-                <Image
-                  src="/example2.png"
-                  alt="Security Analysis"
-                  width={280}
-                  height={200}
-                  className="rounded-xl w-full h-auto shadow-xl transform hover:scale-105 transition-transform duration-300"
-                />
+              {user ? (
+                <Link
+                  href="/chat"
+                  className="inline-block bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all shadow-lg transform hover:scale-105 w-fit"
+                >
+                  Try Now
+                </Link>
+              ) : (
+                <Link
+                  href="/login?mode=register"
+                  className="inline-block bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all shadow-lg transform hover:scale-105 w-fit"
+                >
+                  Try Now
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* Desktop (>= 998px): Side-by-side with overlapped images */}
+          <div className="hidden lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left Side - Description and Button */}
+            <div className="flex flex-col justify-center">
+              <h1 className="text-6xl font-bold text-gray-900 mb-6">
+                ToolSense AI
+              </h1>
+              <p className="text-2xl text-gray-600 mb-6">
+                Intelligent security assessment and trust analysis for software tools and services. Get comprehensive insights to make informed decisions about the tools you use.
+              </p>
+
+              {/* Water Saving Badge */}
+              <div className="mb-8 inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 w-fit">
+                <svg className="w-5 h-5 text-[#006994] rotate-180" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.69c-3.37 0-6 2.63-6 6 0 3.37 6 10.31 6 10.31s6-6.94 6-10.31c0-3.37-2.63-6-6-6z" />
+                </svg>
+                <span className="text-sm text-gray-700">
+                  <span className="font-semibold text-[#006994]">Smart caching</span>
+                </span>
               </div>
 
-              <div className="absolute -right-8 bottom-1/4 transform translate-y-1/2 z-20 opacity-90 hover:opacity-100 transition-opacity duration-300">
-                <Image
-                  src="/example3.png"
-                  alt="Trust Scoring"
-                  width={280}
-                  height={200}
-                  className="rounded-xl w-full h-auto shadow-xl transform hover:scale-105 transition-transform duration-300"
-                />
+              {user ? (
+                <Link
+                  href="/chat"
+                  className="inline-block bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all shadow-lg transform hover:scale-105 w-fit"
+                >
+                  Try Now
+                </Link>
+              ) : (
+                <Link
+                  href="/login?mode=register"
+                  className="inline-block bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all shadow-lg transform hover:scale-105 w-fit"
+                >
+                  Try Now
+                </Link>
+              )}
+            </div>
+
+            {/* Right Side - Images */}
+            <div className="flex items-center justify-center relative h-full">
+              <div className="relative w-full max-w-2xl">
+                {/* Main center image with shadow effect */}
+                <div className="relative z-10 transform hover:scale-105 transition-transform duration-300">
+                  <Image
+                    src="/example1.png"
+                    alt="ToolSense AI Dashboard"
+                    width={600}
+                    height={400}
+                    className="rounded-2xl w-full h-auto shadow-2xl"
+                    priority
+                  />
+                </div>
+
+                {/* Floating side images */}
+                <div className="absolute -left-8 top-1/4 transform -translate-y-1/2 z-20 opacity-90 hover:opacity-100 transition-opacity duration-300">
+                  <Image
+                    src="/example2.png"
+                    alt="Security Analysis"
+                    width={280}
+                    height={200}
+                    className="rounded-xl w-full h-auto shadow-xl transform hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+
+                <div className="absolute -right-8 bottom-1/4 transform translate-y-1/2 z-20 opacity-90 hover:opacity-100 transition-opacity duration-300">
+                  <Image
+                    src="/example3.png"
+                    alt="Trust Scoring"
+                    width={280}
+                    height={200}
+                    className="rounded-xl w-full h-auto shadow-xl transform hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { geminiService, ChatMessage } from "../../services/gemini";
 import { firebaseCacheService } from "../../services/firebaseCache";
+import { validateInput, validateHistory } from "../../utils/inputValidation";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,6 +16,37 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Validate input for security
+    const inputValidation = validateInput(message);
+    if (!inputValidation.isValid) {
+      console.error("[API Chat] POST - Input validation failed:", inputValidation.error);
+      return NextResponse.json(
+        {
+          error: inputValidation.error || "Invalid input. Please provide a product name, company name, or URL.",
+          details: "Input validation failed for security reasons."
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate conversation history
+    if (history && history.length > 0) {
+      const historyValidation = validateHistory(history);
+      if (!historyValidation.isValid) {
+        console.error("[API Chat] POST - History validation failed:", historyValidation.error);
+        return NextResponse.json(
+          {
+            error: historyValidation.error || "Invalid conversation history.",
+            details: "History validation failed for security reasons."
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Use sanitized input
+    const sanitizedMessage = inputValidation.sanitizedInput || message;
 
     if (!process.env.GEMINI_API_KEY) {
       console.error("[API Chat] POST - Error: GEMINI_API_KEY not configured");
@@ -38,10 +70,10 @@ export async function POST(request: NextRequest) {
     let fromCache = false;
 
     if (isNewQuery) {
-      console.log(`[API Chat] POST - Checking Firebase cache for new query: "${message}"`);
+      console.log(`[API Chat] POST - Checking Firebase cache for new query: "${sanitizedMessage}"`);
       // userId is passed for analytics tracking only, not for cache filtering
       // Cache lookup is based on normalized query + language only
-      cachedResponse = await firebaseCacheService.get(message, language, userId);
+      cachedResponse = await firebaseCacheService.get(sanitizedMessage, language, userId);
       if (cachedResponse) {
         fromCache = true;
         console.log(`[API Chat] POST - Cache hit! Using cached response (length: ${cachedResponse.length})`);
@@ -65,7 +97,7 @@ export async function POST(request: NextRequest) {
       // Use the Gemini service to send the message with language
       console.log(`[API Chat] POST - Calling Gemini API...`);
       const response = await geminiService.sendMessage(
-        message,
+        sanitizedMessage,
         history as ChatMessage[],
         language
       );
@@ -81,13 +113,13 @@ export async function POST(request: NextRequest) {
         console.log(`[API Chat] POST - Attempting to cache response to Firebase...`);
         try {
           await firebaseCacheService.set(
-            message,
+            sanitizedMessage,
             responseData.message,
             responseData.model,
             language,
             userId
           );
-          console.log(`[API Chat] POST - Successfully cached response for: ${message} (language: ${language})`);
+          console.log(`[API Chat] POST - Successfully cached response for: ${sanitizedMessage} (language: ${language})`);
         } catch (cacheError) {
           // Log cache errors but don't fail the request
           console.error("[API Chat] POST - Failed to cache response to Firebase:", cacheError);

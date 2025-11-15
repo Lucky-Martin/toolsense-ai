@@ -12,6 +12,7 @@ import { conversationService, Message } from "../services/conversations";
 import { clientCacheService } from "../services/clientCache";
 import ReportSummary from "./ReportSummary";
 import { parseResponse, isSecurityAssessment } from "../utils/responseParser";
+import { validateInput } from "../utils/inputValidation";
 
 const LOADING_MESSAGE_KEYS = [
   "analyzingCompanySecurityPosture",
@@ -207,16 +208,33 @@ export default function Chatbot() {
     e.preventDefault();
     if (!input.trim() || isLoading || hasUserMessage) return;
 
+    // Validate input for security (client-side validation)
+    const inputValidation = validateInput(input.trim());
+    if (!inputValidation.isValid) {
+      // Show error message to user
+      const errorMessage: Message = {
+        role: "assistant",
+        content: `⚠️ ${inputValidation.error || "Invalid input. Please provide a product name, company name, or URL."}`,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+      setInput(""); // Clear input
+      inputRef.current?.focus();
+      return;
+    }
+
+    // Use sanitized input
+    const sanitizedInput = inputValidation.sanitizedInput || input.trim();
+
     const userMessage: Message = {
       role: "user",
-      content: input.trim(),
+      content: sanitizedInput,
     };
 
     // Check for existing conversation or create new one if this is the first message
     let conversationId = currentConversationId;
     if (!conversationId) {
       // Check if a conversation with the same query already exists
-      const existingConversation = conversationService.findConversationByQuery(input.trim());
+      const existingConversation = conversationService.findConversationByQuery(sanitizedInput);
 
       if (existingConversation) {
         // Reuse existing conversation - load it instead of creating a new one
@@ -234,7 +252,7 @@ export default function Chatbot() {
       }
 
       // No existing conversation found, create a new one
-      const queryName = input.trim().substring(0, 50) || "New Report";
+      const queryName = sanitizedInput.substring(0, 50) || "New Report";
       const title = `${t("chatbot.reportFor")} ${queryName}`;
       const newConversation = conversationService.createConversation(
         title,
@@ -248,7 +266,7 @@ export default function Chatbot() {
     // Add user message to chat
     setMessages((prev) => [...prev, userMessage]);
     setHasUserMessage(true);
-    const currentInput = input.trim();
+    const currentInput = sanitizedInput;
     setInput("");
     setIsLoading(true);
     setLoadingConversationId(conversationId); // Track which conversation is loading
@@ -294,7 +312,7 @@ export default function Chatbot() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            message: currentInput,
+            message: currentInput, // Already sanitized
             history: history,
             languageId: languageId,
             userId: user?.uid || undefined,
